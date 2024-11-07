@@ -1,0 +1,7 @@
+{
+    "Flask": "flask",
+    "os": "os",
+    "json": "json",
+    "subprocess": "subprocess",
+    "sys": "sys"
+}
