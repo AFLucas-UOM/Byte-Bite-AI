@@ -662,19 +662,15 @@
                   if (selectedFilter === 'orders-today') {
                     cardTitleOrdersSpan.textContent = ' | Today';
                     updateOrdersDisplay('today');
-                    comparisonTextSpan.textContent = 'XX% less since yesterday';
                   } else if (selectedFilter === 'orders-week') {
                     cardTitleOrdersSpan.textContent = ' | This Week';
                     updateOrdersDisplay('week');
-                    comparisonTextSpan.textContent = 'XX% less since last week';
                   } else if (selectedFilter === 'orders-month') {
                     cardTitleOrdersSpan.textContent = ' | This Month';
                     updateOrdersDisplay('month');
-                    comparisonTextSpan.textContent = 'XX% less since last month';
                   } else if (selectedFilter === 'orders-AT') {
                     cardTitleOrdersSpan.textContent = ' | All Time';
                     updateOrdersDisplay('all time');
-                    comparisonTextSpan.textContent = '';
                   }
                 });
               });
@@ -684,16 +680,24 @@
                 const currentOrdersCount = getOrdersCountForPeriod(period);
                 const previousOrdersCount = getOrdersCountForPreviousPeriod(period);
             
-                const percentageChange = calculatePercentageChange(currentOrdersCount, previousOrdersCount);
-            
+                // Display the current order count
                 totalOrdersElement.textContent = `${currentOrdersCount} orders`;
             
-                if (percentageChange < 0) {
-                  comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since last ${period}`;
-                } else if (percentageChange > 0) {
-                  comparisonTextSpan.textContent = `${percentageChange}% more since last ${period}`;
+                if (period !== 'all time') {
+                  // Calculate percentage change if the period is not 'all time'
+                  const percentageChange = calculatePercentageChange(currentOrdersCount, previousOrdersCount);
+            
+                  // Update the comparison text
+                  if (percentageChange < 0) {
+                    comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since last ${period}`;
+                  } else if (percentageChange > 0) {
+                    comparisonTextSpan.textContent = `${percentageChange}% more since last ${period}`;
+                  } else {
+                    comparisonTextSpan.textContent = `No change`;
+                  }
                 } else {
-                  comparisonTextSpan.textContent = `No change since last ${period}`;
+                  // For 'all time', no comparison is shown
+                  comparisonTextSpan.textContent = '';
                 }
               }
             
@@ -759,9 +763,11 @@
               // Function to calculate the percentage change
               function calculatePercentageChange(current, previous) {
                 if (previous === 0) return current === 0 ? 0 : 100;
-                return ((current - previous) / previous) * 100;
+                const percentage = ((current - previous) / previous) * 100;
+                return percentage.toFixed(2); // Round to 2 decimal places
               }
             </script>
+            
                                    
 
             <!-- Reports -->
