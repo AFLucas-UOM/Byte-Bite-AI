@@ -445,6 +445,10 @@
                   startDate = firstDayOfMonth.toISOString().split('T')[0];
                   endDate = formattedToday;
                   break;
+                case 'revenue-AT': // All Time: No date filter, just sum all orders for the user
+                  startDate = '0000-01-01'; // Arbitrary start date (since there's no date filter)
+                  endDate = formattedToday;
+                  break;
                 default:
                   startDate = formattedToday;
                   endDate = formattedToday;
@@ -455,8 +459,8 @@
                 // Convert order.Date from DD/MM/YYYY to YYYY-MM-DD for comparison
                 const orderDate = order.Date.split('/').reverse().join('-');
                 return (
-                  orderDate >= startDate && 
-                  orderDate <= endDate && 
+                  orderDate >= startDate &&
+                  orderDate <= endDate &&
                   order.userName === currentUserName // Ensure userName matches the logged-in user
                 );
               });
@@ -478,6 +482,7 @@
             // Initialize with the default filter ('Today') when the page loads
             updateRevenue('revenue-today');
           </script>
+          
           
                  
 
@@ -669,7 +674,7 @@
                   } else if (selectedFilter === 'orders-AT') {
                     cardTitleOrdersSpan.textContent = ' | All Time';
                     updateOrdersDisplay('all time');
-                    comparisonTextSpan.textContent = 'XX% less since all time';
+                    comparisonTextSpan.textContent = '';
                   }
                 });
               });
@@ -692,7 +697,7 @@
                 }
               }
             
-              // Function to count the orders for the current period (Today, Week, or Month)
+              // Function to count the orders for the current period (Today, Week, Month, or All Time)
               function getOrdersCountForPeriod(period) {
                 const today = new Date();
                 let startDate, endDate;
@@ -709,6 +714,9 @@
                   startDate = new Date(today.getFullYear(), today.getMonth(), 1);
                   endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
                   endDate.setHours(23, 59, 59, 999);
+                } else if (period === 'all time') {
+                  // For all time, just count all orders without filtering by date
+                  return ordersData.filter(order => order.userName === currentUserName2).length;
                 }
             
                 // Filter the orders by date and user name
@@ -737,6 +745,8 @@
                   startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
                   endDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0);
                   endDate.setHours(23, 59, 59, 999);
+                } else if (period === 'all time') {
+                  return 0; // There's no previous period for All Time, so we return 0 as baseline
                 }
             
                 // Filter the orders by date and user name
@@ -751,7 +761,8 @@
                 if (previous === 0) return current === 0 ? 0 : 100;
                 return ((current - previous) / previous) * 100;
               }
-            </script>                       
+            </script>
+                                   
 
             <!-- Reports -->
             <div class="col-12">
@@ -911,120 +922,126 @@
               <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
-                  const chartContainer = document.querySelector("#purchaseChart");
-                  const chart = echarts.init(chartContainer);
-              
-                  const option = {
-                    tooltip: { trigger: 'item' },
-                    legend: { top: '10cm', left: 'center', right: 'center' },
-                    series: [{
-                      name: 'Purchases From',
-                      type: 'pie',
-                      radius: ['30%', '60%'],
-                      avoidLabelOverlap: false,
-                      label: {
-                        show: true,
-                        formatter: (params) => `{${params.name}| }`,
-                        rich: {
-                          'BurgerKing': { backgroundColor: { image: 'assets/img/Outlets/BurgerKing.png' }, height: 40, width: 40 },
-                          'PizzaHut': { backgroundColor: { image: 'assets/img/Outlets/PizzaHut.png' }, height: 39, width: 39 },
-                          'CafeCuba': { backgroundColor: { image: 'assets/img/Outlets/CafeCuba.png' }, height: 50, width: 50 },
-                          'Ottoman': { backgroundColor: { image: 'assets/img/Outlets/Ottoman.png' }, height: 40, width: 80 },
-                          'Boost': { backgroundColor: { image: 'assets/img/Outlets/Boost.png' }, height: 40, width: 40 },
-                          'Amami': { backgroundColor: { image: 'assets/img/Outlets/Amami.png' }, height: 45, width: 45 },
-                          'Joli': { backgroundColor: { image: 'assets/img/Outlets/Joli.png' }, height: 45, width: 45 },
-                          'Starbucks': { backgroundColor: { image: 'assets/img/Outlets/Starbucks.png' }, height: 40, width: 40 }
+                    const chartContainer = document.querySelector("#purchaseChart");
+                    const chart = echarts.init(chartContainer);
+            
+                    const option = {
+                        tooltip: { trigger: 'item' },
+                        legend: { top: '10cm', left: 'center', right: 'center' },
+                        series: [{
+                            name: 'Purchases From',
+                            type: 'pie',
+                            radius: ['30%', '60%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: true,
+                                formatter: (params) => `{${params.name}| }`,
+                                rich: {
+                                    'BurgerKing': { backgroundColor: { image: 'assets/img/Outlets/BurgerKing.png' }, height: 40, width: 40 },
+                                    'PizzaHut': { backgroundColor: { image: 'assets/img/Outlets/PizzaHut.png' }, height: 39, width: 39 },
+                                    'CafeCuba': { backgroundColor: { image: 'assets/img/Outlets/CafeCuba.png' }, height: 50, width: 50 },
+                                    'Ottoman': { backgroundColor: { image: 'assets/img/Outlets/Ottoman.png' }, height: 40, width: 80 },
+                                    'Boost': { backgroundColor: { image: 'assets/img/Outlets/Boost.png' }, height: 40, width: 40 },
+                                    'Amami': { backgroundColor: { image: 'assets/img/Outlets/Amami.png' }, height: 45, width: 45 },
+                                    'Joli': { backgroundColor: { image: 'assets/img/Outlets/Joli.png' }, height: 45, width: 45 },
+                                    'Starbucks': { backgroundColor: { image: 'assets/img/Outlets/Starbucks.png' }, height: 40, width: 40 }
+                                }
+                            },
+                            labelLine: { show: true },
+                            data: [] // Will be dynamically filled with data
+                        }],
+                    };
+                    chart.setOption(option);
+            
+                    const filterItemsRestaurant = document.querySelectorAll('.restaurant-filter');
+                    const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
+            
+                    filterItemsRestaurant.forEach(item => {
+                        item.addEventListener('click', function() {
+                            const selectedFilter = item.getAttribute('data-filter');
+            
+                            if (selectedFilter === 'restaurant-today') {
+                                cardTitleRestaurantSpan.textContent = ' | Today';
+                                updateChart('today');
+                            } else if (selectedFilter === 'restaurant-week') {
+                                cardTitleRestaurantSpan.textContent = ' | This Week';
+                                updateChart('week');
+                            } else if (selectedFilter === 'restaurant-month') {
+                                cardTitleRestaurantSpan.textContent = ' | This Month';
+                                updateChart('month');
+                            } else if (selectedFilter === 'restaurant-AT') {
+                                cardTitleRestaurantSpan.textContent = ' | All Time';
+                                updateChart('all time');
+                            }
+                        });
+                    });
+            
+                    function updateChart(timeframe) {
+                        // Fetch the current user's name from localStorage
+                        const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+                        const currentUserName4 = rawUsersData ? rawUsersData.name : null; // Using currentUserName4 as per your request
+            
+                        fetch('/static/json/orders.json')
+                            .then(response => response.json())
+                            .then(data => {
+                                // Filter orders by the current user's name
+                                const userOrders = data.filter(order => order.userName === currentUserName4);
+            
+                                // Filter the orders based on the selected timeframe
+                                const filteredData = filterByTimeframe(userOrders, timeframe);
+                                const restaurantCounts = countRestaurants(filteredData);
+            
+                                const chartData = Object.entries(restaurantCounts)
+                                    .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
+                                    .map(([name, count]) => ({
+                                        value: count,
+                                        name: name
+                                    }));
+            
+                                chart.setOption({ series: [{ data: chartData }] });
+                            })
+                            .catch(error => console.error("Error fetching or parsing JSON data:", error));
+                    }
+            
+                    function filterByTimeframe(data, timeframe) {
+                        const today = new Date();
+                        if (timeframe === 'all time') {
+                            // For All Time filter, do not apply any date filtering, return all user orders
+                            return data;
+                        } else {
+                            return data.filter(order => {
+                                const orderDate = new Date(order.Date.split('/').reverse().join('-'));
+                                if (timeframe === 'today') {
+                                    return orderDate.toDateString() === today.toDateString();
+                                } else if (timeframe === 'week') {
+                                    const oneWeekAgo = new Date(today);
+                                    oneWeekAgo.setDate(today.getDate() - 7);
+                                    return orderDate >= oneWeekAgo && orderDate <= today;
+                                } else if (timeframe === 'month') {
+                                    const oneMonthAgo = new Date(today);
+                                    oneMonthAgo.setMonth(today.getMonth() - 1);
+                                    return orderDate >= oneMonthAgo && orderDate <= today;
+                                }
+                            });
                         }
-                      },
-                      labelLine: { show: true },
-                      data: [] // Will be dynamically filled with data
-                    }],
-                  };
-                  chart.setOption(option);
-              
-                  const filterItemsRestaurant = document.querySelectorAll('.restaurant-filter');
-                  const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
-              
-                  filterItemsRestaurant.forEach(item => {
-                    item.addEventListener('click', function() {
-                      const selectedFilter = item.getAttribute('data-filter');
-              
-                      if (selectedFilter === 'restaurant-today') {
-                        cardTitleRestaurantSpan.textContent = ' | Today';
-                        updateChart('today');
-                      } else if (selectedFilter === 'restaurant-week') {
-                        cardTitleRestaurantSpan.textContent = ' | This Week';
-                        updateChart('week');
-                      } else if (selectedFilter === 'restaurant-month') {
-                        cardTitleRestaurantSpan.textContent = ' | This Month';
-                        updateChart('month');
-                      } else if (selectedFilter === 'restaurant-AT') {
-                        cardTitleRestaurantSpan.textContent = ' | All Time';
-                        updateChart('all time');
-                      }
+                    }
+            
+                    function countRestaurants(data) {
+                        return data.reduce((counts, order) => {
+                            const restaurant = order.Restaurant;
+                            counts[restaurant] = (counts[restaurant] || 0) + 1;
+                            return counts;
+                        }, {});
+                    }
+            
+                    updateChart('month');
+            
+                    window.addEventListener('resize', () => {
+                        chart.resize();
                     });
-                  });
-              
-                  function updateChart(timeframe) {
-                    // Fetch the current user's name from localStorage
-                    const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
-                    const currentUserName4 = rawUsersData ? rawUsersData.name : null; // Using currentUserName4 as per your request
-              
-                    fetch('/static/json/orders.json')
-                      .then(response => response.json())
-                      .then(data => {
-                        // Filter orders by the current user's name
-                        const userOrders = data.filter(order => order.userName === currentUserName4);
-              
-                        // Filter the orders based on the selected timeframe
-                        const filteredData = filterByTimeframe(userOrders, timeframe);
-                        const restaurantCounts = countRestaurants(filteredData);
-              
-                        const chartData = Object.entries(restaurantCounts)
-                          .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
-                          .map(([name, count]) => ({
-                            value: count,
-                            name: name
-                          }));
-              
-                        chart.setOption({ series: [{ data: chartData }] });
-                      })
-                      .catch(error => console.error("Error fetching or parsing JSON data:", error));
-                  }
-              
-                  function filterByTimeframe(data, timeframe) {
-                    const today = new Date();
-                    return data.filter(order => {
-                      const orderDate = new Date(order.Date.split('/').reverse().join('-'));
-                      if (timeframe === 'today') {
-                        return orderDate.toDateString() === today.toDateString();
-                      } else if (timeframe === 'week') {
-                        const oneWeekAgo = new Date(today);
-                        oneWeekAgo.setDate(today.getDate() - 7);
-                        return orderDate >= oneWeekAgo && orderDate <= today;
-                      } else if (timeframe === 'month') {
-                        const oneMonthAgo = new Date(today);
-                        oneMonthAgo.setMonth(today.getMonth() - 1);
-                        return orderDate >= oneMonthAgo && orderDate <= today;
-                      }
-                    });
-                  }
-              
-                  function countRestaurants(data) {
-                    return data.reduce((counts, order) => {
-                      const restaurant = order.Restaurant;
-                      counts[restaurant] = (counts[restaurant] || 0) + 1;
-                      return counts;
-                    }, {});
-                  }
-              
-                  updateChart('month');
-              
-                  window.addEventListener('resize', () => {
-                    chart.resize();
-                  });
                 });
-              </script>              
+            </script>
+                        
             </div>
           </div>
           
