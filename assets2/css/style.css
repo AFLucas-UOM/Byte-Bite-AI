@@ -831,7 +831,7 @@ body {
   display: flex;
   justify-content: center; /* Centering the chart horizontally */
   align-items: center; /* Centering the chart vertically */
-  min-height: 30em; /* Minimum height for the chart */
+  min-height: 48.5vh; /* Minimum height for the chart */
   box-sizing: border-box; /* Ensures padding/margin don't affect dimensions */
   transition: width 0.3s ease, height 0.3s ease; /* Smooth transition */
 }
