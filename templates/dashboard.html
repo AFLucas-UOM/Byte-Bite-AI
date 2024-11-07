@@ -500,7 +500,7 @@
                     </div>
                     <div class="ps-3">
                       <h6 id="weight">XX kg</h6> <!-- Display the current weight -->
-                      <span class="text-muted small pt-2 ps-1" id="last-update">Last Update: XX-XX-XX XX:XX</span>
+                      <span class="text-muted small pt-2 ps-1" id="last-update">As of: XX-XX-XX XX:XX</span>
                     </div>
                   </div>
                 </div>
@@ -528,7 +528,7 @@
             
                     // Optionally, set the current date and time as the last update
                     const lastUpdate = new Date().toLocaleString();
-                    document.getElementById('last-update').textContent = `Last Update: ${lastUpdate}`;
+                    document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
                   } else {
                     console.error('User not found in JSON data');
                   }
@@ -549,7 +549,7 @@
                     </div>
                     <div class="ps-3">
                       <h6 id="bmi">XX.XX</h6> <!-- Display the current BMI -->
-                      <span class="text-muted small pt-2 ps-1" id="bmi-last-update">Last Update: XX-XX-XX XX:XX</span>
+                      <span class="text-muted small pt-2 ps-1" id="bmi-last-update">As of: XX-XX-XX XX:XX</span>
                     </div>
                   </div>
                 </div>
@@ -577,7 +577,7 @@
 
                     // Optionally, set the current date and time as the last update
                     const lastUpdate = new Date().toLocaleString();
-                    document.getElementById('bmi-last-update').textContent = `Last Update: ${lastUpdate}`;
+                    document.getElementById('bmi-last-update').textContent = `As of: ${lastUpdate}`;
                   } else {
                     console.error('User not found in JSON data');
                   }
