@@ -2,21 +2,21 @@ import json
 import importlib
 import subprocess
 import sys
+from flask import Flask, render_template, send_from_directory
+import os
 
 # ANSI escape codes for colored output
-GREEN = "\033[92m"  # Green text
-RED = "\033[91m"    # Red text
-RESET = "\033[0m"   # Reset to default color
+GREEN = "\033[92m"
+RED = "\033[91m"
+RESET = "\033[0m"
 
 # Function to check and install libraries
 def check_and_install_libraries(libraries):
     for lib, import_name in libraries.items():
         try:
-            # Attempt to import the library
             importlib.import_module(import_name)
             print(f"[{GREEN}✔{RESET}] Library '{lib}' is already installed.")
         except ImportError:
-            # If import fails, try to install the library
             print(f"[{RED}✖{RESET}] Library '{lib}' is not installed. Installing...")
             subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
 
@@ -42,9 +42,6 @@ if libraries:
 else:
     print(f"[{RED}✖{RESET}] No libraries found in '{json_file_path}'.")
 
-from flask import Flask, render_template, send_from_directory
-import os  # os module is already part of Python, no need to install it
-
 app = Flask(__name__)
 
 # Serve files from the 'assets' folder
@@ -61,10 +58,6 @@ def serve_assets2(filename):
 @app.route('/')
 def index():
     return render_template('index.html')
-
-@app.route('/404')
-def page_not_found():
-    return render_template('404.html')
 
 @app.route('/chatbot')
 def chatbot():
@@ -89,6 +82,11 @@ def login():
 @app.route('/sign-up')
 def sign_up():
     return render_template('sign-up.html')
+
+# Custom error handler for 404 Not Found
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
