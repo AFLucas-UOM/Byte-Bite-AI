@@ -810,55 +810,70 @@
         <!-- Right side columns -->
         <div class="col-lg-4">
 
-          <!-- Recent Activity -->
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Recent Activities</h5>
-
-              <div class="activity">
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">05-11-2024 </div>
-                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                  <div class="activity-content">
-                    Ordered from <a class="fw-bold text-dark">Burger King</a> - Classic Whopper Meal
-                  </div>
-                </div><!-- End activity item-->
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">03-11-2024 </div>
-                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                  <div class="activity-content">
-                    Ordered from <a class="fw-bold text-dark">Starbucks</a> - Caramel Macchiato
-                  </div>
-                </div><!-- End activity item-->
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">02-11-2024 </div>
-                  <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                  <div class="activity-content">
-                    Ordered from <a class="fw-bold text-dark">Boost</a> - Green Smoothie
-                  </div>
-                </div><!-- End activity item-->
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">31-10-2024 </div>
-                  <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                  <div class="activity-content">
-                    Ordered from <a class="fw-bold text-dark">Cafe Cuba</a> - Grilled Chicken Wrap
-                  </div>
-                </div><!-- End activity item-->
-
-                <div class="activity-item d-flex">
-                  <div class="activite-label">25-10-2024</div>
-                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                  <div class="activity-content">
-                    Ordered from <a class="fw-bold text-dark">Pizza Hut</a> - Pepperoni Pizza
-                  </div>
-                </div><!-- End activity item-->
+          
+              <div class="activity" id="recentActivity">
+                <!-- The activity items will be dynamically injected here by JavaScript -->
               </div>
             </div>
-          </div><!-- End Recent Activity -->
+          </div>
+
+          <script>
+            // Fetch orders data from JSON
+            fetch('/static/json/orders.json')
+              .then(response => response.json())
+              .then(data => {
+                // Sort orders by date in descending order
+                const sortedOrders = data.sort((a, b) => {
+                  const dateA = new Date(a.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
+                  const dateB = new Date(b.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
+                  return dateB - dateA; // Sort descending
+                });
+          
+                // Get the 5 most recent orders
+                const recentOrders = sortedOrders.slice(0, 5);
+          
+                // Select the container where the activities will be displayed
+                const recentActivityContainer = document.getElementById('recentActivity');
+          
+                // Array of colors for alternating activity badges
+                const colors = ['text-primary', 'text-success', 'text-warning', 'text-info', 'text-danger'];
+          
+                // Iterate over the recent orders and dynamically create activity items
+                recentOrders.forEach((order, index) => {
+                  const activityItem = document.createElement('div');
+                  activityItem.classList.add('activity-item', 'd-flex');
+          
+                  const activityDate = document.createElement('div');
+                  activityDate.classList.add('activite-label');
+                  activityDate.textContent = order.Date;
+          
+                  // Get the color for the current activity
+                  const colorClass = colors[index % colors.length];  // Cycle through colors
+          
+                  const activityBadge = document.createElement('i');
+                  activityBadge.classList.add('bi', 'bi-circle-fill', 'activity-badge', colorClass, 'align-self-start'); // Apply dynamic color
+          
+                  const activityContent = document.createElement('div');
+                  activityContent.classList.add('activity-content');
+                  activityContent.innerHTML = `Ordered from <a class="fw-bold text-dark">${order.Restaurant}</a> - ${order["Name of dish"]}`;
+          
+                  // Append elements to the activity item
+                  activityItem.appendChild(activityDate);
+                  activityItem.appendChild(activityBadge);
+                  activityItem.appendChild(activityContent);
+          
+                  // Append activity item to the container
+                  recentActivityContainer.appendChild(activityItem);
+                });
+              })
+              .catch(error => {
+                console.error("Error fetching or parsing orders JSON file:", error);
+              });
+          </script>
+          
 
           <!-- Restaurant Purchase Traffic Card -->
           <div class="card">
@@ -868,179 +883,127 @@
                 <li class="dropdown-header text-start">
                   <h6>Filter</h6>
                 </li>
-                <!-- Unique class name for Restaurant Purchase Traffic Card filters -->
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-today">Today</a></li>
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-week">This Week</a></li>
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-month">This Month</a></li>
               </ul>
             </div>
-
+          
             <div class="card-body pb-0">
-              <!-- Unique ID for the card title -->
               <h5 id="restaurantTrafficCardTitle" class="card-title">Your Orders <span id="restaurantTitleSpan">| This Month</span></h5>
-                <script>
-                  // Select only the Restaurant Purchase Traffic Card filter items
+          
+              <div id="purchaseChart" style="height: 400px;"></div>
+          
+              <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const chartContainer = document.querySelector("#purchaseChart");
+                  const chart = echarts.init(chartContainer);
+          
+                  const option = {
+                    tooltip: { trigger: 'item' },
+                    legend: { top: '10cm', left: 'center' },
+                    series: [{
+                      name: 'Purchases From',
+                      type: 'pie',
+                      radius: ['35%', '60%'],
+                      avoidLabelOverlap: false,
+                      label: {
+                        show: true,
+                        formatter: (params) => `{${params.name}| }`,
+                        rich: {
+                          'BurgerKing': { backgroundColor: { image: 'assets/img/Outlets/BurgerKing.png' }, height: 40, width: 40 },
+                          'PizzaHut': { backgroundColor: { image: 'assets/img/Outlets/PizzaHut.png' }, height: 39, width: 39 },
+                          'CafeCuba': { backgroundColor: { image: 'assets/img/Outlets/CafeCuba.png' }, height: 50, width: 50 },
+                          'Ottoman': { backgroundColor: { image: 'assets/img/Outlets/Ottoman.png' }, height: 40, width: 80 },
+                          'Boost': { backgroundColor: { image: 'assets/img/Outlets/Boost.png' }, height: 40, width: 40 },
+                          'Amami': { backgroundColor: { image: 'assets/img/Outlets/Amami.png' }, height: 45, width: 45 },
+                          'Joli': { backgroundColor: { image: 'assets/img/Outlets/Joli.png' }, height: 45, width: 45 },
+                          'Starbucks': { backgroundColor: { image: 'assets/img/Outlets/Starbucks.png' }, height: 40, width: 40 }
+                        }
+                      },
+                      labelLine: { show: true },
+                      data: [] // Will be dynamically filled with data
+                    }],
+                  };
+                  chart.setOption(option);
+          
                   const filterItemsRestaurant = document.querySelectorAll('.restaurant-filter');
-
-                  // Select the Restaurant Purchase Traffic Card title span
                   const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
-
-                  // Add event listeners specifically for Restaurant Purchase Traffic Card filter items
+          
                   filterItemsRestaurant.forEach(item => {
                     item.addEventListener('click', function() {
-                      // Get the selected filter option for Restaurant Purchase Traffic Card
                       const selectedFilter = item.getAttribute('data-filter');
                       
-                      // Update the text of the card title based on the selected filter
                       if (selectedFilter === 'restaurant-today') {
                         cardTitleRestaurantSpan.textContent = ' | Today';
+                        updateChart('today');
                       } else if (selectedFilter === 'restaurant-week') {
                         cardTitleRestaurantSpan.textContent = ' | This Week';
+                        updateChart('week');
                       } else if (selectedFilter === 'restaurant-month') {
                         cardTitleRestaurantSpan.textContent = ' | This Month';
+                        updateChart('month');
                       }
                     });
                   });
-                </script>
-
-                <div id="purchaseChart" style="height: 400px;"></div> <!-- Set an initial height -->
-                <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
-                <script>
-                  document.addEventListener("DOMContentLoaded", () => {
-                    const chartContainer = document.querySelector("#purchaseChart");
-                    const chart = echarts.init(chartContainer);
-
-                    const option = {
-                      tooltip: {
-                        trigger: 'item'
-                      },
-                      legend: {
-                        top: '10cm',
-                        left: 'center',
-                        padding: [0, 0],
-                        margin: [0, 0],
-                        position: 'top',
-                        labels: {
-                          boxWidth: 20,
-                          padding: 15,
-                          font: {
-                            size: 12
-                          }
-                        },
-                        onClick: function(event) {
-                          const chartWidth = this.chart.width;
-                          const chartHeight = this.chart.height;
-
-                          if (chartWidth < 200 || chartHeight < 200) {
-                            this.chart.legend.display = false; // Hides the legend
-                          } else {
-                            this.chart.legend.display = true; // Shows the legend again
-                          }
-                          this.chart.update();
-                        },
-                        display: function() {
-                          const chartWidth = this.chart.width;
-                          const chartHeight = this.chart.height;
-
-                          // Display legend only if chart dimensions are above a certain threshold
-                          return chartWidth >= 200 && chartHeight >= 200;
-                        }
-                      },
-                      series: [{
-                        name: 'Purchases From',
-                        type: 'pie',
-                        radius: ['35%', '60%'],
-                        avoidLabelOverlap: false,
-                        label: {
-                          show: true,
-                          formatter: (params) => {
-                            return `{${params.name}| }`;
-                          },
-                          rich: {
-                            'BurgerKing': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/BurgerKing.png'
-                              },
-                              height: 40,
-                              width: 40
-                            },
-                            'PizzaHut': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/PizzaHut.png'
-                              },
-                              height: 39,
-                              width: 39
-                            },
-                            'CafeCuba': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/CafeCuba.png'
-                              },
-                              height: 50,
-                              width: 50
-                            },
-                            'Ottoman': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/Ottoman.png'
-                              },
-                              height: 40,
-                              width: 80
-                            },
-                            'Boost': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/Boost.png'
-                              },
-                              height: 40,
-                              width: 40
-                            },
-                            'Amami': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/Amami.png'
-                              },
-                              height: 45,
-                              width: 45
-                            },
-                            'Joli': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/Joli.png'
-                              },
-                              height: 45,
-                              width: 45
-                            },
-                            'Starbucks': {
-                              backgroundColor: {
-                                image: 'assets/img/Outlets/Starbucks.png'
-                              },
-                              height: 40,
-                              width: 40
-                            }
-                          }
-                        },
-                        labelLine: {
-                          show: true
-                        },
-                        data: [
-                          { value: 10, name: 'BurgerKing' },
-                          { value: 20, name: 'PizzaHut' },
-                          { value: 30, name: 'CafeCuba' },
-                          { value: 10, name: 'Ottoman' },
-                          { value: 20, name: 'Boost' },
-                          { value: 14, name: 'Amami' },
-                          { value: 25, name: 'Joli' },
-                          { value: 20, name: 'Starbucks' }
-                        ]
-                      }],
-                    };
-                    // Set the chart options
-                    chart.setOption(option);
-                    // Make the chart responsive by resizing it when the window changes size
-                    window.addEventListener('resize', () => {
-                      chart.resize();
+          
+                  function updateChart(timeframe) {
+                    fetch('/static/json/orders.json')
+                      .then(response => response.json())
+                      .then(data => {
+                        const filteredData = filterByTimeframe(data, timeframe);
+                        const restaurantCounts = countRestaurants(filteredData);
+          
+                        const chartData = Object.entries(restaurantCounts)
+                          .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
+                          .map(([name, count]) => ({
+                            value: count,
+                            name: name
+                          }));
+          
+                        chart.setOption({ series: [{ data: chartData }] });
+                      })
+                      .catch(error => console.error("Error fetching or parsing JSON data:", error));
+                  }
+          
+                  function filterByTimeframe(data, timeframe) {
+                    const today = new Date();
+                    return data.filter(order => {
+                      const orderDate = new Date(order.Date.split('/').reverse().join('-'));
+                      if (timeframe === 'today') {
+                        return orderDate.toDateString() === today.toDateString();
+                      } else if (timeframe === 'week') {
+                        const oneWeekAgo = new Date(today);
+                        oneWeekAgo.setDate(today.getDate() - 7);
+                        return orderDate >= oneWeekAgo && orderDate <= today;
+                      } else if (timeframe === 'month') {
+                        const oneMonthAgo = new Date(today);
+                        oneMonthAgo.setMonth(today.getMonth() - 1);
+                        return orderDate >= oneMonthAgo && orderDate <= today;
+                      }
                     });
+                  }
+          
+                  function countRestaurants(data) {
+                    return data.reduce((counts, order) => {
+                      const restaurant = order.Restaurant;
+                      counts[restaurant] = (counts[restaurant] || 0) + 1;
+                      return counts;
+                    }, {});
+                  }
+          
+                  updateChart('month');
+          
+                  window.addEventListener('resize', () => {
+                    chart.resize();
                   });
-                </script>
-              </div>
+                });
+              </script>
             </div>
-            <!-- End Restaurant Purchase Traffic -->
+          </div>          
+          <!-- End Restaurant Purchase Traffic -->
+
 
         </div><!-- End Right side columns --> 
       </div>

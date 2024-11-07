@@ -2,7 +2,7 @@
     {
         "Date": "01/11/2024",
         "Name of dish": "Cheeseburger",
-        "Restaurant": "Burger King",
+        "Restaurant": "BurgerKing",
         "Price": 5.99
     },
     {
@@ -20,23 +20,23 @@
     {
         "Date": "04/11/2024",
         "Name of dish": "Lamb Kofta Wrap",
-        "Restaurant": "Posh Turkish",
+        "Restaurant": "Ottoman",
         "Price": 8.50
     },
     {
         "Date": "05/11/2024",
         "Name of dish": "Margherita Pizza",
-        "Restaurant": "Pizza Hut",
+        "Restaurant": "PizzaHut",
         "Price": 9.00
     },
     {
         "Date": "06/11/2024",
         "Name of dish": "Pulled Pork Burger",
-        "Restaurant": "Cafe Cuba",
+        "Restaurant": "CafeCuba",
         "Price": 11.25
     },
     {
-        "Date": "07/11/2024",
+        "Date": "07/10/2024",
         "Name of dish": "Sushi Rolls",
         "Restaurant": "Amami",
         "Price": 12.75
@@ -44,13 +44,13 @@
     {
         "Date": "07/11/2024",
         "Name of dish": "Grilled Chicken Skewers",
-        "Restaurant": "J'olli",
+        "Restaurant": "Joli",
         "Price": 10.50
     },
     {
         "Date": "09/10/2024",
         "Name of dish": "Spaghetti Bolognese",
-        "Restaurant": "Burger King",
+        "Restaurant": "BurgerKing",
         "Price": 8.75
     },
     {
@@ -62,19 +62,19 @@
     {
         "Date": "05/09/2024",
         "Name of dish": "Cheeseburger",
-        "Restaurant": "Burger King",
+        "Restaurant": "BurgerKing",
         "Price": 9.99
     },
     {
         "Date": "12/09/2024",
         "Name of dish": "Chicken Shawarma",
-        "Restaurant": "Posh Turkish",
+        "Restaurant": "Ottoman",
         "Price": 11.50
     },
     {
         "Date": "15/09/2024",
         "Name of dish": "Pizza Margherita",
-        "Restaurant": "Pizza Hut",
+        "Restaurant": "PizzaHut",
         "Price": 14.99
     },
     {
@@ -86,7 +86,7 @@
     {
         "Date": "28/09/2024",
         "Name of dish": "Pasta Carbonara",
-        "Restaurant": "Cafe Cuba",
+        "Restaurant": "CafeCuba",
         "Price": 15.75
     }
 ]
