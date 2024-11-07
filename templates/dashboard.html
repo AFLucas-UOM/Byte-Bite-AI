@@ -693,7 +693,7 @@
                   } else if (percentageChange > 0) {
                     comparisonTextSpan.textContent = `${percentageChange}% more since last ${period}`;
                   } else {
-                    comparisonTextSpan.textContent = `No change`;
+                    comparisonTextSpan.textContent = `No % change in orders`;
                   }
                 } else {
                   // For 'all time', no comparison is shown
@@ -835,7 +835,11 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Recent Activities</h5>
-          
+              <div class="OverallFormatforRA"  style=" display: flex; justify-content: center; align-items: center;"">
+                <div class="activity" id="recentActivity">
+                  <!-- The activity items will be dynamically injected here by JavaScript -->
+                </div>
+              </div>
               <div class="activity" id="recentActivity">
                 <!-- The activity items will be dynamically injected here by JavaScript -->
               </div>
@@ -856,8 +860,8 @@
                 
                 // Sort the filtered orders by date in descending order
                 const sortedOrders = userOrders.sort((a, b) => {
-                  const dateA = new Date(a.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
-                  const dateB = new Date(b.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
+                  const dateA = new Date(a.Date.split('/').reverse().join('-')); 
+                  const dateB = new Date(b.Date.split('/').reverse().join('-')); 
                   return dateB - dateA; // Sort descending
                 });
           
@@ -923,7 +927,7 @@
             <div class="card-body pb-0">
               <h5 id="restaurantTrafficCardTitle" class="card-title">Your Orders <span id="restaurantTitleSpan">| This Month</span></h5>
           
-              <div id="purchaseChart" style="height: 400px;"></div>
+              <div id="purchaseChart" ></div>
           
               <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
               <script>
