@@ -379,6 +379,10 @@
           </div><!-- End Revenue Card -->
           
           <script>
+            // Fetch the current user's data from localStorage
+            const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUserName = rawUsersData ? rawUsersData.name : null;
+          
             // Get only the Revenue Card filter items
             const revenueFilterItems = document.querySelectorAll('.revenue-filter');
           
@@ -389,7 +393,6 @@
             // Add event listener specifically for Revenue Card filter items
             revenueFilterItems.forEach(item => {
               item.addEventListener('click', function() {
-                // Get the selected filter option
                 const selectedFilter = item.getAttribute('data-filter');
           
                 // Update the text of the revenue card title based on the selected filter
@@ -411,7 +414,6 @@
               try {
                 const response = await fetch('/static/json/orders.json'); // Correct the path to your orders.json
                 const orders = await response.json();
-                console.log("Fetched Orders Data:", orders); // Debugging: Log the fetched orders data
                 return orders;
               } catch (error) {
                 console.error('Error fetching orders data:', error);
@@ -423,8 +425,6 @@
             function calculateRevenue(orders, filter) {
               const today = new Date();
               let startDate, endDate;
-          
-              // Format the current date for comparison (YYYY-MM-DD format)
               const formattedToday = today.toISOString().split('T')[0];
           
               switch (filter) {
@@ -433,13 +433,11 @@
                   endDate = formattedToday;
                   break;
                 case 'revenue-week':
-                  // Get the start of the week (Monday) and today's date
-                  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Set to Monday
+                  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
                   startDate = firstDayOfWeek.toISOString().split('T')[0];
                   endDate = formattedToday;
                   break;
                 case 'revenue-month':
-                  // Get the first day of the current month
                   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
                   startDate = firstDayOfMonth.toISOString().split('T')[0];
                   endDate = formattedToday;
@@ -449,22 +447,19 @@
                   endDate = formattedToday;
               }
           
-              // Debugging: Log the date range we're using for filtering
-              console.log(`Filtering orders for ${filter}: ${startDate} to ${endDate}`);
-          
-              // Filter orders based on the selected date range
+              // Filter orders based on the selected date range and userName
               const filteredOrders = orders.filter(order => {
                 // Convert order.Date from DD/MM/YYYY to YYYY-MM-DD for comparison
-                const orderDate = order.Date.split('/').reverse().join('-'); // Convert DD/MM/YYYY -> YYYY-MM-DD
-                return orderDate >= startDate && orderDate <= endDate;
+                const orderDate = order.Date.split('/').reverse().join('-');
+                return (
+                  orderDate >= startDate && 
+                  orderDate <= endDate && 
+                  order.userName === currentUserName // Ensure userName matches the logged-in user
+                );
               });
           
-              // Debugging: Log the filtered orders
-              console.log("Filtered Orders:", filteredOrders);
-          
-              // Calculate the total revenue (sum of prices) from the filtered orders
-              const totalRevenue = filteredOrders.reduce((acc, order) => acc + parseFloat(order.Price), 0); // Ensure Price is a number
-          
+              // Calculate total revenue for the filtered orders
+              const totalRevenue = filteredOrders.reduce((acc, order) => acc + parseFloat(order.Price || 0), 0);
               return totalRevenue;
             }
           
@@ -473,16 +468,14 @@
               const orders = await fetchOrdersData();
               const revenue = calculateRevenue(orders, filter);
           
-              // Debugging: Log the revenue calculated
-              console.log("Calculated Revenue:", revenue);
-          
               // Update the revenue amount in the card
-              revenueAmountElement.textContent = `€${revenue.toFixed(2)}`; // Display the total revenue with 2 decimal places
+              revenueAmountElement.textContent = `€${revenue.toFixed(2)}`; // Display total revenue with 2 decimal places
             }
           
             // Initialize with the default filter ('Today') when the page loads
             updateRevenue('revenue-today');
           </script>
+          
                  
 
 
@@ -629,6 +622,10 @@
               // Select the element where the total orders will be displayed
               const totalOrdersElement = document.getElementById('totalOrders');
             
+              // Get the current user's name from localStorage
+              const rawUsersData2 = JSON.parse(localStorage.getItem('currentUser'));
+              const currentUserName2 = rawUsersData2 ? rawUsersData2.name : null;
+            
               let ordersData = []; // This will hold the orders data from the JSON file
             
               // Fetch the orders data from the JSON file
@@ -646,10 +643,8 @@
               // Add event listeners specifically for Total Orders Card filter items
               filterItemsOrders.forEach(item => {
                 item.addEventListener('click', function() {
-                  // Get the selected filter option for Total Orders Card
                   const selectedFilter = item.getAttribute('data-filter');
                   
-                  // Update the text of the card title based on the selected filter
                   if (selectedFilter === 'orders-today') {
                     cardTitleOrdersSpan.textContent = ' | Today';
                     updateOrdersDisplay('today');
@@ -671,13 +666,10 @@
                 const currentOrdersCount = getOrdersCountForPeriod(period);
                 const previousOrdersCount = getOrdersCountForPreviousPeriod(period);
             
-                // Calculate the percentage change
                 const percentageChange = calculatePercentageChange(currentOrdersCount, previousOrdersCount);
             
-                // Display the total number of orders
                 totalOrdersElement.textContent = `${currentOrdersCount} orders`;
             
-                // Display the percentage change
                 if (percentageChange < 0) {
                   comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since last ${period}`;
                 } else if (percentageChange > 0) {
@@ -693,23 +685,23 @@
                 let startDate, endDate;
             
                 if (period === 'today') {
-                  startDate = new Date(today.setHours(0, 0, 0, 0)); // Start of today
-                  endDate = new Date(today.setHours(23, 59, 59, 999)); // End of today
+                  startDate = new Date(today.setHours(0, 0, 0, 0));
+                  endDate = new Date(today.setHours(23, 59, 59, 999));
                 } else if (period === 'week') {
-                  const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Start of this week (Sunday)
+                  const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
                   startDate = new Date(startOfWeek.setHours(0, 0, 0, 0));
-                  endDate = new Date(startOfWeek.setDate(startOfWeek.getDate() + 6)); // End of this week (Saturday)
+                  endDate = new Date(startOfWeek.setDate(startOfWeek.getDate() + 6));
                   endDate.setHours(23, 59, 59, 999);
                 } else if (period === 'month') {
-                  startDate = new Date(today.getFullYear(), today.getMonth(), 1); // Start of this month
-                  endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of this month
+                  startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                  endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
                   endDate.setHours(23, 59, 59, 999);
                 }
             
-                // Filter the orders that fall within the current period
+                // Filter the orders by date and user name
                 return ordersData.filter(order => {
-                  const orderDate = new Date(order.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
-                  return orderDate >= startDate && orderDate <= endDate;
+                  const orderDate = new Date(order.Date.split('/').reverse().join('-'));
+                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentUserName2;
                 }).length;
               }
             
@@ -719,34 +711,34 @@
                 let startDate, endDate;
             
                 if (period === 'today') {
-                  const yesterday = new Date(today.setDate(today.getDate() - 1)); // Yesterday
-                  startDate = new Date(yesterday.setHours(0, 0, 0, 0)); // Start of yesterday
-                  endDate = new Date(yesterday.setHours(23, 59, 59, 999)); // End of yesterday
+                  const yesterday = new Date(today.setDate(today.getDate() - 1));
+                  startDate = new Date(yesterday.setHours(0, 0, 0, 0));
+                  endDate = new Date(yesterday.setHours(23, 59, 59, 999));
                 } else if (period === 'week') {
-                  const startOfLastWeek = new Date(today.setDate(today.getDate() - today.getDay() - 7)); // Start of last week
+                  const startOfLastWeek = new Date(today.setDate(today.getDate() - today.getDay() - 7));
                   startDate = new Date(startOfLastWeek.setHours(0, 0, 0, 0));
-                  endDate = new Date(startOfLastWeek.setDate(startOfLastWeek.getDate() + 6)); // End of last week
+                  endDate = new Date(startOfLastWeek.setDate(startOfLastWeek.getDate() + 6));
                   endDate.setHours(23, 59, 59, 999);
                 } else if (period === 'month') {
-                  const lastMonth = new Date(today.setMonth(today.getMonth() - 1)); // Last month
-                  startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1); // Start of last month
-                  endDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0); // End of last month
+                  const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
+                  startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1);
+                  endDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0);
                   endDate.setHours(23, 59, 59, 999);
                 }
             
-                // Filter the orders that fall within the previous period
+                // Filter the orders by date and user name
                 return ordersData.filter(order => {
-                  const orderDate = new Date(order.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
-                  return orderDate >= startDate && orderDate <= endDate;
+                  const orderDate = new Date(order.Date.split('/').reverse().join('-'));
+                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentUserName2;
                 }).length;
               }
             
               // Function to calculate the percentage change
               function calculatePercentageChange(current, previous) {
-                if (previous === 0) return current === 0 ? 0 : 100; // If there were no orders in the previous period
+                if (previous === 0) return current === 0 ? 0 : 100;
                 return ((current - previous) / previous) * 100;
               }
-            </script>           
+            </script>                       
 
             <!-- Reports -->
             <div class="col-12">
@@ -825,8 +817,15 @@
             fetch('/static/json/orders.json')
               .then(response => response.json())
               .then(data => {
-                // Sort orders by date in descending order
-                const sortedOrders = data.sort((a, b) => {
+                // Fetch the current user's name from localStorage
+                const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+                const currentUserName3 = rawUsersData ? rawUsersData.name : null; // Using currentUserName3 as per your request
+                
+                // Filter orders by the logged-in user's name
+                const userOrders = data.filter(order => order.userName === currentUserName3);
+                
+                // Sort the filtered orders by date in descending order
+                const sortedOrders = userOrders.sort((a, b) => {
                   const dateA = new Date(a.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
                   const dateB = new Date(b.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
                   return dateB - dateA; // Sort descending
@@ -874,6 +873,7 @@
               });
           </script>
           
+          
 
           <!-- Restaurant Purchase Traffic Card -->
           <div class="card">
@@ -899,7 +899,7 @@
                 document.addEventListener("DOMContentLoaded", () => {
                   const chartContainer = document.querySelector("#purchaseChart");
                   const chart = echarts.init(chartContainer);
-          
+              
                   const option = {
                     tooltip: { trigger: 'item' },
                     legend: { top: '10cm', left: 'center' },
@@ -927,14 +927,14 @@
                     }],
                   };
                   chart.setOption(option);
-          
+              
                   const filterItemsRestaurant = document.querySelectorAll('.restaurant-filter');
                   const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
-          
+              
                   filterItemsRestaurant.forEach(item => {
                     item.addEventListener('click', function() {
                       const selectedFilter = item.getAttribute('data-filter');
-                      
+              
                       if (selectedFilter === 'restaurant-today') {
                         cardTitleRestaurantSpan.textContent = ' | Today';
                         updateChart('today');
@@ -947,26 +947,34 @@
                       }
                     });
                   });
-          
+              
                   function updateChart(timeframe) {
+                    // Fetch the current user's name from localStorage
+                    const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+                    const currentUserName4 = rawUsersData ? rawUsersData.name : null; // Using currentUserName4 as per your request
+              
                     fetch('/static/json/orders.json')
                       .then(response => response.json())
                       .then(data => {
-                        const filteredData = filterByTimeframe(data, timeframe);
+                        // Filter orders by the current user's name
+                        const userOrders = data.filter(order => order.userName === currentUserName4);
+              
+                        // Filter the orders based on the selected timeframe
+                        const filteredData = filterByTimeframe(userOrders, timeframe);
                         const restaurantCounts = countRestaurants(filteredData);
-          
+              
                         const chartData = Object.entries(restaurantCounts)
                           .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
                           .map(([name, count]) => ({
                             value: count,
                             name: name
                           }));
-          
+              
                         chart.setOption({ series: [{ data: chartData }] });
                       })
                       .catch(error => console.error("Error fetching or parsing JSON data:", error));
                   }
-          
+              
                   function filterByTimeframe(data, timeframe) {
                     const today = new Date();
                     return data.filter(order => {
@@ -984,7 +992,7 @@
                       }
                     });
                   }
-          
+              
                   function countRestaurants(data) {
                     return data.reduce((counts, order) => {
                       const restaurant = order.Restaurant;
@@ -992,16 +1000,17 @@
                       return counts;
                     }, {});
                   }
-          
+              
                   updateChart('month');
-          
+              
                   window.addEventListener('resize', () => {
                     chart.resize();
                   });
                 });
-              </script>
+              </script>              
             </div>
-          </div>          
+          </div>
+          
           <!-- End Restaurant Purchase Traffic -->
 
 
