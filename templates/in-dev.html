@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta - Byte Bite-AI</title>
+    
+    <!-- Favicons -->
+    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
+    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('serve_assets', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+    <!-- Main CSS Files -->
+    <link href="{{ url_for('serve_assets', filename='css/main.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <main>
+        <div class="flex-wrapper"> <!-- New wrapper for centering -->
+            <div class="error-container">
+                <a href="{{ url_for('index') }}" class="logo-link">
+                  <img src="assets/img/in-dev.png" alt="in-dev screen" style="width: 800px; height: auto;" class="logo">
+                </a>
+                <h1>This page is still in-development!</h1>
+                <a href="{{ url_for('dashboard') }}" class="btn">Go Back</a>
+            </div>
+        </div>
+    </main>
+
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer dark-background">
+
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-geo-alt icon"></i>
+          <div class="address">
+            <h4>Address - Campus Hub Piazza</h4>
+            <p>Roberto Ranieri Costagut Street</p>
+            <p>Msida, MSD 2080, Malta</p>
+            <p></p>
+          </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-telephone icon"></i>
+          <div>
+            <h4>Contact</h4>
+            <p>
+              <strong>Phone:</strong> <span>+356 23167700</span><br>
+              <strong>Email:</strong> <span>hello@campushubmalta.com</span><br>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-clock icon"></i>
+          <div>
+            <h4>Opening Hours</h4>
+            <p>
+              <strong>Mon-Fri:</strong> <span>8:30 - 23:00</span><br>
+              <strong>Sat-Sun</strong>: <span>12:00 - 23:00</span>
+            </p>
+          </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-people icon"></i> 
+          <div>
+            <h4>Follow Us</h4>
+              <div class="social-links d-flex">
+                <a href="https://www.facebook.com/CampusHubMalta" class="facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/campushubmalta/" class="instagram" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-instagram"></i>
+                </a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span><strong> Byte Bite-AI </strong><span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href = "mailto: andrea.f.lucas.22@um.edu.mt" target="_blank" style="font-size: 15px;">Andrea Filiberto lucas</a>
+        & <a href = "mailto: sean.muscat.22@um.edu.mt" target="_blank" style="font-size: 15px;">Sean David Muscat</a>
+      </div>
+      <div class="credits">
+        Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

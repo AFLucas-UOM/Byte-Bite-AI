@@ -1,0 +1,92 @@
+[
+    {
+        "Date": "01/11/2024",
+        "Name of dish": "Cheeseburger",
+        "Restaurant": "Burger King",
+        "Price": 5.99
+    },
+    {
+        "Date": "02/11/2024",
+        "Name of dish": "Chicken Tenders",
+        "Restaurant": "Boost",
+        "Price": 6.49
+    },
+    {
+        "Date": "03/11/2024",
+        "Name of dish": "Chicken Sandwich",
+        "Restaurant": "Starbucks",
+        "Price": 7.99
+    },
+    {
+        "Date": "04/11/2024",
+        "Name of dish": "Lamb Kofta Wrap",
+        "Restaurant": "Posh Turkish",
+        "Price": 8.50
+    },
+    {
+        "Date": "05/11/2024",
+        "Name of dish": "Margherita Pizza",
+        "Restaurant": "Pizza Hut",
+        "Price": 9.00
+    },
+    {
+        "Date": "06/11/2024",
+        "Name of dish": "Pulled Pork Burger",
+        "Restaurant": "Cafe Cuba",
+        "Price": 11.25
+    },
+    {
+        "Date": "07/11/2024",
+        "Name of dish": "Sushi Rolls",
+        "Restaurant": "Amami",
+        "Price": 12.75
+    },
+    {
+        "Date": "07/11/2024",
+        "Name of dish": "Grilled Chicken Skewers",
+        "Restaurant": "J'olli",
+        "Price": 10.50
+    },
+    {
+        "Date": "09/10/2024",
+        "Name of dish": "Spaghetti Bolognese",
+        "Restaurant": "Burger King",
+        "Price": 8.75
+    },
+    {
+        "Date": "10/10/2024",
+        "Name of dish": "Beef Burrito",
+        "Restaurant": "Boost",
+        "Price": 7.25
+    },
+    {
+        "Date": "05/09/2024",
+        "Name of dish": "Cheeseburger",
+        "Restaurant": "Burger King",
+        "Price": 9.99
+    },
+    {
+        "Date": "12/09/2024",
+        "Name of dish": "Chicken Shawarma",
+        "Restaurant": "Posh Turkish",
+        "Price": 11.50
+    },
+    {
+        "Date": "15/09/2024",
+        "Name of dish": "Pizza Margherita",
+        "Restaurant": "Pizza Hut",
+        "Price": 14.99
+    },
+    {
+        "Date": "20/09/2024",
+        "Name of dish": "Beef Burrito",
+        "Restaurant": "Amami",
+        "Price": 13.25
+    },
+    {
+        "Date": "28/09/2024",
+        "Name of dish": "Pasta Carbonara",
+        "Restaurant": "Cafe Cuba",
+        "Price": 15.75
+    }
+]

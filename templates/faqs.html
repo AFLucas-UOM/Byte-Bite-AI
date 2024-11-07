@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>FAQs - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="#" class="logo d-flex align-items-center">
+        <h1 class="sitename" onclick="location.reload();">
+          <span style="padding-left: 1cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+        </h1>
+      </a>      
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529;"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+          <!-- Profile Image Icon -->
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets2/img/AFL-Logo.png" alt="Profile" class="rounded-circle">
+            <!-- Placeholder span for the user's name -->
+            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 2.5em">Loading User</span>
+          </a><!-- End Profile Image Icon -->
+
+          <script>
+            // Retrieve the current user's data from localStorage
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            // Check if the currentUser exists and update the profile name
+            if (currentUser && currentUser.name) {
+              document.getElementById('profileName').textContent = currentUser.name;
+            } else {
+              document.getElementById('profileName').textContent = 'Walter Error'; // Default to 'Guest' if no user is logged in
+            }
+          </script>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('in_dev') }}">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('faqs') }}">
+                <i class="ri-question-mark"></i>
+                <span>Need Help</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+            <script>
+              function signOut() {
+                  // Remove the current user login status
+                  localStorage.removeItem('currentUser'); // assuming 'currentUser' holds the logged-in user info
+
+                  // Redirect to index.html after 0.5 seconds
+                  setTimeout(() => {
+                      window.location.href = "{{ url_for('index') }}";
+                  }, 500);
+              }
+            </script>    
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('dashboard') }}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End FAQs Page Nav -->
+
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <i class="bi bi-person"></i>
+          <span>My Profile</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('chatbot') }}">
+          <div class="icon">
+            <i class="ri-question-answer-line"></i>
+            <span>Chatbot</span>
+          </div>
+        </a>
+      </li><!-- End Chat Bot Page Nav -->
+
+      <li class="nav-heading">Other</li>
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <div class="icon">
+            <i class="ri-qr-code-line"></i>
+            <span>AR-View (Beta)</span>
+          </div>
+        </a>
+      </li><!-- End AR-View Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link " href="{{ url_for('faqs') }}">
+          <div class="icon">
+            <i class="ri-question-mark"></i>
+            <span>FAQs</span>
+          </div>
+        </a>
+      </li><!-- End FAQs Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" onclick="signOut()">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+        </a>
+      </li><!-- End Sign Out Page Nav -->
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1><b>Frequently Asked Questions</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Other</li>
+          <li class="breadcrumb-item active">FAQs</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section faq">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card basic">
+            <div class="card-body">
+                <h5 class="card-title">Byte Bite-AI FAQs</h5>
+        
+                <div>
+                    <h6>1. What is Byte Bite-AI?</h6>
+                    <p>Byte Bite-AI is an AI-driven healthy eating assistant designed to provide personalized dietary recommendations whilst dining at the Campus Hub Piazza. Our goal is to make healthy eating easy and accessible for students.</p>
+                </div>
+        
+                <div class="pt-2">
+                    <h6>2. How does Byte Bite-AI ensure my privacy?</h6>
+                    <p>Byte Bite-AI uses federated learning to enhance user privacy. This means that your data remains on your device, and only the insights and model updates are shared, ensuring your personal information stays private.</p>
+                </div>
+        
+                <div class="pt-2">
+                    <h6>3. Which restaurants does Byte Bite-AI support?</h6>
+                    <p>Byte Bite-AI currently provides recommendations from several popular dining options at Campus Hub, including Burger King, Pizza Hut, Cafe Cuba, Ottoman Turkish, Boost, Amami, Starbucks and J'Oli.</p>
+                </div>
+        
+                <div class="pt-2">
+                    <h6>4. How can I access Byte Bite-AI?</h6>
+                    <p>You can access Byte Bite-AI through our website (or app - currently in development). Simply create an account, and you’ll be able to start receiving personalized dining recommendations.</p>
+                </div>
+        
+                <div class="pt-2">
+                    <h6>5. Why was Byte Bite-AI created?</h6>
+                    <p>Byte Bite-AI was developed as part of the B.Sc. in ICT (Artificial Intelligence) program at the University of Malta, specifically for the study unit course <b>ICS3211: Intelligent Interfaces</b>.<p></p>
+                </div>
+
+                <div class="pt-2">
+                  <h6>6. Who are the creators of Byte Bite-AI?</h6>
+                  <p>The project was created by students <b>Andrea Filiberto Lucas & Sean David Muscat</b>, aiming to combine technology and healthy eating to support students in making better dietary choices.</p>
+              </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="col-lg-6">
+          <!-- F.A.Q Group 1 -->
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Healthy Eating FAQs</h5>
+
+                <div class="accordion accordion-flush" id="faq-group-1">
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#faqsOne-1" type="button" data-bs-toggle="collapse">
+                                What is BMI?
+                            </button>
+                        </h2>
+                        <div id="faqsOne-1" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                            <div class="accordion-body">
+                                BMI, or Body Mass Index, is a measure that uses your height and weight to estimate whether you are underweight, normal weight, overweight, or obese. It is calculated by dividing your weight in kilograms by the square of your height in meters.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#faqsOne-2" type="button" data-bs-toggle="collapse">
+                                How is BMI calculated?
+                            </button>
+                        </h2>
+                        <div id="faqsOne-2" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                            <div class="accordion-body">
+                                To calculate BMI, use the formula: <strong>BMI = weight (kg) / (height (m) x height (m))</strong>. For example, if you weigh 70 kg and are 1.75 m tall, your BMI would be <strong>22.86</strong>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#faqsOne-3" type="button" data-bs-toggle="collapse">
+                                What are the benefits of a balanced diet?
+                            </button>
+                        </h2>
+                        <div id="faqsOne-3" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                            <div class="accordion-body">
+                                A balanced diet provides your body with essential nutrients, helps maintain a healthy weight, reduces the risk of chronic diseases, and promotes overall health and well-being.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#faqsOne-4" type="button" data-bs-toggle="collapse">
+                                How much water should I drink daily?
+                            </button>
+                        </h2>
+                        <div id="faqsOne-4" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                            <div class="accordion-body">
+                                It is generally recommended to drink at least 2 liters (about 8 cups) of water per day. However, individual needs may vary based on factors such as age, gender, activity level, and climate.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" data-bs-target="#faqsOne-5" type="button" data-bs-toggle="collapse">
+                                What is the average kilojoule (KJ) intake per meal?
+                            </button>
+                        </h2>
+                        <div id="faqsOne-5" class="accordion-collapse collapse" data-bs-parent="#faq-group-1">
+                            <div class="accordion-body">
+                                The average kilojoule intake per meal can vary based on individual energy needs, which are influenced by factors such as age, gender, activity level, and the time of day. Generally, a moderately active adult may require around 2,000 to 8,000 KJ per day, with each meal containing roughly 1,500 to 2,500 KJ. Adjusting portion sizes and meal composition can help meet personal energy requirements.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+          </div><!-- End F.A.Q Group 1 -->
+
+          <!-- F.A.Q Group Campus Hub Outlets -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Outlets FAQs</h5>
+
+              <div class="accordion accordion-flush" id="faq-outlets">
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-target="#faqOutlet-1" type="button" data-bs-toggle="collapse">
+                      What outlets are available at Campus Hub?
+                    </button>
+                  </h2>
+                  <div id="faqOutlet-1" class="accordion-collapse collapse" data-bs-parent="#faq-outlets">
+                    <div class="accordion-body">
+                      At Campus Hub, you can find a variety of outlets, including Burger King, Pizza Hut, Cafe Cuba, Ottoman (by Posh Turkish), Boost, Amami, and Starbucks. Each offers unique dining experiences to suit your preferences.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-target="#faqOutlet-2" type="button" data-bs-toggle="collapse">
+                      Is J'Oli located in Campus Hub?
+                    </button>
+                  </h2>
+                  <div id="faqOutlet-2" class="accordion-collapse collapse" data-bs-parent="#faq-outlets">
+                    <div class="accordion-body">
+                      No, J'Oli is not located in Campus Hub but is close by. You can find it at this location: <a href="https://maps.app.goo.gl/kTTZjZr9ovQ8GQvE7" target="_blank">J'Oli Location</a>.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-target="#faqOutlet-3" type="button" data-bs-toggle="collapse">
+                      What types of food are available at these outlets?
+                    </button>
+                  </h2>
+                  <div id="faqOutlet-3" class="accordion-collapse collapse" data-bs-parent="#faq-outlets">
+                    <div class="accordion-body">
+                      The outlets at Campus Hub offer a diverse range of cuisines, from fast food like burgers and pizza to healthier options like smoothies and salads at Boost and Amami. There’s something for everyone!
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-target="#faqOutlet-4" type="button" data-bs-toggle="collapse">
+                      Are there vegetarian or vegan options available?
+                    </button>
+                  </h2>
+                  <div id="faqOutlet-4" class="accordion-collapse collapse" data-bs-parent="#faq-outlets">
+                    <div class="accordion-body">
+                      Yes, most outlets at Campus Hub offer vegetarian and vegan options. For example, Cafe Cuba has vegetarian wraps, and Boost offers plant-based smoothies.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-target="#faqOutlet-5" type="button" data-bs-toggle="collapse">
+                      Can I find gluten-free options at these outlets?
+                    </button>
+                  </h2>
+                  <div id="faqOutlet-5" class="accordion-collapse collapse" data-bs-parent="#faq-outlets">
+                    <div class="accordion-body">
+                      Many outlets are mindful of dietary restrictions. It’s advisable to check with each outlet for their specific gluten-free offerings.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End F.A.Q Group Campus Hub Outlets -->
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer dark-background">
+
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-geo-alt icon"></i>
+          <div class="address">
+            <h4>Address - Campus Hub Piazza</h4>
+            <p>Roberto Ranieri Costagut Street</p>
+            <p>Msida, MSD 2080, Malta</p>
+            <p></p>
+          </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-telephone icon"></i>
+          <div>
+            <h4>Contact</h4>
+            <p>
+              <strong>Phone:</strong> <span>+356 23167700</span><br>
+              <strong>Email:</strong> <span>hello@campushubmalta.com</span><br>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-clock icon"></i>
+          <div>
+            <h4>Opening Hours</h4>
+            <p>
+              <strong>Mon-Fri:</strong> <span>8:30 - 23:00</span><br>
+              <strong>Sat-Sun</strong>: <span>12:00 - 23:00</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-people icon"></i> 
+          <div>
+            <h4>Follow Us</h4>
+              <div class="social-links d-flex">
+                <a href="https://www.facebook.com/CampusHubMalta" class="facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/campushubmalta/" class="instagram" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-instagram"></i>
+                </a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span><strong> Byte Bite-AI </strong><span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href = "mailto: andrea.f.lucas.22@um.edu.mt" target="_blank" style="font-size: 15px;">Andrea Filiberto lucas</a>
+        & <a href = "mailto: sean.muscat.22@um.edu.mt" target="_blank" style="font-size: 15px;">Sean David Muscat</a>
+      </div>
+      <div class="credits">
+        Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template Main JS File -->
+   <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+
+</body>
+</html>

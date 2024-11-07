@@ -1,0 +1,25 @@
+﻿Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Ingredients,Has Gluten?,Has Nuts?
+Hamburger,Burger King,Burger,1.85,1050,112,"Bread, Beef, Ketchup, Pickles",Yes,No
+Chicken Supreme,Burger King,Burger,6.70,2480,217,"Bread, Fried Chicken, Mayonnaise",Yes,No
+"Double Steakhouse ",Burger King,Burger,10.60,4380,380,"Bread, Beef, Lettuce, Tomato, Bacon, Fried Onions, BBQ Sauce, Cheddar Cheese",Yes,No
+Pizza Margherita,Pizza Hut,Pizza,8.50,5400,750,"Pizza Dough, Tomato Sauce, Mozzarella Cheese, Oregano",Yes,No
+Pizza BBQ Chicken,Pizza Hut,Pizza,13.00,6200,850,"Pizza Dough, Tomato Sauce, Red Onions, Sweetcorn, Green Peppers, Mozzarella Cheese, BBQ Sauce",Yes,No
+Gluten Free Hawaiian,Pizza Hut,Pizza,10.10,5440,760,"Gluten-Free Pizza Dough, Savoury Ham, Sweet Pineapple, Tomato Sauce, Cheese",No,No
+Rigatoni Pesto,Cafe Cuba,Pasta,14.20,2900,300,"Rigatoni, Basil Pesto, Bacon, Grana Cheese",No,No
+Havana,Cafe Cuba,Burger,17.95,4180,400,"Bread, Beef, Bacon, Tomato, Onions, Cucumber, Cheese, Iceberg Lettuce, Onion Rings, Burger Sauce",Yes,No
+Spaghetti Calamari,Cafe Cuba,Pasta,15.75,2500,300,"Spaghetti, Calamari, Olives, Capers, Tomato Sauce, Fresh Herbs",Yes,No
+Lamb Chops,Posh Turkish,Lamb,16.50,3500,400,"Lamb, Chips, Pita, Basil Sauce",Yes,No
+Mixed Doner,Posh Turkish,Wrap,9.60,2900,350,"Lamb, Chicken, Couscous, Sweetcorn, Red Cabbage",Yes,No
+Special Posh,Posh Turkish,Pizza,13.60,4606,450,"Pizza Dough, Tomato Sauce, Mincemeat, Sausage, Salami, Pepperoni, Tomatoes, Green Peppers, Mozzarella",Yes,No
+Chick Overboard Salad,Boost,Salad,8.50,1975,92,"Avocado, Cherry Tomatoes, Chicken, Bacon, Eggs, Salad Leaves",Yes,No
+Tofu-Lish For You Wrap,Boost,Wrap,7.75,2184,130,"Chives, Couscous, Herbs, Tofu, Tortilla Wrap, Lettuce, Tomato, Beans, Onions",Yes,No
+Egg-Cellent Bacon Delight,Boost,Bread,7.05,2997,154,"Ciabatta, Bacon, Omelette, Cheese",No,No
+Salmon Nigiri,Amami,Sushi,2.75,400,50,"Salmon, Sushi Rice, Soy Sauce, Wasabi, Ginger",Yes,No
+Tuna Sashimi,Amami,Sushi,3.50,650,30,"Tuna, Soy Sauce, Wasabi, Ginger",Yes,No
+Dim Sum,Amami,Sushi,8.90,250,200,"Dough, Vegetables, Pork, Soy Sauce",Yes,No
+Muscle King Bowl,J'olli,Warm Bowl,12.95,3850,176,"Rice, Sweet Potato, Sweetcorn, Edamame, Chicken, Slaw, Egg, Ceaser Dressing, Onions",Yes,No
+Sweet Potato & Hummus Wrap,J'olli,Wrap,8.65,2636,133,"Quinoa, Lettuce, Cherry Tomatoes, Sweetcorn, Sweet Potatoes, Almonds, Hummus, Vinaigrette, Gluten- Free Tortilla Wrap",No,Yes
+Superfood Salad,J'olli,Salad,9.95,2172,91,"Kale, Quinoa, Cucumber, Carrot, Edamame, red Onion, Avocado, Vinaigrette Dressing, Almonds, Power Seeds",No,Yes
+Ham & Cheese Panini,Starbucks,Bread,5.50,1975,185,"Panini, Ham, Cheddar Cheese",Yes,No
+Chicken & Bacon Ceaser Wrap,Starbucks,Wrap,5.35,2527,221,"Bacon, Chicken, Lettuce, Mayonnaise, Barmarked Wrap",Yes,No
+Fruit & Nut Bar,Starbucks,Snack,2.95,1296,65,"Gluten-Free Oats, Nuts, Raisins, Apples, Grapes",No,Yes

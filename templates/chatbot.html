@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Chatbot - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="#" class="logo d-flex align-items-center">
+        <h1 class="sitename" onclick="location.reload();">
+          <span style="padding-left: 1cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+        </h1>
+      </a>      
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529;"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+          <!-- Profile Image Icon -->
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets2/img/AFL-Logo.png" alt="Profile" class="rounded-circle">
+            <!-- Placeholder span for the user's name -->
+            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 2.5em">Loading User</span>
+          </a><!-- End Profile Image Icon -->
+
+          <script>
+            // Retrieve the current user's data from localStorage
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            // Check if the currentUser exists and update the profile name
+            if (currentUser && currentUser.name) {
+              document.getElementById('profileName').textContent = currentUser.name;
+            } else {
+              document.getElementById('profileName').textContent = 'Walter Error'; // Default to 'Guest' if no user is logged in
+            }
+          </script>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('in_dev') }}">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('faqs') }}">
+                <i class="ri-question-mark"></i>
+                <span>Need Help</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+            <script>
+              function signOut() {
+                  // Remove the current user login status
+                  localStorage.removeItem('currentUser'); // assuming 'currentUser' holds the logged-in user info
+
+                  // Redirect to index.html after 0.5 seconds
+                  setTimeout(() => {
+                      window.location.href = "{{ url_for('index') }}";
+                  }, 500);
+              }
+            </script>    
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('dashboard') }}">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End FAQs Page Nav -->
+
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <i class="bi bi-person"></i>
+          <span>My Profile</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link " href="{{ url_for('chatbot') }}">
+          <div class="icon">
+            <i class="ri-question-answer-line"></i>
+            <span>Chatbot</span>
+          </div>
+        </a>
+      </li><!-- End Chatbot Nav -->
+
+      <li class="nav-heading">Other</li>
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <div class="icon">
+            <i class="ri-qr-code-line"></i>
+            <span>AR-View (Beta)</span>
+          </div>
+        </a>
+      </li><!-- End AR-View Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('faqs') }}">
+          <div class="icon">
+            <i class="ri-question-mark"></i>
+            <span>FAQs</span>
+          </div>
+        </a>
+        </li><!-- End FAQs Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" onclick="signOut()">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+        </a>
+      </li><!-- End Sign Out Page Nav -->
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1><b>Chatbot</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Other</li>
+          <li class="breadcrumb-item active">Chatbot</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="chatbot">
+        <div class="card-body">
+            <div class="chatbox">
+                <!-- Chat history container -->
+                <div class="messages" id="message-container">
+                    <!-- Messages will dynamically load here, starting from the top -->
+                </div>
+            </div>
+    
+            <!-- User input container at the bottom of the chatbot -->
+            <div class="input-container">
+              <div class="input-group">
+                <!-- Input field for speech recognition -->
+                <input type="text" id="chat-input" class="form-control" placeholder="Message Byte Bite-AI">
+                <button class="btn btn-outline-secondary input-group-text" type="button" id="mic-button">
+                  <i class="bi bi-mic"></i>
+                </button>
+              </div>
+              <button style="font-size: large;" id="send-button" class="btn btn-primary">↑</button>                                   
+            </div>
+            <div class="message-text">Byte Bite-AI can make mistakes. Check important info.</div>
+        </div>
+    </section>
+
+    <style>
+        /* Main Content */
+        .main-content {
+            max-height: 79vh; /* Ensures content doesn't exceed this height */
+            overflow: hidden; /* Prevents overflow beyond this container */
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Chatbox Container */
+        .chatbox {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 200px;
+            border-radius: 10px;
+            background-color: white;
+            height: calc(60vh - 250px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
+            position: relative;
+            overflow: hidden; /* Prevents the chatbox itself from growing */
+        }
+
+
+        /* Messages Container - Fixed height with scrolling */
+        .messages {
+            flex-grow: 1;
+            overflow-y: auto; /* Enables scrolling if messages overflow */
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 65%; /* Slightly increased width */
+            margin: 0 auto; /* Centers the messages container */
+            height: 100%; /* Make sure it fills the available space */
+        }
+
+        /* Individual Message Styling */
+        .message {
+            padding: 12px;
+            border-radius: 10px;
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            max-width: 75%;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Message Content */
+        .message-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .message-text p {
+            margin: 0;
+        }
+
+        /* Message Icon Styling */
+        .message-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        /* Bot Message Styling */
+        .bot-message {
+            color: #24282C;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .bot-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* User Message Styling */
+        .user-message {
+            background-color: #F4F4F4;
+            color: #24282C;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            border-radius: 10px;
+            padding: 10px;
+            max-width: 75%;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .user-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Input Container Styles (below chatbox) */
+        .input-container {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 15px 50px;
+            display: flex;
+            gap: 10px;
+            border-radius: 8px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%; /* Center the input container */
+        }
+
+        /* Input Field */
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #036628;
+            border-radius: 30px;
+            outline: none; /* Remove the default outline */
+            transition: border-color 0.3s ease;
+        }
+
+        /* Remove the blue glow on focus from the input */
+        #chat-input:focus {
+            outline: none; /* Remove outline */
+            box-shadow: none; /* Remove any box-shadow, including blue glow */
+            border-color: #036628; /* Optional: maintain border color */
+        }
+
+        /* Ensure the input group container is positioned relative */
+        .input-group {
+            position: relative; /* This ensures the mic button is positioned relative to the input group */
+        }
+
+        /* Mic button to stay visible even when the input is focused */
+        .input-group:focus-within #mic-button {
+            visibility: visible; /* Ensure mic button stays visible when input is focused */
+        }
+
+        /* Send Button */
+        #send-button {
+            background-color: #036628;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+            font-size: large;
+        }
+
+        #send-button:hover {
+        color: var(--contrast-color);
+        background: color-mix(in srgb, var(--accent-color), transparent 15%);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1)
+        }
+
+
+        #send-button:disabled {
+            background-color: #ccc; /* Grey out the button */
+            color: #777; /* Change text color when disabled */
+            cursor: not-allowed; /* Prevent cursor change */
+        }
+
+        /* Message Text Style */
+        .message-text {
+            font-size: 15px;
+            color: #24282C;
+            padding-right: 2px;
+            text-align: center;
+        }
+
+        .input-group {
+        position: relative;
+      }
+      
+      #mic-button {
+        color: #585B5E;
+        padding: 6px;
+        border-radius: 0%;  /* This makes the button circular */
+        border: none;
+        cursor: pointer;
+        font-size: large;
+        position: absolute;
+        right: 10px;  /* Adjust to position the mic button */
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-block;
+        visibility: visible; /* Ensure the button remains visible */
+        padding-left: 3px;;
+        z-index: 10; /* Ensure the mic button stays on top */
+      }
+
+      #mic-button:hover {
+        background-color: transparent;  /* No background color */
+        color: var(--accent-color);     /* Change text/icon color */
+      }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById("send-button").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent page refresh if this is within a form
+            sendMessage();
+        });
+
+        document.getElementById("chat-input").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent default form submission behavior
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const userInput = document.getElementById("chat-input").value;
+            const inputField = document.getElementById("chat-input");
+            const sendButton = document.getElementById("send-button");
+
+            if (userInput.trim()) {
+                // Disable send button and change it to a cross
+                sendButton.disabled = true;
+                sendButton.innerHTML = "&#10005;"; // Cross symbol
+
+                // Create user message
+                const userMessage = document.createElement("div");
+                userMessage.classList.add("message", "user-message");
+                userMessage.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-text"><p>${userInput}</p></div>
+                        <div class="message-icon">
+                            <img src="assets2/img/AFL-Logo.png" alt="User Logo" class="user-icon">
+                        </div>
+                    </div>
+                `;
+                
+                // Append the message to the message container
+                const messageContainer = document.getElementById("message-container");
+                if (messageContainer) {
+                    messageContainer.appendChild(userMessage);
+                
+                    // Clear input field
+                    document.getElementById("chat-input").value = "";
+                    
+                    // Scroll to the bottom of the chat
+                    messageContainer.scrollTop = messageContainer.scrollHeight;
+
+                    // Simulate bot response after a short delay
+                    setTimeout(() => {
+                        const botMessage = document.createElement("div");
+                        botMessage.classList.add("message", "bot-message");
+                        botMessage.innerHTML = `
+                            <div class="message-content">
+                                <div class="message-icon">
+                                    <img src="assets/img/faviconBB.png" alt="Byte Bite-AI Logo" class="bot-icon">
+                                </div>
+                                <div class="message-text">
+                                    <p>Chatbot is still in development! Please try again later</p>
+                                </div>
+                            </div>
+                        `;
+                        messageContainer.appendChild(botMessage);
+                        messageContainer.scrollTop = messageContainer.scrollHeight;
+
+                        // Re-enable the send button and change it back to the arrow
+                        sendButton.disabled = false;
+                        sendButton.innerHTML = "↑"; // Reset the button to the arrow
+                    }, 1000); // Bot responds after 1 second
+                } else {
+                    console.error("Message container not found.");
+                }
+            }
+        }
+    </script>
+    <script>
+      // Ensure browser compatibility for SpeechRecognition
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        document.getElementById('chat-input').placeholder = "Speech recognition not supported by this browser.";
+      }
+
+      // Initialize recognition
+      const recognization = new SpeechRecognition();
+      recognization.continuous = false; // Stop after the first recognition
+      recognization.interimResults = true; // Display real-time results
+
+      // Handle the start event
+      recognization.onstart = () => {
+        document.getElementById('chat-input').placeholder = "Listening..."; // Update placeholder during listening
+      };
+
+      // Handle the result event
+      recognization.onresult = (event) => {
+        const transcript = event.results[event.resultIndex][0].transcript;
+        document.getElementById('chat-input').value = transcript; // Fill the input field with the transcript
+        document.getElementById('chat-input').placeholder = "Message Byte Bite-AI"; // Reset placeholder
+      };
+
+      // Handle errors
+      recognization.onerror = (event) => {
+        if (event.error === 'not-allowed') {
+          document.getElementById('chat-input').placeholder = "Permission to use the microphone was denied.";
+        } else {
+          document.getElementById('chat-input').placeholder = "Error occurred during speech recognition.";
+        }
+      };
+
+      // Function to start speech recognition
+      function runSpeechRecog() {
+        document.getElementById('chat-input').placeholder = "Listening...";
+        recognization.start();
+      }
+
+      // Add event listener for the microphone button
+      document.getElementById('mic-button').addEventListener('click', runSpeechRecog);
+    </script>
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer dark-background">
+
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-geo-alt icon"></i>
+          <div class="address">
+            <h4>Address - Campus Hub Piazza</h4>
+            <p>Roberto Ranieri Costagut Street</p>
+            <p>Msida, MSD 2080, Malta</p>
+            <p></p>
+          </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-telephone icon"></i>
+          <div>
+            <h4>Contact</h4>
+            <p>
+              <strong>Phone:</strong> <span>+356 23167700</span><br>
+              <strong>Email:</strong> <span>hello@campushubmalta.com</span><br>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-clock icon"></i>
+          <div>
+            <h4>Opening Hours</h4>
+            <p>
+              <strong>Mon-Fri:</strong> <span>8:30 - 23:00</span><br>
+              <strong>Sat-Sun</strong>: <span>12:00 - 23:00</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-people icon"></i> 
+          <div>
+            <h4>Follow Us</h4>
+              <div class="social-links d-flex">
+                <a href="https://www.facebook.com/CampusHubMalta" class="facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/campushubmalta/" class="instagram" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-instagram"></i>
+                </a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span><strong> Byte Bite-AI </strong><span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href = "mailto: andrea.f.lucas.22@um.edu.mt" target="_blank" style="font-size: 15px;">Andrea Filiberto lucas</a>
+        & <a href = "mailto: sean.muscat.22@um.edu.mt" target="_blank" style="font-size: 15px;">Sean David Muscat</a>
+      </div>
+      <div class="credits">
+        Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template Main JS File -->
+   <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+
+</body>
+</html>

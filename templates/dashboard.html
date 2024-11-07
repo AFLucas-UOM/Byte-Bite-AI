@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Dashboard - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
+  <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
+
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+
+</head>
+
+<body>
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="#" class="logo d-flex align-items-center">
+        <h1 class="sitename" onclick="location.reload();">
+          <span style="padding-left: 1cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+        </h1>
+      </a>      
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529;"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <form class="search-form d-flex align-items-center" method="POST" action="#">
+        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+        <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+      </form>
+    </div><!-- End Search Bar -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+          <!-- Profile Image Icon -->
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="assets2/img/AFL-Logo.png" alt="Profile" class="rounded-circle">
+            <!-- Placeholder span for the user's name -->
+            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 2.5em">Loading User</span>
+          </a><!-- End Profile Image Icon -->
+
+          <script>
+            // Retrieve the current user's data from localStorage
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            // Check if the currentUser exists and update the profile name
+            if (currentUser && currentUser.name) {
+              document.getElementById('profileName').textContent = currentUser.name;
+            } else {
+              document.getElementById('profileName').textContent = 'Walter Error'; // Default to 'Guest' if no user is logged in
+            }
+          </script>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('in_dev') }}">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('faqs') }}">
+                <i class="ri-question-mark"></i>
+                <span>Need Help</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+            
+            <script>
+              function signOut() {
+                  // Remove the current user login status
+                  localStorage.removeItem('currentUser'); // assuming 'currentUser' holds the logged-in user info
+
+                  // Redirect to index.html after 0.5 seconds
+                  setTimeout(() => {
+                      window.location.href = "{{ url_for('index') }}";
+                  }, 500);
+              }
+            </script>            
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+      <li class="nav-heading">Pages</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <i class="bi bi-person"></i>
+          <span>My Profile</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('chatbot') }}">
+          <div class="icon">
+            <i class="ri-question-answer-line"></i>
+            <span>Chatbot</span>
+          </div>
+        </a>
+      </li><!-- End ChatBot Page Nav -->
+
+      <li class="nav-heading">Other</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
+          <div class="icon">
+            <i class="ri-qr-code-line"></i>
+            <span>AR-View (Beta)</span>
+          </div>
+        </a>
+      </li><!-- End AR-View Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('faqs') }}">
+          <div class="icon">
+            <i class="ri-question-mark"></i>
+            <span>FAQs</span>
+          </div>
+        </a>
+      </li><!-- End FAQs Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" onclick="signOut()">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Sign Out</span>
+        </a>
+      </li><!-- End Sign Out Page Nav -->
+    </ul>
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-8">
+          <div class="row">
+
+          <!-- Current Recommendations Card -->
+          <div class="col-xxl-8 col-md-6">
+            <div class="card info-card sales-card">
+              <div class="card-body">
+                <h5 class="card-title">AI Current Recommendations <span id="current-time">|</span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi-stars"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 id="recommendation-dish">XX</h6> <!-- Top recommended item -->
+                    <span class="text-muted small pt-2 ps-1" id="location">Location: XXXXXX |</span>
+                    <span class="text-muted small pt-2 ps-1" id="kj">XX KJ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Current Recommendations Card -->
+
+          <script>
+            async function loadRecommendation() {
+              // Fetch the user's data from localStorage
+              const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+
+              // Check if user data is available
+              if (!rawUsersData) {
+                  console.error("No user data found in localStorage.");
+                  return;
+              }
+
+              // Fetch the users' favorite food from users.json using the user's name
+              fetch('/static/json/users.json')
+                  .then(response => response.json())
+                  .then(userData => {
+                      // Find the user in the users.json file based on their name
+                      const user = userData.find(u => u.Name.toLowerCase() === rawUsersData.name.toLowerCase());
+
+                      // If no matching user is found
+                      if (!user) {
+                          console.error("User not found in users.json.");
+                          return;
+                      }
+
+                      // Retrieve the user's favourite food
+                      const userFavoriteFood = user.Favourite_food;  // Assuming 'Favourite_food' exists in the users.json
+
+                      // Fetch the CSV file
+                      fetch('/static/menu.csv')
+                          .then(response => response.text())
+                          .then(csvData => {
+                              // Parse the CSV data
+                              const parsedData = Papa.parse(csvData, {
+                                  header: true,
+                                  skipEmptyLines: true
+                              }).data;
+
+                              // Get the current time
+                              const currentTime = new Date();
+                              const currentHour = currentTime.getHours();
+
+                              // Initialize variables for dish details
+                              let recommendedDish = '';
+                              let dishLocation = '';
+                              let dishKJ = '';
+
+                              // Define conditions based on the time of day
+                              if (currentHour < 8) {
+                                  // Before 8 AM: Look for Bread type dishes
+                                  for (const row of parsedData) {
+                                      if (row.Type && row.Type.toLowerCase() === "bread") {
+                                          recommendedDish = row.Name;  // Get the dish name
+                                          dishLocation = row.Restaurant; // Get the restaurant location
+                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          break; // Stop looping after the first match
+                                      }
+                                  }
+                              } else if (currentHour >= 8 && currentHour < 20) {
+                                  // Between 8 AM and 8 PM: Look for dishes that match the user's favorite food (Type column)
+                                  for (const row of parsedData) {
+                                      if (row.Type && row.Type.toLowerCase() === userFavoriteFood.toLowerCase()) {
+                                          recommendedDish = row.Name;  // Get the dish name
+                                          dishLocation = row.Restaurant; // Get the restaurant location
+                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          break; // Stop looping after the first match
+                                      }
+                                  }
+                              } else {
+                                  // After 8 PM: Look for Snack type dishes
+                                  for (const row of parsedData) {
+                                      if (row.Type && row.Type.toLowerCase() === "snack") {
+                                          recommendedDish = row.Name;  // Get the dish name
+                                          dishLocation = row.Restaurant; // Get the restaurant location
+                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          break; // Stop looping after the first match
+                                      }
+                                  }
+                              }
+
+                              // If a dish is found, update the UI
+                              if (recommendedDish) {
+                                  document.getElementById('recommendation-dish').textContent = `${recommendedDish}`;
+                                  document.getElementById('location').textContent = `Location: ${dishLocation} |`;
+                                  document.getElementById('kj').textContent = `${dishKJ} KJ`;
+                              } else {
+                                  console.error("No matching dish found based on time and food preference.");
+                              }
+                          })
+                          .catch(error => {
+                              console.error("Error fetching or parsing CSV file:", error);
+                          });
+                  })
+                  .catch(error => {
+                      console.error("Error fetching or parsing users.json file:", error);
+                  });
+            }
+          
+            loadRecommendation();
+          </script>
+          
+
+          <script>
+            // JavaScript to display the current system time with the day of the week
+            function updateTime() {
+              const now = new Date();
+              const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+              const day = daysOfWeek[now.getDay()];
+              const hours = String(now.getHours()).padStart(2, '0');
+              const minutes = String(now.getMinutes()).padStart(2, '0');
+              document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
+            }
+            
+            // Update time immediately and then every minute
+            updateTime();
+            setInterval(updateTime, 60000);
+          </script>
+
+          <!-- Revenue Card -->
+          <div class="col-xxl-4 col-md-6">
+            <div class="card info-card revenue-card">
+
+              <div class="filter">
+                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                  <li class="dropdown-header text-start">
+                    <h6>Filter</h6>
+                  </li>
+                  <!-- Unique data-filter values and unique class name for Revenue Card filters -->
+                  <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-today">Today</a></li>
+                  <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-week">This Week</a></li>
+                  <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-month">This Month</a></li>
+                </ul>
+              </div>
+
+              <div class="card-body">
+                <!-- Unique ID for the card title -->
+                <h5 id="revenueCardTitle" class="card-title">Total Spent <span id="revenueTitleSpan">| Today</span></h5>
+
+                <div class="d-flex align-items-center">
+                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                    <i class="bi bi-currency-euro"></i>
+                  </div>
+                  <div class="ps-3">
+                    <h6 id="revenueAmount">XX.XX</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- End Revenue Card -->
+          
+          <script>
+            // Get only the Revenue Card filter items
+            const revenueFilterItems = document.querySelectorAll('.revenue-filter');
+          
+            // Get the Revenue Card title span and the amount element
+            const revenueCardTitleSpan = document.getElementById('revenueTitleSpan');
+            const revenueAmountElement = document.getElementById('revenueAmount'); // Assuming this ID for revenue display
+          
+            // Add event listener specifically for Revenue Card filter items
+            revenueFilterItems.forEach(item => {
+              item.addEventListener('click', function() {
+                // Get the selected filter option
+                const selectedFilter = item.getAttribute('data-filter');
+          
+                // Update the text of the revenue card title based on the selected filter
+                if (selectedFilter === 'revenue-today') {
+                  revenueCardTitleSpan.textContent = ' | Today';
+                } else if (selectedFilter === 'revenue-week') {
+                  revenueCardTitleSpan.textContent = ' | This Week';
+                } else if (selectedFilter === 'revenue-month') {
+                  revenueCardTitleSpan.textContent = ' | This Month';
+                }
+          
+                // Call the function to update revenue display based on filter
+                updateRevenue(selectedFilter);
+              });
+            });
+          
+            // Function to fetch orders data from the orders.json file
+            async function fetchOrdersData() {
+              try {
+                const response = await fetch('/static/json/orders.json'); // Correct the path to your orders.json
+                const orders = await response.json();
+                console.log("Fetched Orders Data:", orders); // Debugging: Log the fetched orders data
+                return orders;
+              } catch (error) {
+                console.error('Error fetching orders data:', error);
+                return [];
+              }
+            }
+          
+            // Helper function to calculate the total revenue based on the selected filter
+            function calculateRevenue(orders, filter) {
+              const today = new Date();
+              let startDate, endDate;
+          
+              // Format the current date for comparison (YYYY-MM-DD format)
+              const formattedToday = today.toISOString().split('T')[0];
+          
+              switch (filter) {
+                case 'revenue-today':
+                  startDate = formattedToday;
+                  endDate = formattedToday;
+                  break;
+                case 'revenue-week':
+                  // Get the start of the week (Monday) and today's date
+                  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Set to Monday
+                  startDate = firstDayOfWeek.toISOString().split('T')[0];
+                  endDate = formattedToday;
+                  break;
+                case 'revenue-month':
+                  // Get the first day of the current month
+                  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                  startDate = firstDayOfMonth.toISOString().split('T')[0];
+                  endDate = formattedToday;
+                  break;
+                default:
+                  startDate = formattedToday;
+                  endDate = formattedToday;
+              }
+          
+              // Debugging: Log the date range we're using for filtering
+              console.log(`Filtering orders for ${filter}: ${startDate} to ${endDate}`);
+          
+              // Filter orders based on the selected date range
+              const filteredOrders = orders.filter(order => {
+                // Convert order.Date from DD/MM/YYYY to YYYY-MM-DD for comparison
+                const orderDate = order.Date.split('/').reverse().join('-'); // Convert DD/MM/YYYY -> YYYY-MM-DD
+                return orderDate >= startDate && orderDate <= endDate;
+              });
+          
+              // Debugging: Log the filtered orders
+              console.log("Filtered Orders:", filteredOrders);
+          
+              // Calculate the total revenue (sum of prices) from the filtered orders
+              const totalRevenue = filteredOrders.reduce((acc, order) => acc + parseFloat(order.Price), 0); // Ensure Price is a number
+          
+              return totalRevenue;
+            }
+          
+            // Function to update the revenue card content
+            async function updateRevenue(filter) {
+              const orders = await fetchOrdersData();
+              const revenue = calculateRevenue(orders, filter);
+          
+              // Debugging: Log the revenue calculated
+              console.log("Calculated Revenue:", revenue);
+          
+              // Update the revenue amount in the card
+              revenueAmountElement.textContent = `€${revenue.toFixed(2)}`; // Display the total revenue with 2 decimal places
+            }
+          
+            // Initialize with the default filter ('Today') when the page loads
+            updateRevenue('revenue-today');
+          </script>
+                 
+
+
+            <!-- Current Weight Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card">
+                <div class="card-body">
+                  <h5 class="card-title">Current Weight</h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                      <img src="assets/img/icons/weight-scale.png" alt="Scale Icon" style="width: 60%; height: auto;">
+                    </div>
+                    <div class="ps-3">
+                      <h6 id="weight">XX kg</h6> <!-- Display the current weight -->
+                      <span class="text-muted small pt-2 ps-1" id="last-update">Last Update: XX-XX-XX XX:XX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- End Current Weight Card -->
+
+            <script>
+              // Retrieve and parse the current user's data directly from localStorage
+              const rawUserData = JSON.parse(localStorage.getItem('currentUser'));
+            
+              // Display the username at the top right
+              const profileNameElement = document.getElementById('profileName');
+              profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error';
+            
+              // Fetch the user data from JSON and match the current user
+              fetch('/static/json/users.json')
+                .then(response => response.json())
+                .then(data => {
+                  // Find the user in JSON data who matches the name in rawUserData
+                  const userData = data.find(user => user.Name.toLowerCase() === rawUserData?.name.toLowerCase());
+            
+                  // If user data is found, update the weight and last update
+                  if (userData) {
+                    document.getElementById('weight').textContent = `${userData.Weight} kg`;
+            
+                    // Optionally, set the current date and time as the last update
+                    const lastUpdate = new Date().toLocaleString();
+                    document.getElementById('last-update').textContent = `Last Update: ${lastUpdate}`;
+                  } else {
+                    console.error('User not found in JSON data');
+                  }
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+            </script>
+
+
+
+            <!-- Current BMI Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card">
+                <div class="card-body">
+                  <h5 class="card-title">Current BMI</h5>
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                      <img src="assets/img/icons/bmi.png" alt="Scale Icon" style="width: 60%; height: auto;">
+                    </div>
+                    <div class="ps-3">
+                      <h6 id="bmi">XX.XX</h6> <!-- Display the current BMI -->
+                      <span class="text-muted small pt-2 ps-1" id="bmi-last-update">Last Update: XX-XX-XX XX:XX</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- End Current BMI Card -->
+
+            <script>
+              // Retrieve and parse the current user's data directly from localStorage
+              const rawUserData2 = JSON.parse(localStorage.getItem('currentUser'));
+
+              // Fetch the user data from JSON and match the current user
+              fetch('/static/json/users.json')  // Adjusted the path to static folder
+                .then(response => response.json())
+                .then(data => {
+                  // Find the user in JSON data who matches the name in rawUserData
+                  const userData = data.find(user => user.Name.toLowerCase() === rawUserData2?.name.toLowerCase());
+
+                  // If user data is found, update the BMI and last update
+                  if (userData) {
+                    // BMI formula: BMI = weight / (height^2)
+                    const bmi = userData.Weight / (userData.Height * userData.Height);
+
+                    // Update the BMI value
+                    document.getElementById('bmi').textContent = bmi.toFixed(2);  // Rounded to 2 decimal places
+
+                    // Optionally, set the current date and time as the last update
+                    const lastUpdate = new Date().toLocaleString();
+                    document.getElementById('bmi-last-update').textContent = `Last Update: ${lastUpdate}`;
+                  } else {
+                    console.error('User not found in JSON data');
+                  }
+                })
+                .catch(error => console.error('Error fetching user data:', error));
+            </script>
+
+
+            <!-- Total Orders Card -->
+            <div class="col-xxl-4 col-md-6">
+              <div class="card info-card">
+                <div class="card-body">
+                  <!-- Unique ID for the card title -->
+                  <h5 id="totalOrdersCardTitle" class="card-title">Total Orders <span id="ordersTitleSpan">| This Week</span></h5>
+
+                  <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                      <li class="dropdown-header text-start">
+                        <h6>Filter</h6>
+                      </li>
+                      <!-- Unique class name for Total Orders Card filters -->
+                      <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-today">Today</a></li>
+                      <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-week">This Week</a></li>
+                      <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-month">This Month</a></li>
+                    </ul>
+                  </div>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                      <img src="assets/img/icons/orders.png" alt="Scale Icon" style="width: 60%; height: auto;">
+                    </div>
+                    <div class="ps-3">
+                      <h6 id="totalOrders">XX orders</h6> <!-- Display the current orders -->
+                      <span id="ordersComparison" class="text-muted small pt-2 ps-1">XX% less since last week</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><!-- End Total Orders Card -->
+
+            <script>
+              // Select only the Total Orders Card filter items
+              const filterItemsOrders = document.querySelectorAll('.orders-filter');
+            
+              // Select the Total Orders Card title span
+              const cardTitleOrdersSpan = document.getElementById('ordersTitleSpan');
+            
+              // Select the comparison text span for the Total Orders Card
+              const comparisonTextSpan = document.getElementById('ordersComparison');
+            
+              // Select the element where the total orders will be displayed
+              const totalOrdersElement = document.getElementById('totalOrders');
+            
+              let ordersData = []; // This will hold the orders data from the JSON file
+            
+              // Fetch the orders data from the JSON file
+              fetch('/static/json/orders.json')
+                .then(response => response.json())
+                .then(data => {
+                  ordersData = data;
+                  // Initially load the data for "This Week" as default
+                  updateOrdersDisplay('week');
+                })
+                .catch(error => {
+                  console.error("Error fetching or parsing orders JSON file:", error);
+                });
+            
+              // Add event listeners specifically for Total Orders Card filter items
+              filterItemsOrders.forEach(item => {
+                item.addEventListener('click', function() {
+                  // Get the selected filter option for Total Orders Card
+                  const selectedFilter = item.getAttribute('data-filter');
+                  
+                  // Update the text of the card title based on the selected filter
+                  if (selectedFilter === 'orders-today') {
+                    cardTitleOrdersSpan.textContent = ' | Today';
+                    updateOrdersDisplay('today');
+                    comparisonTextSpan.textContent = 'XX% less since yesterday';
+                  } else if (selectedFilter === 'orders-week') {
+                    cardTitleOrdersSpan.textContent = ' | This Week';
+                    updateOrdersDisplay('week');
+                    comparisonTextSpan.textContent = 'XX% less since last week';
+                  } else if (selectedFilter === 'orders-month') {
+                    cardTitleOrdersSpan.textContent = ' | This Month';
+                    updateOrdersDisplay('month');
+                    comparisonTextSpan.textContent = 'XX% less since last month';
+                  }
+                });
+              });
+            
+              // Function to update the total orders and the comparison percentage
+              function updateOrdersDisplay(period) {
+                const currentOrdersCount = getOrdersCountForPeriod(period);
+                const previousOrdersCount = getOrdersCountForPreviousPeriod(period);
+            
+                // Calculate the percentage change
+                const percentageChange = calculatePercentageChange(currentOrdersCount, previousOrdersCount);
+            
+                // Display the total number of orders
+                totalOrdersElement.textContent = `${currentOrdersCount} orders`;
+            
+                // Display the percentage change
+                if (percentageChange < 0) {
+                  comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since last ${period}`;
+                } else if (percentageChange > 0) {
+                  comparisonTextSpan.textContent = `${percentageChange}% more since last ${period}`;
+                } else {
+                  comparisonTextSpan.textContent = `No change since last ${period}`;
+                }
+              }
+            
+              // Function to count the orders for the current period (Today, Week, or Month)
+              function getOrdersCountForPeriod(period) {
+                const today = new Date();
+                let startDate, endDate;
+            
+                if (period === 'today') {
+                  startDate = new Date(today.setHours(0, 0, 0, 0)); // Start of today
+                  endDate = new Date(today.setHours(23, 59, 59, 999)); // End of today
+                } else if (period === 'week') {
+                  const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Start of this week (Sunday)
+                  startDate = new Date(startOfWeek.setHours(0, 0, 0, 0));
+                  endDate = new Date(startOfWeek.setDate(startOfWeek.getDate() + 6)); // End of this week (Saturday)
+                  endDate.setHours(23, 59, 59, 999);
+                } else if (period === 'month') {
+                  startDate = new Date(today.getFullYear(), today.getMonth(), 1); // Start of this month
+                  endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of this month
+                  endDate.setHours(23, 59, 59, 999);
+                }
+            
+                // Filter the orders that fall within the current period
+                return ordersData.filter(order => {
+                  const orderDate = new Date(order.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
+                  return orderDate >= startDate && orderDate <= endDate;
+                }).length;
+              }
+            
+              // Function to count the orders for the previous period (Last Day, Week, or Month)
+              function getOrdersCountForPreviousPeriod(period) {
+                const today = new Date();
+                let startDate, endDate;
+            
+                if (period === 'today') {
+                  const yesterday = new Date(today.setDate(today.getDate() - 1)); // Yesterday
+                  startDate = new Date(yesterday.setHours(0, 0, 0, 0)); // Start of yesterday
+                  endDate = new Date(yesterday.setHours(23, 59, 59, 999)); // End of yesterday
+                } else if (period === 'week') {
+                  const startOfLastWeek = new Date(today.setDate(today.getDate() - today.getDay() - 7)); // Start of last week
+                  startDate = new Date(startOfLastWeek.setHours(0, 0, 0, 0));
+                  endDate = new Date(startOfLastWeek.setDate(startOfLastWeek.getDate() + 6)); // End of last week
+                  endDate.setHours(23, 59, 59, 999);
+                } else if (period === 'month') {
+                  const lastMonth = new Date(today.setMonth(today.getMonth() - 1)); // Last month
+                  startDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), 1); // Start of last month
+                  endDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth() + 1, 0); // End of last month
+                  endDate.setHours(23, 59, 59, 999);
+                }
+            
+                // Filter the orders that fall within the previous period
+                return ordersData.filter(order => {
+                  const orderDate = new Date(order.Date.split('/').reverse().join('-')); // Convert DD/MM/YYYY to Date object
+                  return orderDate >= startDate && orderDate <= endDate;
+                }).length;
+              }
+            
+              // Function to calculate the percentage change
+              function calculatePercentageChange(current, previous) {
+                if (previous === 0) return current === 0 ? 0 : 100; // If there were no orders in the previous period
+                return ((current - previous) / previous) * 100;
+              }
+            </script>           
+
+            <!-- Reports -->
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Your Weight Progress</h5>
+                  <!-- Line Chart -->
+                  <div id="reportsChart" style="height:25.5rem;"></div>
+                  <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                      new ApexCharts(document.querySelector("#reportsChart"), {
+                        series: [{
+                          name: 'Goal Weight',
+                          data: [70, 69, 68, 67, 66, 66, 65], // Example goal weights over 7 weeks
+                        }, {
+                          name: 'Actual Weight',
+                          data: [71, 70, 67, 68, 67, 66, 66] // Example actual weights over 7 weeks
+                        }],
+                        chart: {
+                          height: 350,
+                          type: 'line',
+                          toolbar: {
+                            show: false
+                          },
+                        },
+                        markers: {
+                          size: 4
+                        },
+                        colors: ['#4154f1', '#ff771d'], // Blue for goal weight, orange for actual weight
+                        fill: {
+                          type: "solid"
+                        },
+                        dataLabels: {
+                          enabled: false
+                        },
+                        stroke: {
+                          curve: 'smooth',
+                          width: 2
+                        },
+                        xaxis: {
+                          categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'], // Weeks as x-axis labels
+                        },
+                        tooltip: {
+                          x: {
+                            show: true
+                          },
+                          y: {
+                            formatter: (val) => val + ' kg'
+                          }
+                        }
+                      }).render();
+                    });
+                  </script>
+                  <!-- End Line Chart -->
+                </div>
+              </div>
+            </div><!-- End Reports -->
+          </div>
+        </div><!-- End Left side columns -->
+
+        <!-- Right side columns -->
+        <div class="col-lg-4">
+
+          <!-- Recent Activity -->
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Recent Activities</h5>
+
+              <div class="activity">
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">05-11-2024 </div>
+                  <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                  <div class="activity-content">
+                    Ordered from <a class="fw-bold text-dark">Burger King</a> - Classic Whopper Meal
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">03-11-2024 </div>
+                  <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                  <div class="activity-content">
+                    Ordered from <a class="fw-bold text-dark">Starbucks</a> - Caramel Macchiato
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">02-11-2024 </div>
+                  <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                  <div class="activity-content">
+                    Ordered from <a class="fw-bold text-dark">Boost</a> - Green Smoothie
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">31-10-2024 </div>
+                  <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                  <div class="activity-content">
+                    Ordered from <a class="fw-bold text-dark">Cafe Cuba</a> - Grilled Chicken Wrap
+                  </div>
+                </div><!-- End activity item-->
+
+                <div class="activity-item d-flex">
+                  <div class="activite-label">25-10-2024</div>
+                  <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                  <div class="activity-content">
+                    Ordered from <a class="fw-bold text-dark">Pizza Hut</a> - Pepperoni Pizza
+                  </div>
+                </div><!-- End activity item-->
+              </div>
+            </div>
+          </div><!-- End Recent Activity -->
+
+          <!-- Restaurant Purchase Traffic Card -->
+          <div class="card">
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+                <!-- Unique class name for Restaurant Purchase Traffic Card filters -->
+                <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-today">Today</a></li>
+                <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-week">This Week</a></li>
+                <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-month">This Month</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body pb-0">
+              <!-- Unique ID for the card title -->
+              <h5 id="restaurantTrafficCardTitle" class="card-title">Your Orders <span id="restaurantTitleSpan">| This Month</span></h5>
+                <script>
+                  // Select only the Restaurant Purchase Traffic Card filter items
+                  const filterItemsRestaurant = document.querySelectorAll('.restaurant-filter');
+
+                  // Select the Restaurant Purchase Traffic Card title span
+                  const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
+
+                  // Add event listeners specifically for Restaurant Purchase Traffic Card filter items
+                  filterItemsRestaurant.forEach(item => {
+                    item.addEventListener('click', function() {
+                      // Get the selected filter option for Restaurant Purchase Traffic Card
+                      const selectedFilter = item.getAttribute('data-filter');
+                      
+                      // Update the text of the card title based on the selected filter
+                      if (selectedFilter === 'restaurant-today') {
+                        cardTitleRestaurantSpan.textContent = ' | Today';
+                      } else if (selectedFilter === 'restaurant-week') {
+                        cardTitleRestaurantSpan.textContent = ' | This Week';
+                      } else if (selectedFilter === 'restaurant-month') {
+                        cardTitleRestaurantSpan.textContent = ' | This Month';
+                      }
+                    });
+                  });
+                </script>
+
+                <div id="purchaseChart" style="height: 400px;"></div> <!-- Set an initial height -->
+                <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+                <script>
+                  document.addEventListener("DOMContentLoaded", () => {
+                    const chartContainer = document.querySelector("#purchaseChart");
+                    const chart = echarts.init(chartContainer);
+
+                    const option = {
+                      tooltip: {
+                        trigger: 'item'
+                      },
+                      legend: {
+                        top: '10cm',
+                        left: 'center',
+                        padding: [0, 0],
+                        margin: [0, 0],
+                        position: 'top',
+                        labels: {
+                          boxWidth: 20,
+                          padding: 15,
+                          font: {
+                            size: 12
+                          }
+                        },
+                        onClick: function(event) {
+                          const chartWidth = this.chart.width;
+                          const chartHeight = this.chart.height;
+
+                          if (chartWidth < 200 || chartHeight < 200) {
+                            this.chart.legend.display = false; // Hides the legend
+                          } else {
+                            this.chart.legend.display = true; // Shows the legend again
+                          }
+                          this.chart.update();
+                        },
+                        display: function() {
+                          const chartWidth = this.chart.width;
+                          const chartHeight = this.chart.height;
+
+                          // Display legend only if chart dimensions are above a certain threshold
+                          return chartWidth >= 200 && chartHeight >= 200;
+                        }
+                      },
+                      series: [{
+                        name: 'Purchases From',
+                        type: 'pie',
+                        radius: ['35%', '60%'],
+                        avoidLabelOverlap: false,
+                        label: {
+                          show: true,
+                          formatter: (params) => {
+                            return `{${params.name}| }`;
+                          },
+                          rich: {
+                            'BurgerKing': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/BurgerKing.png'
+                              },
+                              height: 40,
+                              width: 40
+                            },
+                            'PizzaHut': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/PizzaHut.png'
+                              },
+                              height: 39,
+                              width: 39
+                            },
+                            'CafeCuba': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/CafeCuba.png'
+                              },
+                              height: 50,
+                              width: 50
+                            },
+                            'Ottoman': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/Ottoman.png'
+                              },
+                              height: 40,
+                              width: 80
+                            },
+                            'Boost': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/Boost.png'
+                              },
+                              height: 40,
+                              width: 40
+                            },
+                            'Amami': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/Amami.png'
+                              },
+                              height: 45,
+                              width: 45
+                            },
+                            'Joli': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/Joli.png'
+                              },
+                              height: 45,
+                              width: 45
+                            },
+                            'Starbucks': {
+                              backgroundColor: {
+                                image: 'assets/img/Outlets/Starbucks.png'
+                              },
+                              height: 40,
+                              width: 40
+                            }
+                          }
+                        },
+                        labelLine: {
+                          show: true
+                        },
+                        data: [
+                          { value: 10, name: 'BurgerKing' },
+                          { value: 20, name: 'PizzaHut' },
+                          { value: 30, name: 'CafeCuba' },
+                          { value: 10, name: 'Ottoman' },
+                          { value: 20, name: 'Boost' },
+                          { value: 14, name: 'Amami' },
+                          { value: 25, name: 'Joli' },
+                          { value: 20, name: 'Starbucks' }
+                        ]
+                      }],
+                    };
+                    // Set the chart options
+                    chart.setOption(option);
+                    // Make the chart responsive by resizing it when the window changes size
+                    window.addEventListener('resize', () => {
+                      chart.resize();
+                    });
+                  });
+                </script>
+              </div>
+            </div>
+            <!-- End Restaurant Purchase Traffic -->
+
+        </div><!-- End Right side columns --> 
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer dark-background">
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-geo-alt icon"></i>
+          <div class="address">
+            <h4>Address - Campus Hub Piazza</h4>
+            <p>Roberto Ranieri Costagut Street</p>
+            <p>Msida, MSD 2080, Malta</p>
+            <p></p>
+          </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-telephone icon"></i>
+          <div>
+            <h4>Contact</h4>
+            <p>
+              <strong>Phone:</strong> <span>+356 23167700</span><br>
+              <strong>Email:</strong> <span>hello@campushubmalta.com</span><br>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-clock icon"></i>
+          <div>
+            <h4>Opening Hours</h4>
+            <p>
+              <strong>Mon-Fri:</strong> <span>8:30 - 23:00</span><br>
+              <strong>Sat-Sun</strong>: <span>12:00 - 23:00</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 d-flex">
+          <i class="bi bi-people icon"></i> 
+          <div>
+            <h4>Follow Us</h4>
+              <div class="social-links d-flex">
+                <a href="https://www.facebook.com/CampusHubMalta" class="facebook" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://www.instagram.com/campushubmalta/" class="instagram" target="_blank" rel="noopener noreferrer">
+                  <i class="bi bi-instagram"></i>
+                </a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span><strong> Byte Bite-AI </strong><span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href = "mailto: andrea.f.lucas.22@um.edu.mt" target="_blank" style="font-size: 15px;">Andrea Filiberto lucas</a>
+        & <a href = "mailto: sean.muscat.22@um.edu.mt" target="_blank" style="font-size: 15px;">Sean David Muscat</a>
+      </div>
+      <div class="credits">
+        Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
+      </div>
+    </div>
+  </footer>
+  
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template Main JS File -->
+   <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+
+</body>
+</html>
