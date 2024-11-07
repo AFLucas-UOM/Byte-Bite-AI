@@ -33,13 +33,12 @@ By integrating intelligent dietary recommendations, Byte Bite-AI hopes to create
   <img src="assets/img/Outlets/CafeCuba.png" alt="Cafe Cuba" height="100"/>
   <img src="assets/img/Outlets/Boost.png" alt="Boost" height="100"/>
   <img src="assets/img/Outlets/Amami.png" alt="Amami" height="100"/>
-  <img src="assets/img/Outlets/Joli.png" alt="J'olli" height="100"/>
+  <img src="assets/img/Outlets/Joli.png" alt="J'oli" height="100"/>
   <img src="assets/img/Outlets/Starbucks.png" alt="Starbucks" height="100"/>
   <img src="assets/img/Outlets/Ottoman.png" alt="Ottoman" height="100"/>
 </p>
 
-## Installation
-Clone the repository:
+## Clone the repository:
   ```bash
     git clone https://github.com/AFLucas-UOM/Byte-Bite-AI.git
   ```
