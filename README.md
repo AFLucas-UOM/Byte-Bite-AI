@@ -3,7 +3,7 @@
 **Byte Bite-AI** is an AI-driven healthy eating assistant designed to provide personalized dietary recommendations to university students, with a special focus on social dining experiences. Built on **Python Flask**, Byte Bite-AI leverages federated learning to ensure user privacy while offering dietary suggestions for a variety of dining options available at Campus Hub, including popular brands such as Burger King, Pizza Hut, Cafe Cuba, and Starbucks.
 
 
-## Promo Video
+## Promo Video - Click Below Logo
 
 [![Watch the video](assets/img/BB_Logo.png)](https://youtu.be/rla5KahQGGI)
 
