@@ -508,35 +508,41 @@
             </div><!-- End Current Weight Card -->
 
             <script>
-              // Retrieve and parse the current user's data directly from localStorage
-              const rawUserData = JSON.parse(localStorage.getItem('currentUser'));
-            
-              // Display the username at the top right
-              const profileNameElement = document.getElementById('profileName');
-              profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error';
-            
-              // Fetch the user data from JSON and match the current user
-              fetch('/static/json/users.json')
-                .then(response => response.json())
-                .then(data => {
-                  // Find the user in JSON data who matches the name in rawUserData
-                  const userData = data.find(user => user.Name.toLowerCase() === rawUserData?.name.toLowerCase());
-            
-                  // If user data is found, update the weight and last update
-                  if (userData) {
-                    document.getElementById('weight').textContent = `${userData.Weight} kg`;
-            
-                    // Optionally, set the current date and time as the last update
-                    const lastUpdate = new Date().toLocaleString();
-                    document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
-                  } else {
-                    console.error('User not found in JSON data');
-                  }
-                })
-                .catch(error => console.error('Error fetching user data:', error));
+            // Retrieve and parse the current user's data directly from localStorage
+            const rawUserData = JSON.parse(localStorage.getItem('currentUser'));
+
+            // Display the username at the top right
+            const profileNameElement = document.getElementById('profileName');
+            profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error';
+
+            // Fetch the user data from JSON and match the current user
+            fetch('/static/json/users.json')
+              .then(response => response.json())
+              .then(data => {
+                // Find the user in JSON data who matches the name in rawUserData
+                const userData = data.find(user => user.Name.toLowerCase() === rawUserData?.name.toLowerCase());
+
+                // If user data is found, update the weight and last update
+                if (userData) {
+                  document.getElementById('weight').textContent = `${userData.Weight} kg`;
+
+                  // Set the current date and time (hour and minute only, in the desired format) as the last update
+                  const options = { 
+                    day: 'numeric', 
+                    month: 'numeric', 
+                    year: 'numeric', 
+                    hour: 'numeric', 
+                    minute: 'numeric', 
+                    hour12: true 
+                  };
+                  const lastUpdate = new Date().toLocaleString('en-GB', options).replace(' am', ' AM').replace(' pm', 'PM').replace('AM', ' AM').replace('PM', ' PM');
+                  document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
+                } else {
+                  console.error('User not found in JSON data');
+                }
+              })
+              .catch(error => console.error('Error fetching user data:', error));
             </script>
-
-
 
             <!-- Current BMI Card -->
             <div class="col-xxl-4 col-md-6">
@@ -576,7 +582,14 @@
                     document.getElementById('bmi').textContent = bmi.toFixed(2);  // Rounded to 2 decimal places
 
                     // Optionally, set the current date and time as the last update
-                    const lastUpdate = new Date().toLocaleString();
+                    const lastUpdate = new Date().toLocaleString('en-GB', { 
+                        day: 'numeric', 
+                        month: 'numeric', 
+                        year: 'numeric', 
+                        hour: 'numeric', 
+                        minute: 'numeric', 
+                        hour12: true 
+                      }).replace('am', 'AM').replace('pm', 'PM').replace('AM', ' AM').replace('PM', ' PM');
                     document.getElementById('bmi-last-update').textContent = `As of: ${lastUpdate}`;
                   } else {
                     console.error('User not found in JSON data');
@@ -585,14 +598,12 @@
                 .catch(error => console.error('Error fetching user data:', error));
             </script>
 
-
             <!-- Total Orders Card -->
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card">
                 <div class="card-body">
                   <!-- Unique ID for the card title -->
                   <h5 id="totalOrdersCardTitle" class="card-title">Total Orders <span id="ordersTitleSpan">| This Week</span></h5>
-
                   <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -606,7 +617,6 @@
                       <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-AT">All Time</a></li>
                     </ul>
                   </div>
-
                   <div class="d-flex align-items-center">
                     <div class="card-icon" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
                       <img src="assets/img/icons/orders.png" alt="Scale Icon" style="width: 60%; height: auto;">
@@ -623,16 +633,12 @@
             <script>
               // Select only the Total Orders Card filter items
               const filterItemsOrders = document.querySelectorAll('.orders-filter');
-            
               // Select the Total Orders Card title span
               const cardTitleOrdersSpan = document.getElementById('ordersTitleSpan');
-            
               // Select the comparison text span for the Total Orders Card
               const comparisonTextSpan = document.getElementById('ordersComparison');
-            
               // Select the element where the total orders will be displayed
               const totalOrdersElement = document.getElementById('totalOrders');
-            
               let ordersData = []; // This will hold the orders data from the JSON file
             
               // Fetch the orders data from the JSON file
