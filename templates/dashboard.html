@@ -359,6 +359,7 @@
                   <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-today">Today</a></li>
                   <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-week">This Week</a></li>
                   <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-month">This Month</a></li>
+                  <li><a class="dropdown-item revenue-filter" href="#" data-filter="revenue-AT">All Time</a></li>
                 </ul>
               </div>
 
@@ -399,6 +400,8 @@
                   revenueCardTitleSpan.textContent = ' | This Week';
                 } else if (selectedFilter === 'revenue-month') {
                   revenueCardTitleSpan.textContent = ' | This Month';
+                } else if (selectedFilter === 'revenue-AT') {
+                  revenueCardTitleSpan.textContent = ' | All Time';
                 }
           
                 // Call the function to update revenue display based on filter
@@ -600,6 +603,7 @@
                       <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-today">Today</a></li>
                       <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-week">This Week</a></li>
                       <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-month">This Month</a></li>
+                      <li><a class="dropdown-item orders-filter" href="#" data-filter="orders-AT">All Time</a></li>
                     </ul>
                   </div>
 
@@ -662,6 +666,10 @@
                     cardTitleOrdersSpan.textContent = ' | This Month';
                     updateOrdersDisplay('month');
                     comparisonTextSpan.textContent = 'XX% less since last month';
+                  } else if (selectedFilter === 'orders-AT') {
+                    cardTitleOrdersSpan.textContent = ' | All Time';
+                    updateOrdersDisplay('all time');
+                    comparisonTextSpan.textContent = 'XX% less since all time';
                   }
                 });
               });
@@ -886,6 +894,7 @@
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-today">Today</a></li>
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-week">This Week</a></li>
                 <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-month">This Month</a></li>
+                <li><a class="dropdown-item restaurant-filter" href="#" data-filter="restaurant-AT">All Time</a></li>
               </ul>
             </div>
           
@@ -944,6 +953,9 @@
                       } else if (selectedFilter === 'restaurant-month') {
                         cardTitleRestaurantSpan.textContent = ' | This Month';
                         updateChart('month');
+                      } else if (selectedFilter === 'restaurant-AT') {
+                        cardTitleRestaurantSpan.textContent = ' | All Time';
+                        updateChart('all time');
                       }
                     });
                   });
