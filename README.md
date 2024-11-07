@@ -27,10 +27,6 @@ By integrating intelligent dietary recommendations, Byte Bite-AI hopes to create
 
 ## Outlets which Byte Bite-AI Works On
 
-Byte Bite-AI provides personalized healthy eating recommendations for the following outlets at Campus Hub:
-
-## Outlets which Byte Bite-AI Works On
-
 <p align="center">
   <img src="assets/img/Outlets/BurgerKing.png" alt="Burger King" height="100"/>
   <img src="assets/img/Outlets/PizzaHut.png" alt="Pizza Hut" height="100"/>
@@ -42,15 +38,7 @@ Byte Bite-AI provides personalized healthy eating recommendations for the follow
   <img src="assets/img/Outlets/Ottoman.png" alt="Ottoman" height="100"/>
 </p>
 
-## Getting Started
-
-### Prerequisites
-
-Byte Bite-AI runs on a Flask backend. To install Flask, use the following command:
-```bash
-  pip install Flask
-```
-### Installation
+## Installation
 Clone the repository:
   ```bash
     git clone https://github.com/AFLucas-UOM/Byte-Bite-AI.git
