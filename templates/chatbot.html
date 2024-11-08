@@ -297,6 +297,7 @@
         }
 
         .bot-icon {
+            min-width: 100%;
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -312,6 +313,7 @@
             padding: 10px;
             max-width: 75%;
             animation: fadeIn 0.5s ease;
+            text-align: right;
         }
 
         .user-icon {
@@ -430,123 +432,195 @@
                 opacity: 1;
             }
         }
+
+        @media (max-width: 768px) {
+            .input-container {
+              width: 90%;
+            }
+            .chatbox {
+              padding: 10px;
+            }
+            .messages {
+              width: 100%;
+            }
+          }
     </style>
 
-    <script>
-        document.getElementById("send-button").addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent page refresh if this is within a form
-            sendMessage();
-        });
+<script>
+  // Ensure browser compatibility for SpeechRecognition
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    document.getElementById('chat-input').placeholder = "Speech recognition not supported by this browser.";
+  }
 
-        document.getElementById("chat-input").addEventListener("keydown", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // Prevent default form submission behavior
-                sendMessage();
-            }
-        });
+  // Initialize SpeechRecognition
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'en-US'; // Set the language for recognition
+  recognition.continuous = false; // Stop after the first recognition
+  recognition.interimResults = true; // Display real-time results
 
-        function sendMessage() {
-            const userInput = document.getElementById("chat-input").value;
-            const inputField = document.getElementById("chat-input");
-            const sendButton = document.getElementById("send-button");
+  // DOM elements
+  const micButton = document.getElementById("mic-button");
+  const sendButton = document.getElementById("send-button");
+  const chatInput = document.getElementById("chat-input");
+  const messageContainer = document.getElementById("message-container");
 
-            if (userInput.trim()) {
-                // Disable send button and change it to a cross
-                sendButton.disabled = true;
-                sendButton.innerHTML = "&#10005;"; // Cross symbol
+  // Handle when speech recognition starts
+  recognition.onstart = function() {
+      micButton.innerHTML = `<i class="bi bi-mic-fill"></i>`; // Change mic icon to indicate listening
+      micButton.style.color = 'green'; // Change mic button color to green
+      chatInput.placeholder = "Listening..."; // Change placeholder to indicate listening
+  };
 
-                // Create user message
-                const userMessage = document.createElement("div");
-                userMessage.classList.add("message", "user-message");
-                userMessage.innerHTML = `
-                    <div class="message-content">
-                        <div class="message-text"><p>${userInput}</p></div>
-                        <div class="message-icon">
-                            <img src="assets2/img/AFL-Logo.png" alt="User Logo" class="user-icon">
-                        </div>
-                    </div>
-                `;
-                
-                // Append the message to the message container
-                const messageContainer = document.getElementById("message-container");
-                if (messageContainer) {
-                    messageContainer.appendChild(userMessage);
-                
-                    // Clear input field
-                    document.getElementById("chat-input").value = "";
-                    
-                    // Scroll to the bottom of the chat
-                    messageContainer.scrollTop = messageContainer.scrollHeight;
+  // Handle when speech recognition ends
+  recognition.onend = function() {
+      micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset mic icon
+      micButton.style.color = '#585B5E'; // Reset mic button color
+      chatInput.placeholder = "Message Byte Bite-AI"; // Reset placeholder text
+  };
 
-                    // Simulate bot response after a short delay
-                    setTimeout(() => {
-                        const botMessage = document.createElement("div");
-                        botMessage.classList.add("message", "bot-message");
-                        botMessage.innerHTML = `
-                            <div class="message-content">
-                                <div class="message-icon">
-                                    <img src="assets/img/faviconBB.png" alt="Byte Bite-AI Logo" class="bot-icon">
-                                </div>
-                                <div class="message-text">
-                                    <p>Chatbot is still in development! Please try again later</p>
-                                </div>
-                            </div>
-                        `;
-                        messageContainer.appendChild(botMessage);
-                        messageContainer.scrollTop = messageContainer.scrollHeight;
-
-                        // Re-enable the send button and change it back to the arrow
-                        sendButton.disabled = false;
-                        sendButton.innerHTML = "↑"; // Reset the button to the arrow
-                    }, 1000); // Bot responds after 1 second
-                } else {
-                    console.error("Message container not found.");
-                }
-            }
-        }
-    </script>
-    <script>
-      // Ensure browser compatibility for SpeechRecognition
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        document.getElementById('chat-input').placeholder = "Speech recognition not supported by this browser.";
+  // Handle speech recognition result
+  recognition.onresult = function(event) {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
       }
+      chatInput.value = transcript; // Set the input field to the recognized speech
+  };
 
-      // Initialize recognition
-      const recognization = new SpeechRecognition();
-      recognization.continuous = false; // Stop after the first recognition
-      recognization.interimResults = true; // Display real-time results
+  // Handle errors during recognition
+  recognition.onerror = function(event) {
+    if (event.error === 'not-allowed') {
+      chatInput.placeholder = "Permission to use the microphone was denied.";
+      micButton.innerHTML = `<i class="bi bi-mic-slash-fill"></i>`; // Show a slashed mic icon
+      micButton.style.color = 'red'; // Change mic button color to red
+    } else {
+      chatInput.placeholder = "Error occurred during speech recognition.";
+    }
+  };
 
-      // Handle the start event
-      recognization.onstart = () => {
-        document.getElementById('chat-input').placeholder = "Listening..."; // Update placeholder during listening
-      };
+  // Request microphone permission before starting speech recognition
+  function requestMicrophonePermission() {
+  // Check if microphone permission has already been granted
+  navigator.permissions.query({ name: 'microphone' }).then(function(result) {
+    if (result.state === 'denied') {
+      // Inform user that microphone permission is denied
+      chatInput.placeholder = "Microphone access is required to use voice commands.";
+      micButton.innerHTML = `<i class="bi bi-mic-mute"></i>`; // Show a slashed icon
+      micButton.style.color = 'red'; // Change mic button color to red
+      micButton.disabled = true; // Disable mic button to prevent further attempts
 
-      // Handle the result event
-      recognization.onresult = (event) => {
-        const transcript = event.results[event.resultIndex][0].transcript;
-        document.getElementById('chat-input').value = transcript; // Fill the input field with the transcript
-        document.getElementById('chat-input').placeholder = "Message Byte Bite-AI"; // Reset placeholder
-      };
+      // Ensure the mic button is still visible but styled appropriately for the denied state
+      micButton.style.opacity = 0.6; // Optional: Reduce opacity to indicate it's disabled
+    } else {
+      // If permission is not denied, continue with the recognition
+      micButton.disabled = false;
+      micButton.style.opacity = 1; // Ensure full opacity if permission is granted
+    }
+  }).catch(function(error) {
+    console.error("Permission error: ", error);
+    chatInput.placeholder = "Unable to check microphone permission.";
+  });
+}
 
-      // Handle errors
-      recognization.onerror = (event) => {
-        if (event.error === 'not-allowed') {
-          document.getElementById('chat-input').placeholder = "Permission to use the microphone was denied.";
-        } else {
-          document.getElementById('chat-input').placeholder = "Error occurred during speech recognition.";
+
+  // Re-prompt user for microphone access if the mic button is clicked again after rejection
+  micButton.addEventListener('click', function() {
+    // If the microphone permission was previously denied, ask again
+    if (micButton.innerHTML.includes('mic-slash-fill')) {
+      navigator.permissions.query({ name: 'microphone' }).then(function(result) {
+        if (result.state === 'denied') {
+          // Prompt the user to grant access again
+          recognition.start(); // Attempt to start recognition again, prompting for microphone access
         }
-      };
-
-      // Function to start speech recognition
-      function runSpeechRecog() {
-        document.getElementById('chat-input').placeholder = "Listening...";
-        recognization.start();
+      });
+    } else {
+      // If the microphone is active and user clicks, stop recognition
+      if (micButton.innerHTML.includes('mic-fill')) {
+        recognition.stop(); // Stop speech recognition immediately
+        micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset the icon to unfilled mic
+        micButton.style.color = '#585B5E'; // Reset color
+      } else {
+        recognition.start(); // Start recognition if mic is available
       }
+    }
+  });
 
-      // Add event listener for the microphone button
-      document.getElementById('mic-button').addEventListener('click', runSpeechRecog);
-    </script>
+  // Handle sending message on Enter or Send Button click
+  sendButton.addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent page refresh if this is within a form
+      sendMessage();
+  });
+
+  chatInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+          event.preventDefault(); // Prevent default form submission behavior
+          sendMessage();
+      }
+  });
+
+  // Send message function
+  function sendMessage() {
+      const userInput = chatInput.value;
+
+      if (userInput.trim()) {
+          // Disable send button and change it to a cross
+          sendButton.disabled = true;
+          sendButton.innerHTML = "&#10005;"; // Cross symbol
+
+          // Create user message
+          const userMessage = document.createElement("div");
+          userMessage.classList.add("message", "user-message");
+          userMessage.innerHTML = `
+              <div class="message-content">
+                  <div class="message-text"><p>${userInput}</p></div>
+                  <div class="message-icon" style="min-width: 10%">
+                      <img src="assets2/img/AFL-Logo.png" alt="User Logo" class="user-icon">
+                  </div>
+              </div>
+          `;
+          
+          // Append the message to the message container
+          if (messageContainer) {
+              messageContainer.appendChild(userMessage);
+
+              // Clear input field
+              chatInput.value = "";
+
+              // Scroll to the bottom of the chat
+              messageContainer.scrollTop = messageContainer.scrollHeight;
+
+              // Simulate bot response after a short delay
+              setTimeout(() => {
+                  const botMessage = document.createElement("div");
+                  botMessage.classList.add("message", "bot-message");
+                  botMessage.innerHTML = `
+                      <div class="message-content">
+                          <div class="message-icon">
+                              <img src="assets/img/faviconBB.png" alt="Byte Bite-AI Logo" class="bot-icon">
+                          </div>
+                          <div class="message-text">
+                              <p>Chatbot is still in development! Please try again later</p>
+                          </div>
+                      </div>
+                  `;
+                  messageContainer.appendChild(botMessage);
+                  messageContainer.scrollTop = messageContainer.scrollHeight;
+
+                  // Re-enable the send button and change it back to the arrow
+                  sendButton.disabled = false;
+                  sendButton.innerHTML = "↑"; // Reset the button to the arrow
+              }, 1000); // Bot responds after 1 second
+          } else {
+              console.error("Message container not found.");
+          }
+      }
+  }
+
+  // Call requestMicrophonePermission to check permission when the page loads
+  requestMicrophonePermission();
+</script>
+
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->

@@ -212,7 +212,9 @@
           <div class="col-xxl-8 col-md-6">
             <div class="card info-card sales-card">
               <div class="card-body">
-                <h5 class="card-title">AI Current Recommendations <span id="current-time">|</span></h5>
+                <h5 class="card-title">
+                  AI Current Recommendations <span id="current-time">|</span>
+                </h5>
 
                 <div class="d-flex align-items-center">
                   <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -224,9 +226,117 @@
                     <span class="text-muted small pt-2 ps-1" id="kj">XX KJ</span>
                   </div>
                 </div>
+
+                <!-- Thumbs up/down buttons positioned at top-right -->
+                <div class="position-absolute top-0 end-0 m-1">
+                  <button id="thumbs-up" class="btn btn-light p-2" title="Like">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                  </button>
+                  <button id="thumbs-down" class="btn btn-light p-2" title="Dislike">
+                    <i class="bi bi-hand-thumbs-down"></i>
+                  </button>
+                </div>
+
+                <!-- Custom Feedback Alert -->
+                <div id="feedback-alert" class="alert custom-feedback-alert" role="alert" style="display: none;">
+                  <span id="feedback-text">You liked the AI suggestion!</span>
+                </div>
+
               </div>
             </div>
           </div><!-- End Current Recommendations Card -->
+
+          <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            const thumbsUpButton = document.getElementById("thumbs-up");
+            const thumbsDownButton = document.getElementById("thumbs-down");
+            const feedbackAlert = document.getElementById("feedback-alert");
+            const feedbackText = document.getElementById("feedback-text");
+
+            thumbsUpButton.addEventListener("click", function() {
+              feedbackAlert.style.display = "block";
+              feedbackText.textContent = "You liked the AI's Recommendation!";
+              feedbackAlert.classList.remove("alert-danger");
+              feedbackAlert.classList.add("alert-success");
+              hideAlertAfterTimeout();
+            });
+
+            thumbsDownButton.addEventListener("click", function() {
+              feedbackAlert.style.display = "block";
+              feedbackText.textContent = "You disliked the AI's Recommendation!";
+              feedbackAlert.classList.remove("alert-success");
+              feedbackAlert.classList.add("alert-danger");
+              hideAlertAfterTimeout();
+            });
+
+            // Function to hide the alert after 5 seconds
+            function hideAlertAfterTimeout() {
+              setTimeout(function() {
+                feedbackAlert.style.display = "none";
+              }, 3000); // 5 seconds
+            }
+          });
+          </script>
+
+          <style>
+          /* Unique styles for the custom feedback alert */
+          .custom-feedback-alert {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(46, 109, 66, 0.558);
+            z-index: 9999; /* Ensure the alert appears above other content */
+            display: none; /* Hidden by default */
+            transition: opacity 0.5s ease-out;
+            background-color: var(--accent-color); /* Default background color */
+            text-align: center;
+            color: white;
+          }
+
+          .custom-feedback-alert.alert-danger {
+            box-shadow: 0 4px 6px rgba(109, 46, 46, 0.558);
+            background-color: #b73a3a; /* Dark red for dislike */
+          }
+
+
+          .custom-feedback-alert strong {
+            font-weight: bold;
+          }
+
+          /* Thumbs up/down buttons styling */
+          #thumbs-up{
+            font-size: 1.5rem; /* Adjust size of the thumbs icons */
+            border: none; /* Remove default border */
+            background-color: transparent; /* Make background transparent */
+            color: var(--accent-color); /* Use accent color for buttons */
+            transition: transform 0.2s; /* Smooth scaling transition */
+            margin-right: 0.00000000000005px; /* Reduce space between the buttons */
+          }
+
+          #thumbs-down {
+            font-size: 1.5rem; /* Adjust size of the thumbs icons */
+            border: none; /* Remove default border */
+            background-color: transparent; /* Make background transparent */
+            color: var(--accent-color); /* Use accent color for buttons */
+            transition: transform 0.2s; /* Smooth scaling transition */
+            margin-right: 10px; /* Reduce space between the buttons */
+          }
+
+          #thumbs-up:hover, #thumbs-down:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+            cursor: pointer; /* Pointer cursor on hover */
+          }
+
+          /* Adjust button gap */
+          .position-absolute .btn {
+            margin-right: 2px; /* Reduced gap between the thumbs buttons */
+          }
+          </style>
 
           <script>
             async function loadRecommendation() {
