@@ -789,19 +789,22 @@
               function updateOrdersDisplay(period) {
                 const currentOrdersCount = getOrdersCountForPeriod(period);
                 const previousOrdersCount = getOrdersCountForPreviousPeriod(period);
-            
+
                 // Display the current order count
                 totalOrdersElement.textContent = `${currentOrdersCount} orders`;
-            
+
                 if (period !== 'all time') {
                   // Calculate percentage change if the period is not 'all time'
                   const percentageChange = calculatePercentageChange(currentOrdersCount, previousOrdersCount);
-            
-                  // Update the comparison text
+
+                  // Check if the period is 'Today' to display 'since yesterday'
+                  let comparisonPeriod = (period.toLowerCase() === 'today') ? 'yesterday' : `last ${period}`;
+
+                  // Update the comparison text based on the percentage change
                   if (percentageChange < 0) {
-                    comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since last ${period}`;
+                    comparisonTextSpan.textContent = `${Math.abs(percentageChange)}% less since ${comparisonPeriod}`;
                   } else if (percentageChange > 0) {
-                    comparisonTextSpan.textContent = `${percentageChange}% more since last ${period}`;
+                    comparisonTextSpan.textContent = `${percentageChange}% more since ${comparisonPeriod}`;
                   } else {
                     comparisonTextSpan.textContent = `No % change in orders`;
                   }
@@ -809,8 +812,7 @@
                   // For 'all time', no comparison is shown
                   comparisonTextSpan.textContent = '';
                 }
-              }
-            
+}           
               // Function to count the orders for the current period (Today, Week, Month, or All Time)
               function getOrdersCountForPeriod(period) {
                 const today = new Date();

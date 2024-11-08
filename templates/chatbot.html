@@ -505,7 +505,7 @@
   navigator.permissions.query({ name: 'microphone' }).then(function(result) {
     if (result.state === 'denied') {
       // Inform user that microphone permission is denied
-      chatInput.placeholder = "Microphone access is required to use voice commands.";
+      chatInput.placeholder = "Microphone access is required to use text-to-speech.";
       micButton.innerHTML = `<i class="bi bi-mic-mute"></i>`; // Show a slashed icon
       micButton.style.color = 'red'; // Change mic button color to red
       micButton.disabled = true; // Disable mic button to prevent further attempts
