@@ -3,5 +3,8 @@
     "os": "os",
     "json": "json",
     "subprocess": "subprocess",
-    "sys": "sys"
+    "sys": "sys",
+    "importlib": "importlib",
+    "time": "time",
+    "logging": "logging"
 }
