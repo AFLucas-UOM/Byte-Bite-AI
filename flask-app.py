@@ -2,7 +2,7 @@ import json
 import importlib
 import subprocess
 import sys
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request, jsonify
 import os
 
 # ANSI escape codes for colored output
@@ -20,7 +20,7 @@ def check_and_install_libraries(libraries):
             print(f"[{RED}✖{RESET}] Library '{lib}' is not installed. Installing...")
             subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
 
-# Load libraries from the JSON file
+# Load libraries from JSON
 def load_libraries_from_json(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -30,13 +30,9 @@ def load_libraries_from_json(file_path):
         print(f"[{RED}✖{RESET}] JSON file '{file_path}' not found!")
         return {}
 
-# Define the path to the JSON file
+# Define path to JSON file and load libraries
 json_file_path = 'static/json/lib.json'
-
-# Load the libraries from the JSON file
 libraries = load_libraries_from_json(json_file_path)
-
-# If libraries are found in the JSON file, check and install them
 if libraries:
     check_and_install_libraries(libraries)
 else:
@@ -44,12 +40,11 @@ else:
 
 app = Flask(__name__)
 
-# Serve files from the 'assets' folder
+# Serve files from 'assets' and 'assets2' folders
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     return send_from_directory(os.path.join(app.root_path, 'assets'), filename)
 
-# Serve files from the 'assets2' folder
 @app.route('/assets2/<path:filename>')
 def serve_assets2(filename):
     return send_from_directory(os.path.join(app.root_path, 'assets2'), filename)
@@ -63,6 +58,34 @@ def index():
 def chatbot():
     return render_template('chatbot.html')
 
+# Define the function to interact with Ollama
+def query_ollama(prompt):
+    try:
+        print(f"Sending prompt to Ollama: {prompt}")  # Debugging log
+        result = subprocess.run(
+            ['ollama', 'run', 'tinyllama:1.1b-chat'],
+            input=prompt,
+            capture_output=True, text=True, shell=True
+        )
+        response = result.stdout.strip()
+        if result.stderr:
+            print(f"Error output: {result.stderr}")
+        print(f"Ollama response: {response}")
+        return response
+    except Exception as e:
+        print(f"Error querying Ollama: {str(e)}")
+        return f"Error querying Ollama: {str(e)}"
+
+# Define the chatbot API endpoint
+@app.route("/chatbot", methods=["POST"])
+def chatbot_api():
+    user_input = request.json.get("prompt", "")
+    print(f"Received prompt from user: {user_input}")
+    response = query_ollama(user_input)
+    print(f"Sending response back to user: {response}")
+    return jsonify({"response": response})
+
+# Additional routes
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
@@ -83,7 +106,7 @@ def login():
 def sign_up():
     return render_template('sign-up.html')
 
-# Custom error handler for 404 Not Found
+# Error handler for 404
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
