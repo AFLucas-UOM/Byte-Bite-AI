@@ -178,4 +178,4 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     # Run the app without debug-level logs from Flask
-    app.run(debug=True, use_reloader=False) 
+    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=2000)
