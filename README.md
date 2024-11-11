@@ -43,6 +43,11 @@ By integrating intelligent dietary recommendations, Byte Bite-AI hopes to create
     git clone https://github.com/AFLucas-UOM/Byte-Bite-AI.git
   ```
 
+## To Start the Server for Local Devices
+  ```bash
+  flask --app flask-app run --host=0.0.0.0 --port=2000
+  ```
+
 ## Acknowledgments
 
 This project was developed as part of the `ICS3211` course at the `University of Malta`.
