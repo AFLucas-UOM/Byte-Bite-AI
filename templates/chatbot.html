@@ -517,7 +517,7 @@
   navigator.permissions.query({ name: 'microphone' }).then(function(result) {
     if (result.state === 'denied') {
       // Inform user that microphone permission is denied
-      chatInput.placeholder = "Microphone access is required to use text-to-speech.";
+      chatInput.placeholder = "Microphone access is required to use NLW.";
       micButton.innerHTML = `<i class="bi bi-mic-mute"></i>`; // Show a slashed icon
       micButton.style.color = 'red'; // Change mic button color to red
       micButton.disabled = true; // Disable mic button to prevent further attempts
@@ -729,6 +729,17 @@
         Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
       </div>
     </div>
+    <style>
+      /* Hide footer on mobile view */
+    @media (max-width: 767px) {
+      #footer {
+        display: none;
+      }
+      #chat-input {
+        width: 100%;
+      }
+    }
+    </style>
   </footer>
 
   <!-- Vendor JS Files -->
