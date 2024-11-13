@@ -4,11 +4,31 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Sign Up - Byte Bite-AI</title>
+
     <!-- Favicons -->
-    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
-    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
-  
-    <!-- Fonts -->
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <script>
+        // Function to determine if it's dark mode or past sunset
+        function updateFaviconBasedOnPreferences() {
+        const hour = new Date().getHours();
+        const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isNightTime = hour >= 18;  // past 18:00
+    
+        const iconFile = (isDarkMode || isNightTime) ? 'faviconBBDark.png' : 'faviconBB.png';
+        
+        // Update the favicon and apple-touch-icon
+        document.getElementById('favicon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
+        document.getElementById('apple-touch-icon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
+        }
+    
+        // Run on page load
+        window.onload = updateFaviconBasedOnPreferences;
+    
+        // Update the favicon if the user changes their color scheme
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFaviconBasedOnPreferences);
+    </script>
+    
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">

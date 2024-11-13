@@ -7,8 +7,28 @@
     <title>Beta - Byte Bite-AI</title>
     
     <!-- Favicons -->
-    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="icon">
-    <link href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" rel="apple-touch-icon">
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <script>
+      // Function to determine if it's dark mode or past sunset
+      function updateFaviconBasedOnPreferences() {
+        const hour = new Date().getHours();
+        const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isNightTime = hour >= 18;  // past 18:00
+    
+        const iconFile = (isDarkMode || isNightTime) ? 'faviconBBDark.png' : 'faviconBB.png';
+        
+        // Update the favicon and apple-touch-icon
+        document.getElementById('favicon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
+        document.getElementById('apple-touch-icon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
+      }
+    
+      // Run on page load
+      window.onload = updateFaviconBasedOnPreferences;
+    
+      // Update the favicon if the user changes their color scheme
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFaviconBasedOnPreferences);
+    </script>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
