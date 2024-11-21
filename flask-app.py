@@ -59,7 +59,7 @@ app.permanent_session_lifetime = timedelta(minutes=60)  # Session expiry after 6
 
 
 USER_JSON_PATH = os.path.join(app.static_folder, 'json/credentials.json')  # Path to 'static/credentials.json'
-DEFAULT_PFP = 'default.png'  # Default Profile Picture
+DEFAULT_PFP = 'static/img/PFPs/default.png'  # Default Profile Picture
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB limit for profile pictures
 
@@ -238,7 +238,11 @@ def login():
                     "name": user['name']
                 })
             else:
-                return jsonify({"success": False, "message": "Invalid credentials"})
+                user_check = check_email(email)
+                if not user_check:
+                    return jsonify({"success": False, "message": "Email not found"})
+                else:
+                    return jsonify({"success": False, "message": "Incorrect password"})
         
         return jsonify({"success": False, "message": "Request must be JSON"})
     

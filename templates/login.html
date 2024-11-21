@@ -60,9 +60,16 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
+        .password-container .bi-eye-slash {
+            color: var(--default-color); /* bi-eye-slash color */
+        }
+        .password-container .bi-eye {
+            color: var(--accent-color); /* bi-eye color */
+        }
         .error-message {
             color: red;
             font-size: 14px;
+            font-weight: bold; /* Make error message bold */
         }
         .success-message {
             color: green;
@@ -81,6 +88,24 @@
         button.btn:hover {
             background-color: #0056b3;
         }
+
+        /* Focus styling for input fields */
+        input:focus, textarea:focus {
+            border: 1px solid var(--accent-color) !important; /* Change border color to accent color */
+            outline: none !important; /* Remove default focus outline */
+            box-shadow: none !important; /* Ensure no shadow appears */
+        }
+
+        /* Remove the default Google blue highlight */
+        input:focus-visible, textarea:focus-visible {
+            outline: none !important; /* Remove the outline commonly shown in Google Chrome */
+        }
+
+        /* Remove default blue focus glow in WebKit-based browsers */
+        input:focus, textarea:focus {
+            outline: none !important; 
+            box-shadow: none !important;
+        }
     </style>
 </head>
 
@@ -91,7 +116,7 @@
             <a href="/" class="logo-link">
                 <img src="assets/img/BB_Logo.png" alt="Byte Bite-AI Logo" class="logo">
             </a>
-            <h2>Welcome Back</h2>
+            <h2>Welcome Back!</h2>
             <p id="message" class="mt-3" style="padding-top: 2px; padding-bottom: 2px;"></p>
             <form id="loginForm">
                 <div class="mb-3">
@@ -101,10 +126,16 @@
                     <input type="password" id="password" class="form-control" placeholder="Password" required>
                     <i id="toggle-password" class="bi bi-eye-slash eye-icon"></i>
                 </div>
-                <div style="display: flex; align-items: center; margin-top: 10px;">
-                    <input type="checkbox" id="rememberMe" name="rememberMe" style="transform: scale(0.7);">
-                    <label for="rememberMe" style="font-size: 14px; cursor: pointer; margin-left: 5px;">Remember Me</label>
-                </div>
+                <div style="display: flex; align-items: center; margin-top: 10px; gap: 5px;">
+                    <input type="checkbox" 
+                           id="rememberMe" 
+                           name="rememberMe" 
+                           style="transform: scale(1.0); cursor: pointer; accent-color: var(--accent-color); margin-bottom: 15px; margin-left: 3.5px;">
+                    <label for="rememberMe" 
+                           style="font-size: 15px; font-family: var(--nav-font); cursor: pointer; color: var(--nav-font); padding-bottom: 15px;">
+                        Remember Me
+                    </label>
+                </div>                
                 <button type="submit" class="btn">Log In</button>
             </form>
             <p class="custom-login-text mt-3">New here? <a href="/signup">Sign Up Now</a></p>
@@ -146,7 +177,7 @@
                 const data = await response.json();
                 if (data.success) {
                     // Store only the user's full name in localStorage
-                    localStorage.setItem('currentuser', data.name);  // Only save the name
+                    localStorage.setItem('BBAIcurrentuser', data.name);  // Only save the name
 
                     // Redirect to home page
                     window.location.href = "/dashboard";
@@ -184,35 +215,19 @@
 
         // Toggle password visibility
         togglePasswordIcon.addEventListener('click', () => {
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
+            const passwordType = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = passwordType;
+
+            if (passwordType === 'password') {
                 togglePasswordIcon.classList.remove("bi-eye-slash");
                 togglePasswordIcon.classList.add("bi-eye");
             } else {
-                passwordField.type = "password";
                 togglePasswordIcon.classList.remove("bi-eye");
                 togglePasswordIcon.classList.add("bi-eye-slash");
             }
         });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const currentHour = new Date().getHours();
-            const isNightTime = currentHour >= 18 || currentHour < 5;
-
-            // Get the favicon and apple-touch-icon elements
-            const favicon = document.getElementById("favicon");
-            const appleTouchIcon = document.getElementById("apple-touch-icon");
-
-            if (favicon && appleTouchIcon) {
-                // Switch icons based on the time
-                const darkFavicon = favicon.getAttribute("data-dark-icon");
-                const lightFavicon = favicon.getAttribute("data-light-icon");
-
-                const newIcon = isNightTime ? darkFavicon : lightFavicon;
-                favicon.setAttribute("href", newIcon);
-                appleTouchIcon.setAttribute("href", newIcon);
-            }
-        });
     </script>
+    <!-- Main JS -->
+    <script src="{{ url_for('serve_assets', filename='js/main.js') }}"></script>
 </body>
 </html>
