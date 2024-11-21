@@ -1,41 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Chatbot - Byte Bite-AI</title>
+  <title>Chatbot- Byte Bite-AI</title>
 
-    <!-- Favicons -->
-    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
-          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
-          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
-          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
-          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-          const favicon = document.getElementById("favicon");
-          const appleIcon = document.getElementById("apple-touch-icon");
-
-          // Function to update the icons based on the theme
-          const updateIcons = () => {
-              const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
-              const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
-              favicon.href = iconSrc;
-              appleIcon.href = iconSrc;
-          };
-
-          // Update the icon on initial load
-          updateIcons();
-
-          // Listen for changes to the preferred color scheme (light/dark)
-          const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-          mediaQuery.addEventListener('change', updateIcons);
-      });
-    </script>
-  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -46,7 +23,7 @@
   <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-
+  
   <!-- Main CSS File (DASHBOARD) -->
   <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
 
@@ -54,153 +31,130 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
   
 </head>
 
 <body>
-  <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top d-flex align-items-center">
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="#" class="logo d-flex align-items-center">
-        <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
-        <h1 class="sitename" onclick="location.reload();">
-          <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
-        </h1>
-      </a>      
-    </div><!-- End Logo -->
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#" class="logo d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
+      <h1 class="sitename" onclick="location.reload();">
+        <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+      </h1>
+    </a>      
+  </div><!-- End BBAI-Logo -->
 
-    <nav class="header-nav ms-auto">
-      <ul class="d-flex align-items-center">
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        <!-- Profile Image Icon -->
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <!-- Correctly reference the image path -->
+          <img src="{{ profile_pic }}" alt="Profile" class="rounded-circle">
+          <!-- Placeholder span for the user's name -->
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em;">Loading... </span>
+        </a><!-- End Profile Image Icon -->
+        
+        <script>
+          // Check if 'BBAIcurrentuser' exists in localStorage
+          const currentUser = localStorage.getItem('BBAIcurrentuser');
 
-        <li class="nav-item d-block d-lg-none">
-          <a class="nav-link nav-icon search-bar-toggle " href="#">
-            <i class="bi bi-search"></i>
-          </a>
-        </li><!-- End Search Icon-->
+          if (currentUser) {
+            // Split the full name into an array and get the first part (first name)
+            const firstName = currentUser.split(' ')[0];
+            // Update the span text with the first name
+            document.getElementById('profileName').textContent = firstName;
+          } else {
+            // If no user is found, keep the default "Loading..."
+            document.getElementById('profileName').textContent = 'Walter Error';
+          }
+        </script>
+        
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/in-dev">
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/faqs">
+              <i class="ri-question-mark"></i>
+              <span>Need Help</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>         
+          </li><!-- End Profile Nav -->
+        </ul>
+      </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
 
-          <!-- Profile Image Icon -->
-          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="assets2/img/AFL-Logo.png" alt="Profile" class="rounded-circle">
-            <!-- Placeholder span for the user's name -->
-            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 2.5em">Loading User</span>
-          </a><!-- End Profile Image Icon -->
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard" aria-label="Dashboard" aria-expanded="false">
+        <i class="rbi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
 
-          <script>
-            // Retrieve the current user's data from localStorage
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/in-dev" aria-label="My Profile" aria-expanded="false">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
 
-            // Check if the currentUser exists and update the profile name
-            if (currentUser && currentUser.name) {
-              document.getElementById('profileName').textContent = currentUser.name;
-            } else {
-              document.getElementById('profileName').textContent = 'Walter Error'; // Default to 'Guest' if no user is logged in
-            }
-          </script>
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="Chatbot">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('in_dev') }}">
-                <i class="bi bi-person"></i>
-                <span>My Profile</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('faqs') }}">
-                <i class="ri-question-mark"></i>
-                <span>Need Help</span>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/in-dev" aria-label="AR-View" aria-expanded="false">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End AR-View Page Nav -->
 
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Sign Out</span>
-              </a>
-            </li>
-            <script>
-              function signOut() {
-                  // Remove the current user login status
-                  localStorage.removeItem('currentUser'); // assuming 'currentUser' holds the logged-in user info
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
 
-                  // Redirect to index.html after 0.5 seconds
-                  setTimeout(() => {
-                      window.location.href = "{{ url_for('index') }}";
-                  }, 500);
-              }
-            </script>    
-          </ul><!-- End Profile Dropdown Items -->
-        </li><!-- End Profile Nav -->
-
-      </ul>
-    </nav><!-- End Icons Navigation -->
-
-  </header><!-- End Header -->
-
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
-
-    <ul class="sidebar-nav" id="sidebar-nav">
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('dashboard') }}">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-      </li><!-- End FAQs Page Nav -->
-
-      <li class="nav-heading">Pages</li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
-          <i class="bi bi-person"></i>
-          <span>My Profile</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link " href="{{ url_for('chatbot') }}">
-          <div class="icon">
-            <i class="ri-question-answer-line"></i>
-            <span>Chatbot</span>
-          </div>
-        </a>
-      </li><!-- End Chatbot Nav -->
-
-      <li class="nav-heading">Other</li>
-      
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
-          <div class="icon">
-            <i class="ri-qr-code-line"></i>
-            <span>AR-View</span>
-          </div>
-        </a>
-      </li><!-- End AR-View Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('faqs') }}">
-          <div class="icon">
-            <i class="ri-question-mark"></i>
-            <span>FAQs</span>
-          </div>
-        </a>
-        </li><!-- End FAQs Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" onclick="signOut()">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Sign Out</span>
-        </a>
-      </li><!-- End Sign Out Page Nav -->
-    </ul>
-
-  </aside><!-- End Sidebar-->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
 
   <main id="main" class="main-content">
 
@@ -503,6 +457,37 @@
   const chatInput = document.getElementById("chat-input");
   const messageContainer = document.getElementById("message-container");
 
+  // Function to get the current favicon URL (either light or dark)
+  function getCurrentFavicon() {
+      const faviconElement = document.getElementById('favicon');
+      const lightIcon = faviconElement.getAttribute('data-light-icon');
+      const darkIcon = faviconElement.getAttribute('data-dark-icon');
+
+      // Check which icon is currently used and return it
+      const currentFavicon = faviconElement.getAttribute('href') === lightIcon ? lightIcon : darkIcon;
+      return currentFavicon;
+  }
+
+  // Update the bot icon to match the current favicon
+  function updateBotIcon() {
+      const botIcon = document.querySelector('.bot-icon');
+      const currentFavicon = getCurrentFavicon();
+      botIcon.src = currentFavicon; // Update the bot icon's source to the current favicon
+  }
+
+  // Run the function to update the bot icon when the page loads
+  window.addEventListener('DOMContentLoaded', () => {
+      updateBotIcon();  // Set the bot icon based on initial favicon
+  });
+
+  // Add listener to detect favicon changes if needed
+  document.addEventListener('DOMContentLoaded', function() {
+      const favicon = document.getElementById('favicon');
+      if (favicon) {
+          updateBotIcon(); // Set initial icon based on the favicon when the page is loaded
+      }
+  });
+
   // Handle when speech recognition starts
   recognition.onstart = function() {
       micButton.innerHTML = `<i class="bi bi-mic-fill"></i>`; // Change mic icon to indicate listening
@@ -610,14 +595,13 @@
         const userMessage = document.createElement("div");
         userMessage.classList.add("message", "user-message");
         userMessage.innerHTML = `
-            <div class="message-content_user">
-                <div class="message-text_user_input"><p>${userInput}</p></div>
-                <div class="message-icon" style="min-width: 10%">
-                    <img src="assets2/img/AFL-Logo.png" alt="User Logo" class="user-icon">
-                </div>
-            </div>
-        `;
-        
+                <div class="message-content_user">
+                    <div class="message-text_user_input"><p>${userInput}</p></div>
+                    <div class="message-icon" style="min-width: 10%">
+                        <!-- Dynamically load user profile picture -->
+                        <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
+                    </div>
+                </div>`;
         // Append the message to the message container
         if (messageContainer) {
             messageContainer.appendChild(userMessage);
@@ -644,9 +628,10 @@
                 const botMessage = document.createElement("div");
                 botMessage.classList.add("message", "bot-message");
                 botMessage.innerHTML = `
-                    <div class="message-content_bot">
-                        <div class="message-icon_bot">
-                            <img src="assets/img/faviconBB.png" alt="Byte Bite-AI Logo" class="bot-icon">
+                        <div class="message-content_bot">
+                            <div class="message-icon_bot">
+                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+                            </div>
                         </div>
                         <div class="message-text">
                             <p>${botResponse}</p>
@@ -661,9 +646,10 @@
                 const errorMessage = document.createElement("div");
                 errorMessage.classList.add("message", "bot-message");
                 errorMessage.innerHTML = `
-                    <div class="message-content_bot">
-                        <div class="message-icon_bot">
-                            <img src="assets/img/faviconBB.png" alt="Byte Bite-AI Logo" class="bot-icon">
+                        <div class="message-content_bot">
+                            <div class="message-icon_bot">
+                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+                            </div>
                         </div>
                         <div class="message-text">
                             <p>Oops! Something went wrong. Please try again later.</p>
@@ -755,19 +741,8 @@
         Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
       </div>
     </div>
-    <style>
-      /* Hide footer on mobile view */
-    @media (max-width: 767px) {
-      #footer {
-        display: none;
-      }
-      #chat-input {
-        width: 100%;
-      }
-    }
-    </style>
   </footer>
-
+  
   <!-- Vendor JS Files -->
   <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -777,9 +752,9 @@
   <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
 
-  <!-- Template Main JS File -->
-   <script src="assets/js/main.js"></script>
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
   <script src="assets2/js/main.js"></script>
-
+  <script src="assets2/js/dashboard.js"></script>
 </body>
 </html>

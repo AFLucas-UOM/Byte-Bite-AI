@@ -27,18 +27,13 @@
   <!-- Main CSS File (DASHBOARD) -->
   <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
 
-
   <!-- FOR GRAPHS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
-  <script src="assets2/js/main.js"></script>
-  <script src="assets2/js/dashboard.js"></script>
+
 </head>
 
 <body>
@@ -1088,28 +1083,17 @@
   </footer>
   
   <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script> <!-- Might be useless -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets2/vendor/chart.js/chart.umd.js"></script>
   <script src="assets2/vendor/echarts/echarts.min.js"></script>
-  <script src="assets2/vendor/quill/quill.js"></script>  <!-- Might be useless -->
-  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>  <!-- Might be useless -->
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
 
-  <script>
-  // JavaScript to display the current system time with the day of the week
-    function updateTime() {
-      const now = new Date();
-      const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const day = daysOfWeek[now.getDay()];
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
-    }
-            
-    // Update time immediately and then every minute
-    updateTime();
-    setInterval(updateTime, 60000);
-  </script>
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
 </body>
 </html>

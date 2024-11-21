@@ -233,7 +233,18 @@ def in_dev():
 
 @app.route('/chatbot')
 def chatbot():
-    return render_template('chatbot.html')
+    current_user_name = request.cookies.get('BBAIcurrentuser')
+    if current_user_name:
+        user_data = load_credentials()
+        current_user = next((user for user in user_data if user['name'] == current_user_name), None)
+        if current_user:
+            # Attempt to get the profile picture, falling back to 'default.png' if it's unavailable or invalid
+            profile_pic = current_user.get('profile_pic')
+            if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+                profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
+
+            profile_pic_path = f"static/img/PFPs/{profile_pic}"
+            return render_template('chatbot.html', profile_pic=profile_pic_path)
 
 @app.route("/chatbot", methods=["POST"])
 def chatbot_api():

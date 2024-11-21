@@ -1,3 +1,4 @@
+/** Favicon Light & Dark Mode */
 document.addEventListener("DOMContentLoaded", () => {
     const favicon = document.getElementById("favicon");
     const appleIcon = document.getElementById("apple-touch-icon");
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     appleIcon.href = iconSrc;
 });
 
+/** Signout Function */
 function signOut() {
     // Step 1: Clear localStorage
     localStorage.removeItem('BBAIcurrentuser');
@@ -30,6 +32,7 @@ function signOut() {
     window.location.href = "/";
 }
 
+/** Thumbsup & Down Baic Alert */
 document.addEventListener("DOMContentLoaded", function() {
     const thumbsUpButton = document.getElementById("thumbs-up");
     const thumbsDownButton = document.getElementById("thumbs-down");
@@ -59,3 +62,17 @@ document.addEventListener("DOMContentLoaded", function() {
       }, 3000); // 3 seconds
     }
   });
+
+ /** CurrentTime */
+  function updateTime() {
+    const now = new Date();
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const day = daysOfWeek[now.getDay()];
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
+  }
+          
+  // Update time immediately and then every minute
+  updateTime();
+  setInterval(updateTime, 60000);
