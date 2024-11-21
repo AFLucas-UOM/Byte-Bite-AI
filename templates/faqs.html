@@ -6,30 +6,36 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>FAQs - Byte Bite-AI</title>
 
-  <!-- Favicons -->
-  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-  <script>
-    // Function to determine if it's dark mode or past sunset
-    function updateFaviconBasedOnPreferences() {
-      const hour = new Date().getHours();
-      const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isNightTime = hour >= 18;  // past 18:00
-  
-      const iconFile = (isDarkMode || isNightTime) ? 'faviconBBDark.png' : 'faviconBB.png';
-      
-      // Update the favicon and apple-touch-icon
-      document.getElementById('favicon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-      document.getElementById('apple-touch-icon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-    }
-  
-    // Run on page load
-    window.onload = updateFaviconBasedOnPreferences;
-  
-    // Update the favicon if the user changes their color scheme
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFaviconBasedOnPreferences);
-  </script>
-  
+    <!-- Favicons -->
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+          const favicon = document.getElementById("favicon");
+          const appleIcon = document.getElementById("apple-touch-icon");
+
+          // Function to update the icons based on the theme
+          const updateIcons = () => {
+              const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
+              const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+              favicon.href = iconSrc;
+              appleIcon.href = iconSrc;
+          };
+
+          // Update the icon on initial load
+          updateIcons();
+
+          // Listen for changes to the preferred color scheme (light/dark)
+          const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+          mediaQuery.addEventListener('change', updateIcons);
+      });
+    </script>
+    
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
