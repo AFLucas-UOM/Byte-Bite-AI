@@ -248,8 +248,14 @@ def dashboard():
         user_data = load_credentials()
         current_user = next((user for user in user_data if user['name'] == current_user_name), None)
         if current_user:
-            profile_pic = f"static/img/PFPs/{current_user.get('profile_pic', 'default.png')}"
-            return render_template('dashboard.html', profile_pic=profile_pic)
+            # Attempt to get the profile picture, falling back to 'default.png' if it's unavailable or invalid
+            profile_pic = current_user.get('profile_pic')
+            if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+                profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
+
+            profile_pic_path = f"static/img/PFPs/{profile_pic}"
+            return render_template('dashboard.html', profile_pic=profile_pic_path)
+    
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
