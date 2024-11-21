@@ -100,25 +100,34 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Sign Out</span>
-              </a>
-            </li>
+            </a>
             
             <script>
-              function signOut() {
-                  // Remove the current user login status
-                  localStorage.removeItem('currentuser'); // assuming 'currentuser' holds the logged-in user info
-
-                  // Redirect to index.html after 0.5 seconds
-                  setTimeout(() => {
-                      window.location.href = "{{ url_for('index') }}";
-                  }, 500);
-              }
+                function signOut() {
+                    // Step 1: Clear localStorage
+                    localStorage.removeItem('BBAIcurrentuser');
+            
+                    // Step 2: Clear cookies by sending a POST request to '/clear-cookies'
+                    fetch('/clear-cookies', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Cookies cleared');
+                        }
+                    })
+                    .catch(error => console.error('Error clearing cookies:', error));
+            
+                    // Step 3: Redirect to homepage after clearing everything
+                    window.location.href = "/";
+                }
             </script>            
-
-          </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
 
       </ul>

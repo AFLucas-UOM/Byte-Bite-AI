@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 import json, importlib, subprocess, sys, os, time, logging, bleach 
 
 # ======================================== Auto Installer ========================================
-
 # ANSI escape codes for colored output
 GREEN = "\033[92m"
 RED = "\033[91m"
@@ -207,16 +206,17 @@ def check_email():
 @app.route('/clear-cookies', methods=['POST'])
 def clear_cookies():
     resp = make_response('Cookies cleared')
-    resp.delete_cookie('email')
-    resp.delete_cookie('name')
+    resp.delete_cookie('BBAIcurrentuser')
+    resp.delete_cookie('BBAIemail')
+    print('Cookies cleared')
     return resp
 
 @app.route('/signout')
 def signout():
-    session.pop('user', None)
-    resp = make_response(redirect(url_for('index')))
-    resp.set_cookie('email', '', expires=0)
-    resp.set_cookie('name', '', expires=0)
+    session.pop('user', None)  # Clear user session
+    resp = make_response(redirect(url_for('index')))  # Redirect to the homepage after clearing session
+    resp.set_cookie('BBAIemail', '', expires=0)  # Clear the cookies
+    resp.set_cookie('BBAIcurrentuser', '', expires=0)
     return resp
 
 @app.route('/')
@@ -269,8 +269,8 @@ def login():
                     "redirect": url_for('dashboard'),
                     "name": user['name']
                 }))
-                resp.set_cookie('BBAIcurrentuser', user['name'], max_age=timedelta(days=30), httponly=True, path='/')
-                resp.set_cookie('BBAIemail', user['email'], max_age=timedelta(days=30), httponly=True, path='/')
+                resp.set_cookie('BBAIcurrentuser', user['name'], max_age=timedelta(days=30), httponly=False, path='/')
+                resp.set_cookie('BBAIemail', user['email'], max_age=timedelta(days=30), httponly=False, path='/')
                 return resp
             else:
                 return jsonify({"success": False, "message": "Incorrect email or password"})
@@ -313,8 +313,8 @@ def signup():
             save_credentials_pretty(existing_users)
 
             resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
-            resp.set_cookie('BBAIcurrentuser', name, max_age=timedelta(days=30), httponly=True, path='/')
-            resp.set_cookie('BBAIemail', email, max_age=timedelta(days=30), httponly=True, path='/')
+            resp.set_cookie('BBAIcurrentuser', name, max_age=timedelta(days=30), httponly=False, path='/')
+            resp.set_cookie('BBAIemail', email, max_age=timedelta(days=30), httponly=False, path='/')
 
             return resp
         
