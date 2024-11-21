@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - Byte Bite-AI</title>
+
+    <!-- Favicons -->
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('serve_assets', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('serve_assets', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="{{ url_for('serve_assets', filename='css/main.css') }}" rel="stylesheet">
+
+    <style>
+        .signup-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .logo-link {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 250px;
+            padding-top: 1rem;
+        }
+        .password-container {
+            position: relative;
+        }
+        .password-container .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+        }
+        .success-message {
+            color: green;
+            font-size: 1rem;
+        }
+        .eye-icon.active {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="flex-wrapper">
+        <div class="signup-container">
+            <!-- Logo Section -->
+            <a href="/" class="logo-link">
+                <img src="assets/img/BB_Logo.png" alt="Byte Bite-AI Logo" class="logo">
+            </a>
+            <h2>Create Account</h2>
+            <p id="message" class="mt-3" style="padding-top: 2px; padding-bottom: 2px;"></p>
+            <form id="signup-form">
+                <div class="mb-3">
+                    <input type="text" id="name" class="form-control" placeholder="Full Name" required>
+                </div>
+                <div class="mb-3">
+                    <input type="email" id="email" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="mb-3 password-container">
+                    <input type="password" id="password" class="form-control" placeholder="Password" required>
+                    <i id="toggle-password" class="bi bi-eye-slash eye-icon"></i>
+                </div>
+                <div class="mb-3 password-container">
+                    <input type="password" id="confirm-password" class="form-control" placeholder="Confirm Password" required>
+                    <i id="toggle-confirm-password" class="bi bi-eye-slash eye-icon"></i>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+            <p class="mt-3">Already have an account? <a href="/login">Log In</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const favicon = document.getElementById("favicon");
+            const appleIcon = document.getElementById("apple-touch-icon");
+            const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
+
+            const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+            favicon.href = iconSrc;
+            appleIcon.href = iconSrc;
+        });
+
+        const signupForm = document.getElementById('signup-form');
+        const message = document.getElementById('message');
+        const passwordField = document.getElementById('password');
+        const confirmPasswordField = document.getElementById('confirm-password');
+
+        const toggleVisibility = (field, icon) => {
+            const isPassword = field.type === 'password';
+            field.type = isPassword ? 'text' : 'password';
+            icon.classList.toggle('bi-eye-slash', !isPassword);
+            icon.classList.toggle('bi-eye', isPassword);
+        };
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = passwordField.value.trim();
+            const confirmPassword = confirmPasswordField.value.trim();
+
+            if (!validateEmail(email)) return showMessage('Invalid email format.', 'error');
+            if (password.length < 8 || !/\d/.test(password)) {
+                return showMessage('Password must be at least 8 characters long & contain a number.', 'error');
+            }
+            if (password !== confirmPassword) return showMessage('Passwords do not match.', 'error');
+
+            try {
+                const emailCheck = await fetch('/check-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const { exists } = await emailCheck.json();
+                if (exists) return showMessage('Email already exists.', 'error');
+
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        confirmPassword // Include this explicitly in the payload
+                    })
+                });
+
+                const { success, message: serverMessage } = await response.json();
+
+                if (success) {
+                    showMessage('Account created successfully! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = "/dashboard", 2000);
+                } else {
+                    showMessage(serverMessage || 'Signup failed.', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again.', 'error');
+                console.error(error);
+            }
+        });
+
+        const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        const showMessage = (text, type) => {
+            message.textContent = text;
+            message.className = type === 'error' ? 'text-danger' : 'text-success';
+        };
+
+        document.getElementById('toggle-password').addEventListener('click', () => {
+            toggleVisibility(passwordField, event.target);
+        });
+
+        document.getElementById('toggle-confirm-password').addEventListener('click', () => {
+            toggleVisibility(confirmPasswordField, event.target);
+        });
+    </script>
+</body>
+</html>

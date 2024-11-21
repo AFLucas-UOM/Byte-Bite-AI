@@ -2,37 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Byte Bite-AI</title>
 
     <!-- Favicons -->
-    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-    <script>
-        // Function to determine if it's dark mode or past sunset
-        function updateFaviconBasedOnPreferences() {
-        const hour = new Date().getHours();
-        const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isNightTime = hour >= 18;  // past 18:00
-    
-        const iconFile = (isDarkMode || isNightTime) ? 'faviconBBDark.png' : 'faviconBB.png';
-        
-        // Update the favicon and apple-touch-icon
-        document.getElementById('favicon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-        document.getElementById('apple-touch-icon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-        }
-    
-        // Run on page load
-        window.onload = updateFaviconBasedOnPreferences;
-    
-        // Update the favicon if the user changes their color scheme
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFaviconBasedOnPreferences);
-    </script>
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="{{ url_for('serve_assets', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -41,14 +25,11 @@
     <link href="{{ url_for('serve_assets', filename='vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('serve_assets', filename='vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
-    <!-- Main CSS File -->
+    <!-- Main CSS -->
     <link href="{{ url_for('serve_assets', filename='css/main.css') }}" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        .signup-container {
+        .login-container {
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
@@ -65,7 +46,7 @@
             padding-top: 1cm;
             width: 250px;
         }
-
+        
         .password-container {
             position: relative;
         }
@@ -79,18 +60,40 @@
             transform: translateY(-50%);
             cursor: pointer;
         }
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+        .success-message {
+            color: green;
+            font-size: 14px;
+        }
+        button.btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button.btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
 <body>
     <div class="flex-wrapper">
         <div class="signup-container">
-            <!-- Logo section -->
-            <a href="{{ url_for('index') }}" class="logo-link">
-                <img src="assets/img/BB_Logo.png" alt="Byte Bites Logo" class="logo">
+            <!-- Logo Section -->
+            <a href="/" class="logo-link">
+                <img src="assets/img/BB_Logo.png" alt="Byte Bite-AI Logo" class="logo">
             </a>
-            <h2>Get Back In</h2>
-            <form id="signup-form">
+            <h2>Welcome Back</h2>
+            <p id="message" class="mt-3" style="padding-top: 2px; padding-bottom: 2px;"></p>
+            <form id="loginForm">
                 <div class="mb-3">
                     <input type="email" id="email" class="form-control" placeholder="Email" required>
                 </div>
@@ -98,67 +101,117 @@
                     <input type="password" id="password" class="form-control" placeholder="Password" required>
                     <i id="toggle-password" class="bi bi-eye-slash eye-icon"></i>
                 </div>
+                <div style="display: flex; align-items: center; margin-top: 10px;">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" style="transform: scale(0.7);">
+                    <label for="rememberMe" style="font-size: 14px; cursor: pointer; margin-left: 5px;">Remember Me</label>
+                </div>
                 <button type="submit" class="btn">Log In</button>
-                <p class="error-message" id="message"></p>
             </form>
-            <p class="custom-login-text mt-3">New here? <a href="{{ url_for('sign_up') }}">Sign Up Now</a></p>
+            <p class="custom-login-text mt-3">New here? <a href="/signup">Sign Up Now</a></p>
         </div>
-    </div>
-
+    </div>    
     <script>
-        // Toggle password visibility
-        const togglePassword = document.getElementById('toggle-password');
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
         const passwordField = document.getElementById('password');
-        togglePassword.addEventListener('click', () => {
-            const type = passwordField.type === 'password' ? 'text' : 'password';
-            passwordField.type = type;
-            togglePassword.classList.toggle('bi-eye');
-            togglePassword.classList.toggle('bi-eye-slash');
-        });
+        const togglePasswordIcon = document.getElementById('toggle-password');
 
-        document.getElementById('signup-form').addEventListener('submit', function (e) {
-            e.preventDefault();
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();  // Prevent the form from submitting normally
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const message = document.getElementById('message');
+            const rememberMe = document.getElementById('rememberMe').checked; // Get remember me status
 
-            // Email validation
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                message.textContent = 'Please enter a valid email address.';
-                setTimeout(() => message.textContent = '', 4000);
+            // Reset previous messages
+            messageDiv.textContent = '';
+            messageDiv.className = ''; // Reset the class to remove any previous styling
+
+            // Validate email
+            if (!validateEmail(email)) {
+                showMessage("Please enter a valid email.", 'error');
                 return;
             }
 
-            // Password length check
-            if (password.length < 8) {
-                message.textContent = 'Password must be at least 8 characters long.';
-                setTimeout(() => message.textContent = '', 4000);
-                return;
+            try {
+                // Submit login data
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password, rememberMe }),  // Add rememberMe to the request
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Store only the user's full name in localStorage
+                    localStorage.setItem('currentuser', data.name);  // Only save the name
+
+                    // Redirect to home page
+                    window.location.href = "/dashboard";
+                } else {
+                    if (data.message === 'Email not found') {
+                        showMessage("We are not familiar with that email.", 'error');
+                    } else if (data.message === 'Incorrect password') {
+                        showMessage("Incorrect password. Please try again.", 'error');
+                    } else {
+                        showMessage(data.message || "An error occurred. Please try again.", 'error');
+                    }
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                showMessage("An error occurred. Please try again.", 'error');
             }
+        });
 
-            // Retrieve existing users from local storage
-            let users = JSON.parse(localStorage.getItem('users')) || [];
+        // Email validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
 
-            // Check if the email exists in the users array
-            const user = users.find(user => user.email === email);
+        // Display messages
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+        }
 
-            if (!user) {
-                message.textContent = 'Byte Bite-AI doesn\'t know that email.';
-                setTimeout(() => message.textContent = '', 4000);
-                return;
+        // Prevent copying, cutting, and pasting in password field
+        passwordField.addEventListener('copy', (e) => e.preventDefault());
+        passwordField.addEventListener('cut', (e) => e.preventDefault());
+        passwordField.addEventListener('paste', (e) => e.preventDefault());
+
+        // Toggle password visibility
+        togglePasswordIcon.addEventListener('click', () => {
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                togglePasswordIcon.classList.remove("bi-eye-slash");
+                togglePasswordIcon.classList.add("bi-eye");
+            } else {
+                passwordField.type = "password";
+                togglePasswordIcon.classList.remove("bi-eye");
+                togglePasswordIcon.classList.add("bi-eye-slash");
             }
+        });
 
-            // Check if the password matches the stored password
-            if (user.password !== password) {
-                message.textContent = 'Wrong password. Please try again.';
-                setTimeout(() => message.textContent = '', 4000);
-                return;
+        document.addEventListener("DOMContentLoaded", function () {
+            const currentHour = new Date().getHours();
+            const isNightTime = currentHour >= 18 || currentHour < 5;
+
+            // Get the favicon and apple-touch-icon elements
+            const favicon = document.getElementById("favicon");
+            const appleTouchIcon = document.getElementById("apple-touch-icon");
+
+            if (favicon && appleTouchIcon) {
+                // Switch icons based on the time
+                const darkFavicon = favicon.getAttribute("data-dark-icon");
+                const lightFavicon = favicon.getAttribute("data-light-icon");
+
+                const newIcon = isNightTime ? darkFavicon : lightFavicon;
+                favicon.setAttribute("href", newIcon);
+                appleTouchIcon.setAttribute("href", newIcon);
             }
-
-            // If email and password are correct, save current user and redirect
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            window.location.href = "{{ url_for('dashboard') }}";
         });
     </script>
 </body>
