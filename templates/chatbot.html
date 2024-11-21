@@ -202,18 +202,29 @@
             flex-direction: column;
             gap: 10px;
         }
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center; /* Center content vertically */
+          align-items: center; /* Center content horizontally */
+          width: 100%; /* Ensure full width */
+          margin: 0; /* Remove any default margin */
+          padding: 0; /* Remove any padding */
+      }
 
-        /* Chatbox Container */
-        .chatbox {
-            display: flex;
-            flex-direction: column;
-            padding: 20px 200px;
-            border-radius: 10px;
-            background-color: white;
-            height: calc(60vh - 205px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
+      /* Chatbox Container */
+      .chatbox {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          padding: 20px 200px;
+          background-color: white;
+            height: calc(60vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
             position: relative;
             overflow: hidden; /* Prevents the chatbox itself from growing */
-        }
+          width: 110%;
+          justify-content: center;
+      }
 
 
         /* Messages Container - Fixed height with scrolling */
@@ -675,74 +686,37 @@
 </script>
 
   </main><!-- End #main -->
-
+  
   <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer dark-background">
-
-    <div class="container">
-      <div class="row gy-3">
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-geo-alt icon"></i>
-          <div class="address">
-            <h4>Address - Campus Hub Piazza</h4>
-            <p>Roberto Ranieri Costagut Street</p>
-            <p>Msida, MSD 2080, Malta</p>
-            <p></p>
-          </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-telephone icon"></i>
-          <div>
-            <h4>Contact</h4>
-            <p>
-              <strong>Phone:</strong> <span>+356 23167700</span><br>
-              <strong>Email:</strong> <span>hello@campushubmalta.com</span><br>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-clock icon"></i>
-          <div>
-            <h4>Opening Hours</h4>
-            <p>
-              <strong>Mon-Fri:</strong> <span>8:30 - 23:00</span><br>
-              <strong>Sat-Sun</strong>: <span>12:00 - 23:00</span>
-            </p>
-          </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-people icon"></i> 
-          <div>
-            <h4>Follow Us</h4>
-              <div class="social-links d-flex">
-                <a href="https://www.facebook.com/CampusHubMalta" class="facebook" target="_blank" rel="noopener noreferrer">
-                  <i class="bi bi-facebook"></i>
-                </a>
-                <a href="https://www.instagram.com/campushubmalta/" class="instagram" target="_blank" rel="noopener noreferrer">
-                  <i class="bi bi-instagram"></i>
-                </a>
-              </div>
-          </div>
-        </div>
-      </div>
+  <footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
+    <div class="credits">
+      Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
     </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span><strong> Byte Bite-AI </strong><span>All Rights Reserved</span></p>
-      <div class="credits">
-        Designed by <a href = "mailto: andrea.f.lucas.22@um.edu.mt" target="_blank" style="font-size: 15px;">Andrea Filiberto lucas</a>
-        & <a href = "mailto: sean.muscat.22@um.edu.mt" target="_blank" style="font-size: 15px;">Sean David Muscat</a>
-      </div>
-      <div class="credits">
-        Template from <a href="https://bootstrapmade.com/" style="font-size: 14px;">Bootstrap</a>
-      </div>
+    <div class="credits">
+      Template from <a href="https://bootstrapmade.com/">Bootstrap</a>
     </div>
   </footer>
-  
+
+  <style>
+    /* Style the footer to stay at the bottom */
+    html, body {
+        height: 100%; /* Ensure full page height */
+        display: flex;
+        flex-direction: column; /* Stack content vertically */
+        margin: 0;
+        padding: 0;
+    }
+    @media (min-width: 1200px) and (max-width: 1600px) {
+      .header~main {
+        margin-left: 90px;
+      }
+
+      .header~main .hero {
+        margin-left: -160px;
+        width: 100vw;
+      }
+    }
+    </style>
   <!-- Vendor JS Files -->
   <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

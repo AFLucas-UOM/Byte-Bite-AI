@@ -747,64 +747,35 @@ h6 {
 # Global Footer
 --------------------------------------------------------------*/
 .footer {
-  --heading-font: var(--default-font);
   color: var(--default-color);
-  margin-top: 1cm;
-  background-color: #1F1F24; /* Use the specified color */
+  background-color: var(--background-color);
   font-size: 14px;
-  padding: 40px 0;
-  position: relative;
-  width: auto; /* Ensure it takes the full width */
+  text-align: center;
+  padding: 25px 0;
+  position: fixed;
+  bottom: 0;
+  width: auto;
+  margin-top: auto; /* Push the footer to the bottom */
 }
 
-.footer .icon {
-  color: var(--accent-color);
-  margin-right: 15px;
-  font-size: 24px;
-  line-height: 0;
-}
-
-.footer h4 {
-  font-size: 16px;
+.footer h3 {
+  font-size: 36px;
   font-weight: 700;
-  margin-bottom: 15px;
+  position: relative;
+  padding: 0;
+  margin: 0 0 15px 0;
 }
 
-.footer .address p {
-  margin-bottom: 0px;
-}
-
-.footer .social-links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--default-color), transparent 50%);
-  font-size: 16px;
-  color: color-mix(in srgb, var(--default-color), transparent 50%);
-  margin-right: 10px;
-  transition: 0.3s;
-}
-
-.footer .social-links a:hover {
-  color: var(--accent-color);
-  border-color: var(--accent-color);
-}
-
-.footer .copyright {
-  padding-top: 20px;
-  border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
-}
-
-.footer .copyright p {
-  margin-bottom: 0;
+.footer p {
+  font-size: 15px;
+  font-style: italic;
+  padding: 0;
+  margin: 0 0 30px 0;
 }
 
 .footer .credits {
-  margin-top: 5px;
   font-size: 13px;
+  padding-top: 5px;
 }
 
 /* Ensure the body takes full height to push footer to bottom */
