@@ -4,31 +4,43 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta name="description" content="Byte Bite-AI is your AI-powered assistant for personalized healthy eating, helping you make smarter dietary choices at Campus Hub restaurants.">
+  <meta name="keywords" content="healthy eating, AI assistant, personalized recommendations, Campus Hub, restaurants">
+  <meta name="author" content="Byte Bite-AI Team">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   <title>Home - Byte Bite-AI</title>
   
-  <!-- Favicons -->
-  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-  <script>
-    // Function to determine if it's dark mode or past sunset
-    function updateFaviconBasedOnPreferences() {
-      const hour = new Date().getHours();
-      const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isNightTime = hour >= 18;  // past 18:00
-  
-      const iconFile = (isDarkMode || isNightTime) ? 'faviconBBDark.png' : 'faviconBB.png';
-      
-      // Update the favicon and apple-touch-icon
-      document.getElementById('favicon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-      document.getElementById('apple-touch-icon').setAttribute('href', '{{ url_for("serve_assets", filename="img/") }}' + iconFile);
-    }
-  
-    // Run on page load
-    window.onload = updateFaviconBasedOnPreferences;
-  
-    // Update the favicon if the user changes their color scheme
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateFaviconBasedOnPreferences);
-  </script>
+    <!-- Favicons -->
+    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+          const favicon = document.getElementById("favicon");
+          const appleIcon = document.getElementById("apple-touch-icon");
+
+          // Function to update the icons based on the theme
+          const updateIcons = () => {
+              const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
+              const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+              favicon.href = iconSrc;
+              appleIcon.href = iconSrc;
+          };
+
+          // Update the icon on initial load
+          updateIcons();
+
+          // Listen for changes to the preferred color scheme (light/dark)
+          const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+          mediaQuery.addEventListener('change', updateIcons);
+      });
+    </script>
+
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -44,13 +56,12 @@
 
   <!-- Main CSS File -->
   <link href="{{ url_for('serve_assets', filename='css/main.css') }}" rel="stylesheet">
-
 </head>
 
 <body class="index-page">
   <header id="header" class="header d-flex align-items-center sticky-top">
     <div class="container position-relative d-flex align-items-center justify-content-between">
-      <a href="{{ url_for('index') }}" class="logo d-flex align-items-center me-auto me-xl-0"></a>
+      <a href="/" class="logo d-flex align-items-center me-auto me-xl-0"></a>
       <h1 class="sitename" onclick="location.reload();">
         <span class="title">Byte Bite</span>-<span class="accent">AI</span>
       </h1>
@@ -65,8 +76,8 @@
       </nav>
         <!-- Login and Sign Up Buttons -->
       <div class="header-buttons">
-        <a class="btn-login" href="{{ url_for('login') }}" style="margin-left: 25px; margin-right: 20px;">Login</a>
-        <a class="btn-getstarted" href="/signup">Sign Up</a>
+        <button style="border: none; background: transparent; color: var(--accent-color); padding-right: 20px; padding-left: 15px;" class="btn-login" onclick="window.location.href='/login'">Login</button>
+        <button style="border: none;" class="btn-getstarted" onclick="window.location.href='/signup'">Sign Up</button>
       </div>
     </div>
   </header>
@@ -206,7 +217,7 @@
 
   </section><!-- /Stats Section -->
 
-  <!-- Clients Section -->
+  <!-- Clients Section DO NOT CLOSE ">" CSS mishap fix-->
   <section id="outlets" class="clients light-background"
     <div class="container" data-aos="zoom-out">
       <div class="section-title">
