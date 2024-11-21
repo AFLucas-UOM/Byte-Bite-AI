@@ -1,31 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Dashboard - Byte Bite-AI</title>
 
-    <!-- Favicons -->
-    <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
-          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
-          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
-    <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
-          data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
-          data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
 
-  <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const favicon = document.getElementById("favicon");
-            const appleIcon = document.getElementById("apple-touch-icon");
-            const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
-
-            const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
-            favicon.href = iconSrc;
-            appleIcon.href = iconSrc;
-        });
-  </script>
-  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -36,7 +23,7 @@
   <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-
+  
   <!-- Main CSS File (DASHBOARD) -->
   <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
 
@@ -47,8 +34,11 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
-
+  
+  <!-- Template Main JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
 </head>
 
 <body>
@@ -61,32 +51,37 @@
           <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
         </h1>
       </a>      
-    </div><!-- End Logo -->
+    </div><!-- End BBAI-Logo -->
 
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
           <!-- Profile Image Icon -->
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="assets2/img/AFL-Logo.png" alt="Profile" class="rounded-circle">
+            <!-- Correctly reference the image path -->
+            <img src="{{ profile_pic }}" alt="Profile" class="rounded-circle">
             <!-- Placeholder span for the user's name -->
-            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 2.5em">Loading User</span>
+            <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em;">Loading... </span>
           </a><!-- End Profile Image Icon -->
-
+          
           <script>
-            // Retrieve the current user's data from localStorage
-            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            // Check if 'BBAIcurrentuser' exists in localStorage
+            const currentUser = localStorage.getItem('BBAIcurrentuser');
 
-            // Check if the currentUser exists and update the profile name
-            if (currentUser && currentUser.name) {
-              document.getElementById('profileName').textContent = currentUser.name;
+            if (currentUser) {
+              // Split the full name into an array and get the first part (first name)
+              const firstName = currentUser.split(' ')[0];
+              // Update the span text with the first name
+              document.getElementById('profileName').textContent = firstName;
             } else {
-              document.getElementById('profileName').textContent = 'Walter Error'; // Default to 'Guest' if no user is logged in
+              // If no user is found, keep the default "Loading..."
+              document.getElementById('profileName').textContent = 'Walter Error';
             }
           </script>
-
+          
+                             
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('in_dev') }}">
+              <a class="dropdown-item d-flex align-items-center" href="/in-dev">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -114,7 +109,7 @@
             <script>
               function signOut() {
                   // Remove the current user login status
-                  localStorage.removeItem('currentUser'); // assuming 'currentUser' holds the logged-in user info
+                  localStorage.removeItem('currentuser'); // assuming 'currentuser' holds the logged-in user info
 
                   // Redirect to index.html after 0.5 seconds
                   setTimeout(() => {
@@ -342,7 +337,7 @@
           <script>
             async function loadRecommendation() {
               // Fetch the user's data from localStorage
-              const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
+              const rawUsersData = JSON.parse(localStorage.getItem('currentuser'));
 
               // Check if user data is available
               if (!rawUsersData) {
@@ -492,8 +487,8 @@
           
           <script>
             // Fetch the current user's data from localStorage
-            const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
-            const currentUserName = rawUsersData ? rawUsersData.name : null;
+            const rawUsersData = JSON.parse(localStorage.getItem('currentuser'));
+            const currentuserName = rawUsersData ? rawUsersData.name : null;
           
             // Get only the Revenue Card filter items
             const revenueFilterItems = document.querySelectorAll('.revenue-filter');
@@ -572,7 +567,7 @@
                 return (
                   orderDate >= startDate &&
                   orderDate <= endDate &&
-                  order.userName === currentUserName // Ensure userName matches the logged-in user
+                  order.userName === currentuserName // Ensure userName matches the logged-in user
                 );
               });
           
@@ -618,7 +613,7 @@
 
             <script>
             // Retrieve and parse the current user's data directly from localStorage
-            const rawUserData = JSON.parse(localStorage.getItem('currentUser'));
+            const rawUserData = JSON.parse(localStorage.getItem('currentuser'));
 
             // Display the username at the top right
             const profileNameElement = document.getElementById('profileName');
@@ -673,7 +668,7 @@
 
             <script>
               // Retrieve and parse the current user's data directly from localStorage
-              const rawUserData2 = JSON.parse(localStorage.getItem('currentUser'));
+              const rawUserData2 = JSON.parse(localStorage.getItem('currentuser'));
 
               // Fetch the user data from JSON and match the current user
               fetch('/static/json/users.json')  // Adjusted the path to static folder
@@ -749,8 +744,8 @@
               // Select the element where the total orders will be displayed
               const totalOrdersElement = document.getElementById('totalOrders');
               // Get the current user's name from localStorage
-              const rawUsersData2 = JSON.parse(localStorage.getItem('currentUser'));
-              const currentUserName2 = rawUsersData2 ? rawUsersData2.name : null;
+              const rawUsersData2 = JSON.parse(localStorage.getItem('currentuser'));
+              const currentuserName2 = rawUsersData2 ? rawUsersData2.name : null;
               let ordersData = []; // This will hold the orders data from the JSON file
             
               // Fetch the orders data from the JSON file
@@ -833,13 +828,13 @@
                   endDate.setHours(23, 59, 59, 999);
                 } else if (period === 'all time') {
                   // For all time, just count all orders without filtering by date
-                  return ordersData.filter(order => order.userName === currentUserName2).length;
+                  return ordersData.filter(order => order.userName === currentuserName2).length;
                 }
             
                 // Filter the orders by date and user name
                 return ordersData.filter(order => {
                   const orderDate = new Date(order.Date.split('/').reverse().join('-'));
-                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentUserName2;
+                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentuserName2;
                 }).length;
               }
             
@@ -869,7 +864,7 @@
                 // Filter the orders by date and user name
                 return ordersData.filter(order => {
                   const orderDate = new Date(order.Date.split('/').reverse().join('-'));
-                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentUserName2;
+                  return orderDate >= startDate && orderDate <= endDate && order.userName === currentuserName2;
                 }).length;
               }
             
@@ -965,11 +960,11 @@
               .then(response => response.json())
               .then(data => {
                 // Fetch the current user's name from localStorage
-                const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
-                const currentUserName3 = rawUsersData ? rawUsersData.name : null; // Using currentUserName3 as per your request
+                const rawUsersData = JSON.parse(localStorage.getItem('currentuser'));
+                const currentuserName3 = rawUsersData ? rawUsersData.name : null; // Using currentuserName3 as per your request
                 
                 // Filter orders by the logged-in user's name
-                const userOrders = data.filter(order => order.userName === currentUserName3);
+                const userOrders = data.filter(order => order.userName === currentuserName3);
                 
                 // Sort the filtered orders by date in descending order
                 const sortedOrders = userOrders.sort((a, b) => {
@@ -1101,14 +1096,14 @@
             
                     function updateChart(timeframe) {
                         // Fetch the current user's name from localStorage
-                        const rawUsersData = JSON.parse(localStorage.getItem('currentUser'));
-                        const currentUserName4 = rawUsersData ? rawUsersData.name : null; // Using currentUserName4 as per your request
+                        const rawUsersData = JSON.parse(localStorage.getItem('currentuser'));
+                        const currentuserName4 = rawUsersData ? rawUsersData.name : null; // Using currentuserName4 as per your request
             
                         fetch('/static/json/orders.json')
                             .then(response => response.json())
                             .then(data => {
                                 // Filter orders by the current user's name
-                                const userOrders = data.filter(order => order.userName === currentUserName4);
+                                const userOrders = data.filter(order => order.userName === currentuserName4);
             
                                 // Filter the orders based on the selected timeframe
                                 const filteredData = filterByTimeframe(userOrders, timeframe);
@@ -1250,10 +1245,5 @@
   <script src="assets2/vendor/quill/quill.js"></script>
   <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
-
-  <!-- Template Main JS File -->
-   <script src="assets/js/main.js"></script>
-  <script src="assets2/js/main.js"></script>
-
 </body>
 </html>
