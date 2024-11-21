@@ -107,218 +107,114 @@
       </nav><!-- End Icons Navigation -->
 </header><!-- End Header -->
 
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="Dashboard">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
 
-    <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/in-dev" aria-label="My Profile" aria-expanded="false">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link " href="">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-      </li><!-- End Dashboard Nav -->
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/chatbot" aria-label="Chatbot" aria-expanded="false">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
 
-      <li class="nav-item">
-      <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/in-dev" aria-label="AR-View" aria-expanded="false">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End AR-View Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
-          <i class="bi bi-person"></i>
-          <span>My Profile</span>
-        </a>
-      </li><!-- End Profile Page Nav -->
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('chatbot') }}">
-          <div class="icon">
-            <i class="ri-question-answer-line"></i>
-            <span>Chatbot</span>
-          </div>
-        </a>
-      </li><!-- End ChatBot Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
 
-      <li class="nav-heading">Other</li>
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('in_dev') }}">
-          <div class="icon">
-            <i class="ri-qr-code-line"></i>
-            <span>AR-View</span>
-          </div>
-        </a>
-      </li><!-- End AR-View Page Nav -->
+<main id="main" class="main-content">
+  <div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav aria-label="Breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/" title="Go to Home">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('faqs') }}">
-          <div class="icon">
-            <i class="ri-question-mark"></i>
-            <span>FAQs</span>
-          </div>
-        </a>
-      </li><!-- End FAQs Page Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" onclick="signOut()">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Sign Out</span>
-        </a>
-      </li><!-- End Sign Out Page Nav -->
-    </ul>
-  </aside><!-- End Sidebar-->
-
-  <main id="main" class="main-content">
-
-    <div class="pagetitle">
-      <h1>Dashboard</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-      </nav>
-    </div><!-- End Page Title -->
-
-    <section class="section dashboard">
-      <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-8">
-          <div class="row">
-
-          <!-- Current Recommendations Card -->
-          <div class="col-xxl-8 col-md-6">
-            <div class="card info-card sales-card">
-              <div class="card-body">
-                <h5 class="card-title">
-                  AI Current Recommendations <span id="current-time">|</span>
-                </h5>
-
-                <div class="d-flex align-items-center">
-                  <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                    <i class="bi-stars"></i>
-                  </div>
-                  <div class="ps-3">
-                    <h6 id="recommendation-dish">XX</h6> <!-- Top recommended item -->
-                    <span class="text-muted small pt-2 ps-1" id="location">Location: XXXXXX |</span>
-                    <span class="text-muted small pt-2 ps-1" id="kj">XX KJ</span>
-                  </div>
+  <section class="section dashboard">
+    <div class="row">
+  
+      <!-- Left side columns -->
+      <div class="col-lg-8">
+        <div class="row">
+        <!-- Current Recommendations Card -->
+        <div class="col-xxl-8 col-md-6">
+          <div class="card info-card sales-card">
+            <div class="card-body position-relative">
+              <h5 class="card-title">
+                AI Current Recommendations <span id="current-time">|</span>
+                <button id="thumbs-up" class="btn btn-light p-1" title="Like" style="margin-left: 10px; margin-right: -5px;">
+                  <i class="bi bi-hand-thumbs-up"></i>
+                </button>
+                <button id="thumbs-down" class="btn btn-light p-1" style="color: #b73a3a; margin-left: 0;" title="Dislike">
+                  <i class="bi bi-hand-thumbs-down"></i>
+                </button>        
+              </h5>
+              
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi-stars"></i>
                 </div>
-
-                <!-- Thumbs up/down buttons positioned at top-right -->
-                <div class="position-absolute top-0 end-0 m-1">
-                  <button id="thumbs-up" class="btn btn-light p-2" title="Like">
-                    <i class="bi bi-hand-thumbs-up"></i>
-                  </button>
-                  <button id="thumbs-down" class="btn btn-light p-2" title="Dislike">
-                    <i class="bi bi-hand-thumbs-down"></i>
-                  </button>
+                <div class="ps-3">
+                  <h6 id="recommendation-dish">XX</h6> <!-- Top recommended item -->
+                  <span class="text-muted small pt-2 ps-1" id="location">Location: XXXXXX |</span>
+                  <span class="text-muted small pt-2 ps-1" id="kj">XX KJ</span>
                 </div>
-
-                <!-- Custom Feedback Alert -->
-                <div id="feedback-alert" class="alert custom-feedback-alert" role="alert" style="display: none;">
-                  <span id="feedback-text">You liked the AI suggestion!</span>
-                </div>
-
               </div>
+              <!-- Custom Feedback Alert -->
+              <div id="feedback-alert" class="alert custom-feedback-alert" role="alert" style="display: none;">
+                <span id="feedback-text">You liked the AI suggestion!</span>
+              </div>
+
             </div>
-          </div><!-- End Current Recommendations Card -->
-
-          <script>
-          document.addEventListener("DOMContentLoaded", function() {
-            const thumbsUpButton = document.getElementById("thumbs-up");
-            const thumbsDownButton = document.getElementById("thumbs-down");
-            const feedbackAlert = document.getElementById("feedback-alert");
-            const feedbackText = document.getElementById("feedback-text");
-
-            thumbsUpButton.addEventListener("click", function() {
-              feedbackAlert.style.display = "block";
-              feedbackText.textContent = "You liked the AI's Recommendation!";
-              feedbackAlert.classList.remove("alert-danger");
-              feedbackAlert.classList.add("alert-success");
-              hideAlertAfterTimeout();
-            });
-
-            thumbsDownButton.addEventListener("click", function() {
-              feedbackAlert.style.display = "block";
-              feedbackText.textContent = "You disliked the AI's Recommendation!";
-              feedbackAlert.classList.remove("alert-success");
-              feedbackAlert.classList.add("alert-danger");
-              hideAlertAfterTimeout();
-            });
-
-            // Function to hide the alert after 5 seconds
-            function hideAlertAfterTimeout() {
-              setTimeout(function() {
-                feedbackAlert.style.display = "none";
-              }, 3000); // 5 seconds
-            }
-          });
-          </script>
-
-          <style>
-          /* Unique styles for the custom feedback alert */
-          .custom-feedback-alert {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            padding: 15px;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-            box-shadow: 0 4px 6px rgba(46, 109, 66, 0.558);
-            z-index: 9999; /* Ensure the alert appears above other content */
-            display: none; /* Hidden by default */
-            transition: opacity 0.5s ease-out;
-            background-color: var(--accent-color); /* Default background color */
-            text-align: center;
-            color: white;
-          }
-
-          .custom-feedback-alert.alert-danger {
-            box-shadow: 0 4px 6px rgba(109, 46, 46, 0.558);
-            background-color: #b73a3a; /* Dark red for dislike */
-          }
-
-
-          .custom-feedback-alert strong {
-            font-weight: bold;
-          }
-
-          /* Thumbs up/down buttons styling */
-          #thumbs-up{
-            font-size: 1.5rem; /* Adjust size of the thumbs icons */
-            border: none; /* Remove default border */
-            background-color: transparent; /* Make background transparent */
-            color: var(--accent-color); /* Use accent color for buttons */
-            transition: transform 0.2s; /* Smooth scaling transition */
-            margin-right: 0.00000000000005px; /* Reduce space between the buttons */
-          }
-
-          #thumbs-down {
-            font-size: 1.5rem; /* Adjust size of the thumbs icons */
-            border: none; /* Remove default border */
-            background-color: transparent; /* Make background transparent */
-            color: var(--accent-color); /* Use accent color for buttons */
-            transition: transform 0.2s; /* Smooth scaling transition */
-            margin-right: 10px; /* Reduce space between the buttons */
-          }
-
-          #thumbs-up:hover, #thumbs-down:hover {
-            transform: scale(1.1); /* Slightly enlarge on hover */
-            cursor: pointer; /* Pointer cursor on hover */
-          }
-
-          /* Adjust button gap */
-          .position-absolute .btn {
-            margin-right: 2px; /* Reduced gap between the thumbs buttons */
-          }
-          </style>
+          </div>
+        </div><!-- End Current Recommendations Card -->
 
           <script>
             async function loadRecommendation() {
               // Fetch the user's data from localStorage
-              const rawUsersData = JSON.parse(localStorage.getItem('currentuser'));
+              const rawUsersData = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
 
               // Check if user data is available
               if (!rawUsersData) {
@@ -332,7 +228,7 @@
                   .then(userData => {
                       // Find the user in the users.json file based on their name
                       const user = userData.find(u => u.Name.toLowerCase() === rawUsersData.name.toLowerCase());
-
+                      console.log(user);
                       // If no matching user is found
                       if (!user) {
                           console.error("User not found in users.json.");
@@ -413,23 +309,6 @@
             }
           
             loadRecommendation();
-          </script>
-          
-
-          <script>
-            // JavaScript to display the current system time with the day of the week
-            function updateTime() {
-              const now = new Date();
-              const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-              const day = daysOfWeek[now.getDay()];
-              const hours = String(now.getHours()).padStart(2, '0');
-              const minutes = String(now.getMinutes()).padStart(2, '0');
-              document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
-            }
-            
-            // Update time immediately and then every minute
-            updateTime();
-            setInterval(updateTime, 60000);
           </script>
 
           <!-- Revenue Card -->
@@ -569,11 +448,6 @@
             // Initialize with the default filter ('Today') when the page loads
             updateRevenue('revenue-today');
           </script>
-          
-          
-                 
-
-
             <!-- Current Weight Card -->
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card">
@@ -1015,9 +889,7 @@
           
             <div class="card-body pb-0">
               <h5 id="restaurantTrafficCardTitle" class="card-title">Your Orders <span id="restaurantTitleSpan">| This Month</span></h5>
-          
               <div id="purchaseChart" ></div>
-          
               <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
               <script>
                 document.addEventListener("DOMContentLoaded", () => {
@@ -1143,10 +1015,7 @@
                         
             </div>
           </div>
-          
           <!-- End Restaurant Purchase Traffic -->
-
-
         </div><!-- End Right side columns --> 
       </div>
     </section>
@@ -1219,12 +1088,28 @@
   </footer>
   
   <!-- Vendor JS Files -->
-  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script> <!-- Might be useless -->
   <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets2/vendor/chart.js/chart.umd.js"></script>
   <script src="assets2/vendor/echarts/echarts.min.js"></script>
-  <script src="assets2/vendor/quill/quill.js"></script>
-  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>  <!-- Might be useless -->
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>  <!-- Might be useless -->
   <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <script>
+  // JavaScript to display the current system time with the day of the week
+    function updateTime() {
+      const now = new Date();
+      const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const day = daysOfWeek[now.getDay()];
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
+    }
+            
+    // Update time immediately and then every minute
+    updateTime();
+    setInterval(updateTime, 60000);
+  </script>
 </body>
 </html>

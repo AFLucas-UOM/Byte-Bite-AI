@@ -29,3 +29,33 @@ function signOut() {
     // Step 3: Redirect to homepage after clearing everything
     window.location.href = "/";
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const thumbsUpButton = document.getElementById("thumbs-up");
+    const thumbsDownButton = document.getElementById("thumbs-down");
+    const feedbackAlert = document.getElementById("feedback-alert");
+    const feedbackText = document.getElementById("feedback-text");
+
+    thumbsUpButton.addEventListener("click", function() {
+      feedbackAlert.style.display = "block";
+      feedbackText.textContent = "You liked the AI's Recommendation!";
+      feedbackAlert.classList.remove("alert-danger");
+      feedbackAlert.classList.add("alert-success");
+      hideAlertAfterTimeout();
+    });
+
+    thumbsDownButton.addEventListener("click", function() {
+      feedbackAlert.style.display = "block";
+      feedbackText.textContent = "You disliked the AI's Recommendation!";
+      feedbackAlert.classList.remove("alert-success");
+      feedbackAlert.classList.add("alert-danger");
+      hideAlertAfterTimeout();
+    });
+
+    // Function to hide the alert after 5 seconds
+    function hideAlertAfterTimeout() {
+      setTimeout(function() {
+        feedbackAlert.style.display = "none";
+      }, 3000); // 3 seconds
+    }
+  });

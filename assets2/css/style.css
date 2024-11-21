@@ -825,7 +825,7 @@ body {
 }
 
 /*--------------------------------------------------------------
-# TESTING
+# Dashboard
 --------------------------------------------------------------*/
 #purchaseChart {
   display: flex;
@@ -835,3 +835,70 @@ body {
   box-sizing: border-box; /* Ensures padding/margin don't affect dimensions */
   transition: width 0.3s ease, height 0.3s ease; /* Smooth transition */
 }
+
+    /* Unique styles for the custom feedback alert */
+    .custom-feedback-alert {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 350px;
+      padding: 15px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(46, 109, 66, 0.558);
+      z-index: 9999; /* Ensure the alert appears above other content */
+      display: none; /* Hidden by default */
+      transition: opacity 0.5s ease-out;
+      background-color: var(--accent-color); /* Default background color */
+      text-align: center;
+      color: white;
+    }
+  
+    .custom-feedback-alert.alert-danger {
+      box-shadow: 0 4px 6px rgba(109, 46, 46, 0.558);
+      background-color: #b73a3a; /* Dark red for dislike */
+    }
+  
+    .custom-feedback-alert strong {
+      font-weight: bold;
+    }
+  
+    /* Thumbs up/down buttons styling */
+    #thumbs-up, #thumbs-down {
+      font-size: 1.5rem; /* Adjust size of the thumbs icons */
+      border: none; /* Remove default border */
+      background-color: transparent; /* Make background transparent */
+      color: var(--accent-color); /* Use accent color for buttons */
+      transition: transform 0.2s; /* Smooth scaling transition */
+    }
+  
+    #thumbs-up:hover, #thumbs-down:hover {
+      transform: scale(1.1); /* Slightly enlarge on hover */
+      cursor: pointer; /* Pointer cursor on hover */
+    }
+  
+    /* Position the thumbs buttons */
+    .position-absolute {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  
+    /* Media queries for mobile responsiveness */
+    @media (max-width: 767px) {
+      #thumbs-up, #thumbs-down {
+        font-size: 1.2rem; /* Slightly smaller thumbs on mobile */
+      }
+  
+      .position-absolute {
+        top: 10px;
+        right: 10px;
+      }
+  
+      .custom-feedback-alert {
+        width: 100%; /* Make the alert full-width on mobile */
+        padding: 10px;
+        font-size: 14px; /* Adjust font size for mobile */
+      }
+    }

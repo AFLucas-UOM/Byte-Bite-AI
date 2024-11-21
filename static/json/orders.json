@@ -4,104 +4,104 @@
         "Name of dish": "Cheeseburger",
         "Restaurant": "BurgerKing",
         "Price": 5.99,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "02/11/2024",
         "Name of dish": "Chicken Tenders",
         "Restaurant": "Boost",
         "Price": 6.49,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "03/11/2024",
         "Name of dish": "Chicken Sandwich",
         "Restaurant": "Starbucks",
         "Price": 7.99,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "04/11/2024",
         "Name of dish": "Lamb Kofta Wrap",
         "Restaurant": "Ottoman",
         "Price": 8.50,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "05/11/2024",
         "Name of dish": "Margherita Pizza",
         "Restaurant": "PizzaHut",
         "Price": 9.00,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "06/11/2024",
         "Name of dish": "Pulled Pork Burger",
         "Restaurant": "CafeCuba",
         "Price": 11.25,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "07/10/2024",
         "Name of dish": "Sushi Rolls",
         "Restaurant": "Amami",
         "Price": 12.75,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "07/11/2024",
         "Name of dish": "Grilled Chicken Skewers",
         "Restaurant": "Joli",
         "Price": 10.50,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "09/10/2024",
         "Name of dish": "Spaghetti Bolognese",
         "Restaurant": "BurgerKing",
         "Price": 8.75,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "10/10/2024",
         "Name of dish": "Beef Burrito",
         "Restaurant": "Boost",
         "Price": 7.25,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "05/09/2024",
         "Name of dish": "Cheeseburger",
         "Restaurant": "BurgerKing",
         "Price": 9.99,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "12/09/2024",
         "Name of dish": "Chicken Shawarma",
         "Restaurant": "Ottoman",
         "Price": 11.50,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "15/09/2024",
         "Name of dish": "Pizza Margherita",
         "Restaurant": "PizzaHut",
         "Price": 14.99,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "20/09/2024",
         "Name of dish": "Beef Burrito",
         "Restaurant": "Amami",
         "Price": 13.25,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     },
     {
         "Date": "28/09/2024",
         "Name of dish": "Pasta Carbonara",
         "Restaurant": "CafeCuba",
         "Price": 15.75,
-        "userName": "sean"
+        "userName": "Sean David Muscat"
     }
 ]
