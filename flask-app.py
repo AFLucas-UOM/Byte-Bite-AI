@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory, jsonify, make_response
+from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory, jsonify, make_response, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -72,12 +72,17 @@ app = Flask(__name__)
 # Secret key for sessions
 app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
 
+app.static_folder = 'static' # Set the static folder to the 'static' folder in the current directory
+app.template_folder = 'templates' # Set the template folder to the 'templates' folder in the current directory
+
 # Session lifetime configuration
 app.permanent_session_lifetime = timedelta(minutes=60)
 
 # ======================================== Constants ========================================
 USER_JSON_PATH = "static/json/credentials.json"
 DEFAULT_PFP = 'default.png'
+URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"; # URL of the Teachable Machine model
+AUTHENTICATION_TOKEN = 'a123' # Authentication token for the user
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em']  # Only allow basic text formatting
@@ -131,7 +136,6 @@ def sanitize_input(input_data):
         protocols=ALLOWED_PROTOCOLS,
         strip=True  # Strip disallowed tags instead of escaping them
     )
-
 
 # Load all user credentials
 def load_credentials():
@@ -197,6 +201,21 @@ def query_ollama(prompt, retries=3, delay=2):
     ollama_logger.error("All attempts to reach Ollama failed.")
     return "I'm sorry, your question could not be answered right now! Please contact admin for assistance."
 
+# Authentication function - return True if the user is authorised to access the file, False otherwise
+def authenticate(token):
+    if token == AUTHENTICATION_TOKEN:
+        return True
+    else:
+        return False
+    
+# Authenticate and send the file to the client
+def authenticate_and_send_file(token, file_path):
+    if authenticate(token):
+        print('Authenticated, sending', file_path, 'to the client...')
+        return send_from_directory('static', file_path)
+    else:
+        abort(403)
+
 # ======================================== Routes ========================================
 
 @app.route('/assets/<path:filename>')
@@ -248,6 +267,26 @@ def faqs():
 
         profile_pic_path = f"static/img/PFPs/{profile_pic}"
         return render_template('faqs.html', profile_pic=profile_pic_path)
+    else:
+        # Handle case when the user isn't found in the credentials file
+        return redirect(url_for('login'))  # Redirect to login if user not found
+    
+@app.route('/ar-view')
+def arview():
+    current_user_name = request.cookies.get('BBAIcurrentuser')
+    if not current_user_name:  # If no user is logged in
+        return redirect(url_for('login'))  # Redirect to login page
+
+    user_data = load_credentials()
+    current_user = next((user for user in user_data if user['name'] == current_user_name), None)
+    
+    if current_user:
+        profile_pic = current_user.get('profile_pic')
+        if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+            profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
+
+        profile_pic_path = f"static/img/PFPs/{profile_pic}"
+        return render_template('ar-view.html', profile_pic=profile_pic_path)
     else:
         # Handle case when the user isn't found in the credentials file
         return redirect(url_for('login'))  # Redirect to login if user not found

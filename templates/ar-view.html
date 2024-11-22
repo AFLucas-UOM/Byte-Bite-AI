@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AR-View - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#" class="logo d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
+      <h1 class="sitename" onclick="location.reload();">
+        <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+      </h1>
+    </a>      
+  </div><!-- End BBAI-Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        <!-- Profile Image Icon -->
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <!-- Correctly reference the image path -->
+          <img src="{{ profile_pic }}" alt="Profile" class="rounded-circle">
+          <!-- Placeholder span for the user's name -->
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em;">Loading... </span>
+        </a><!-- End Profile Image Icon -->
+        
+        <script>
+          // Check if 'BBAIcurrentuser' exists in localStorage
+          const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+          if (currentUser) {
+            // Split the full name into an array and get the first part (first name)
+            const firstName = currentUser.split(' ')[0];
+            // Update the span text with the first name
+            document.getElementById('profileName').textContent = firstName;
+          } else {
+            // If no user is found, keep the default "Loading..."
+            document.getElementById('profileName').textContent = 'Walter Error';
+          }
+        </script>
+        
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/in-dev">
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/faqs">
+              <i class="ri-question-mark"></i>
+              <span>Need Help</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>         
+          </li><!-- End Profile Nav -->
+        </ul>
+      </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard" aria-label="Dashboard" aria-expanded="false">
+        <i class="rbi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/in-dev" aria-label="My Profile" aria-expanded="false">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/chatbot" aria-label="Chatbot" aria-expanded="false">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="AR-View">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1><b>AR-View</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Pages</li>
+          <li class="breadcrumb-item active">AR-View</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="AR-View">
+
+    
+    </section>
+</main><!-- End #main -->
+  
+<!-- ======= Footer ======= -->
+<footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
+  <div class="credits">
+    Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
+  </div>
+  <div class="credits">
+    Template from <a href="https://bootstrapmade.com/">Bootstrap</a>
+  </div>
+</footer>
+
+<style>
+  /* Style the footer to stay at the bottom */
+  html, body {
+      height: 100%; /* Ensure full page height */
+      display: flex;
+      flex-direction: column; /* Stack content vertically */
+      margin: 0;
+      padding: 0;
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    .header~main {
+      margin-left: 90px;
+    }
+
+    .header~main .hero {
+      margin-left: -160px;
+      width: 100vw;
+    }
+  }
+  </style>
+<!-- Vendor JS Files -->
+<script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets2/vendor/chart.js/chart.umd.js"></script>
+<script src="assets2/vendor/echarts/echarts.min.js"></script>
+<script src="assets2/vendor/quill/quill.js"></script>
+<script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+<!-- Template JS File -->
+<script src="assets/js/main.js"></script>
+<script src="assets2/js/main.js"></script>
+<script src="assets2/js/dashboard.js"></script>
+</body>
+</html>
