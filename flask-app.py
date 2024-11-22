@@ -80,6 +80,9 @@ USER_JSON_PATH = "static/json/credentials.json"
 DEFAULT_PFP = 'default.png'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MAX_FILE_SIZE = 10 * 1024 * 1024
+ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em']  # Only allow basic text formatting
+ALLOWED_ATTRIBUTES = {} # No attributes allowed
+ALLOWED_PROTOCOLS = []  # No protocols allowed
 
 # Log folder configuration
 log_folder = "chatbot-logs"
@@ -120,9 +123,15 @@ def authenticate_user(email, password):
         print(f"Error reading {USER_JSON_PATH}: {e}")
     return None
 
-# Sanitize user input to prevent XSS
 def sanitize_input(input_data):
-    return bleach.clean(input_data)
+    return bleach.clean(
+        input_data,
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRIBUTES,
+        protocols=ALLOWED_PROTOCOLS,
+        strip=True  # Strip disallowed tags instead of escaping them
+    )
+
 
 # Load all user credentials
 def load_credentials():
