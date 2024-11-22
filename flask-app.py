@@ -268,10 +268,13 @@ def chatbot():
         # Handle case when the user isn't found in the credentials file
         return redirect(url_for('login'))  # Redirect to login if user not found
 
+# Define the chatbot API endpoint
 @app.route("/chatbot", methods=["POST"])
 def chatbot_api():
     user_input = request.json.get("prompt", "")
+    print(f"Received prompt from user: {user_input}")
     response = query_ollama(user_input)
+    print(f"Sending response back to user: {response}")
     return jsonify({"response": response})
 
 @app.route('/dashboard')
