@@ -223,26 +223,18 @@
 
 <!-- AR-View Section -->
 <section aria-labelledby="ar-view-title">
-    <div id="info-area" style="display: none; margin-bottom: 0;">
+  <div id="info-area" style="display: none; margin-bottom: 0;">
       <div class="info-group">
-        <h2>What is this?</h2>
-        <p>
-          <span class="highlight">AR-View</span> uses your webcam and a machine learning model to detect restaurant logos.
-          It then displays key details like the restaurant’s <span class="highlight">health scale</span> 
-          and <span class="highlight">average kilojoules (KJ) per meal</span>, helping you make healthier dining choices.
-        </p>
+          <h2>About BB-AI's Vision Model</h2>
+          <p>
+            <span class="highlight">AR-View</span> uses your webcam and BB-AI's vision model to recognize restaurant logos at Campus Hub. 
+            Once a logo is detected, it provides helpful details like the restaurant’s <span class="highlight">health scale</span> 
+            and the <span class="highlight">average kilojoules (KJ) per meal</span>.<br><br> 
+            Powered by <a href="https://teachablemachine.withgoogle.com/" target="_blank" class="bold-link"><b>&copy; Google Teachable Machine</b></a>.
+        </p>        
       </div>
-      <div class="info-group">
-        <h2>How does it work?</h2>
-        <p>
-          <span class="highlight">AR-View</span> makes use of your webcam feed to detect the logo of a restaurant. 
-          It utilizes a machine learning model trained with 
-          <a href="https://teachablemachine.withgoogle.com/" target="_blank">Google TM</a> 
-          to identify which restaurant the logo belongs to.
-        </p>            
-      </div>
-    </div>    
-  </section>
+  </div>    
+</section>
 </main>
   
 <!-- ======= Footer ======= -->
@@ -278,6 +270,9 @@
       margin-left: -160px;
       width: 100vw;
     }
+  }
+  .bold-link:hover {
+    text-decoration: underline;
   }
   </style>
   
