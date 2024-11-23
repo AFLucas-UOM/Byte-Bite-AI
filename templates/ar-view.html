@@ -33,7 +33,13 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  
+
+  <!-- JS for AR-VIEW -->
+  <!-- TensorFlow.js for model handling -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <!-- Teachable Machine Image library -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="{{ url_for('serve_assets2', filename='js/ar-main.js') }}"></script>
 </head>
 
 <body>
@@ -167,16 +173,85 @@
           <li class="breadcrumb-item active">AR-View</li>
         </ol>
       </nav>
-    </div><!-- End Page Title -->
+    </div> <!-- End Page Title -->
 
-    <section class="AR-View">
+  <section class="AR-View">
+    <!-- Modal Error Box -->
+    <div id="modalPopup" class="modal" style="display: none; padding-left: 1%; padding-top: 1%;">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p id="modal-message"></p>
+      </div>
+    </div>
 
+<!-- Webcam Section -->
+<section id="webcam-section" aria-labelledby="webcam-title">
+  <div class="vertical-container">
+    <!-- Controls -->
+    <div id="buttons" class="horizontal-container">
+      <!-- Enable/Disable Webcam Button -->
+      <button id="toggleCam" aria-label="Enable or Disable Webcam" onclick="toggleWebcam()">
+        Enable Webcam
+      </button>
+      
+      <!-- Start Button -->
+      <button id="toggleModel" aria-label="Start or Stop Model" onclick="toggleModel()">
+        Start
+      </button>
+    </div>
+
+    <div class = "buttonSet" id="extraButtons" style="display: none;">
+      <!-- Hide/Show Display -->
+      <button id="toggleDisplay" aria-label="Hide or Show Webcam Display" onclick="toggleDisplay()">
+        Hide Display
+      </button>
+      <!-- Show Classification labels -->
+      <button id="toggleLabels" aria-label="Toggle Model Labels" onclick="toggleLabels()">Show Labels</button>
+    </div>
     
-    </section>
-</main><!-- End #main -->
+    <!-- Webcam Placeholder -->
+    <div id="webcam-placeholder" role="status" aria-live="polite">
+      <p>Click "Enable Webcam" to view playback</p>
+    </div>
+    
+    <!-- Webcam Playback Container -->
+    <div id="webcam-container" style="display: none;">
+      <video id="webcamPlayback" autoplay playsinline width="640" height="480" aria-label="Webcam Playback"></video>
+    </div>
+  </div>
+</section>
+
+<!-- AR-View Section -->
+<section aria-labelledby="ar-view-title">
+    <div id="info-area" style="display: none; margin-bottom: 0;">
+      <div class="info-group">
+        <h2>What is this?</h2>
+        <p>
+          <span class="highlight">AR-View</span> uses your webcam and a machine learning model to detect restaurant logos.
+          It then displays key details like the restaurant’s <span class="highlight">health scale</span> 
+          and <span class="highlight">average kilojoules (KJ) per meal</span>, helping you make healthier dining choices.
+        </p>
+      </div>
+      <div class="info-group">
+        <h2>How does it work?</h2>
+        <p>
+          <span class="highlight">AR-View</span> makes use of your webcam feed to detect the logo of a restaurant. 
+          It utilizes a machine learning model trained with 
+          <a href="https://teachablemachine.withgoogle.com/" target="_blank">Google TM</a> 
+          to identify which restaurant the logo belongs to.
+        </p>            
+      </div>
+    </div>    
+  </section>
+</main>
   
 <!-- ======= Footer ======= -->
-<footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
+<footer style="position: relative; display: flex; justify-content: center; align-items: center; width: auto; padding-bottom: 25px;" id="footer" role="contentinfo">
+  <p style="margin: 0;">
+    <a id="info-button" href="javascript:void(0)" onclick="toggleInfo()">Click here to find out more about this page</a>
+  </p>
+</footer>
+<footer style= "align-items: center;" id="footer" class="footer position-relative dark-background" role="contentinfo">
   <div class="credits">
     Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
   </div>
@@ -205,17 +280,11 @@
     }
   }
   </style>
-<!-- Vendor JS Files -->
-<script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets2/vendor/chart.js/chart.umd.js"></script>
-<script src="assets2/vendor/echarts/echarts.min.js"></script>
-<script src="assets2/vendor/quill/quill.js"></script>
-<script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="assets2/vendor/tinymce/tinymce.min.js"></script>
-
+  
 <!-- Template JS File -->
 <script src="assets/js/main.js"></script>
 <script src="assets2/js/main.js"></script>
 <script src="assets2/js/dashboard.js"></script>
+<script src="assets2/js/ar-main.js"></script>
 </body>
 </html>

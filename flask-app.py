@@ -247,6 +247,29 @@ def signout():
     resp.set_cookie('BBAIcurrentuser', '', expires=0)
     return resp
 
+# Feed the Teachable Machine model to the client
+@app.route('/model')
+def get_model():
+    return send_from_directory('static', 'tm-ByteBite-model/model.json')
+
+# Feed the Teachable Machine metadata to the client
+@app.route('/metadata')
+def get_metadata():
+    return send_from_directory('static', 'tm-ByteBite-model/metadata.json')
+
+# Feed the Teachable Machine weights to the client
+@app.route('/weights.bin')
+def get_weights():
+    return send_from_directory('static', 'tm-ByteBite-model/weights.bin')
+
+# Feed the Teachable Machine URL to the client
+@app.route('/url')
+def get_url():
+    if authenticate(request.headers.get('token')):
+        return URL
+    else:
+        abort(403)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -417,7 +440,12 @@ def signup():
 def page_not_found(e):
     return render_template('404.html'), 404
 
+# Page to display when access is forbidden
+@app.errorhandler(403)
+def forbidden_error(error):
+    return render_template('404.html', error=error), 403
+
 # ======================================== Run the Application ========================================
 if __name__ == '__main__':
     # Run the app without debug-level logs from Flask
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=1000)
+    app.run(debug=True, use_reloader=True, host='0.0.0.0', port=1000)
