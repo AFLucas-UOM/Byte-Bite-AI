@@ -5,20 +5,22 @@ let mediaStream;
 //---------------------------- Toggle Functions ----------------------------//
 
 // Function to toggle the display of labels (probability of each emotion)
-function toggleLabels(animate = false) {
-    showLabels = !showLabels;
-    var showLabelsButton = document.getElementById("toggleLabels");
-
-    if (showLabels) {
-        sideContainer.style.display = "Block"
-        showLabelsButton.innerHTML = "Hide Labels";
-    }
-    else {
-        sideContainer.style.display = "None";
-        showLabelsButton.innerHTML = "Show Labels";
-    }
-
+function toggleLabels() {
+  const allRestaurantsSection = document.getElementById("all-restaurants-section");
+  const toggleLabelsButton = document.getElementById("toggleLabels");
+  
+  // Determine current visibility
+  const isHidden = allRestaurantsSection.style.display === "none";
+  
+  if (isHidden) {
+      fadeInElement(allRestaurantsSection); // Fade in the section
+      toggleLabelsButton.innerHTML = "Hide Predictions";
+  } else {
+      fadeOutElement(allRestaurantsSection); // Fade out the section
+      toggleLabelsButton.innerHTML = "Show Predictions";
+  }
 }
+
 
 // Toggles the visibility of the webcam display
 function toggleDisplay() {
@@ -39,6 +41,7 @@ function toggleDisplay() {
       toggleButton.textContent = "Show Display";
     }
   }
+
 // Toggles the webcam on or off
 async function toggleWebcam() {
   const webcamContainer = document.getElementById("webcam-container");
@@ -165,6 +168,7 @@ async function setupWebcamAndModel() {
 async function toggleModel() {
   const toggleButton = document.getElementById("toggleModel");
   const extraButtons = document.getElementById("extraButtons"); // Get the extra buttons div
+  const allRestaurantsSection = document.getElementById("all-restaurants-section"); // Get the all-restaurants-section
 
   if (!isModelActive) {
     // If the webcam is not active, display an error message
@@ -178,39 +182,63 @@ async function toggleModel() {
     
     // Start predictions
     isPredicting = true;
-    toggleButton.textContent = "Stop";  // Change button text to "Stop"
+    toggleButton.textContent = "Stop"; // Change button text to "Stop"
     
     // Show the extra buttons div
-    extraButtons.style.display = "block";  // Show the div with the extra buttons
+    extraButtons.style.display = "block"; // Show the div with the extra buttons
+    
+    // Show the all-restaurants-section
+    allRestaurantsSection.style.display = "block"; // Make the section visible
     
     isModelActive = true;
   } else {
     // If the model is active, stop the predictions but keep the webcam feed running
     isPredicting = false;
-    toggleButton.textContent = "Start";  // Change button text to "Start"
+    toggleButton.textContent = "Start"; // Change button text to "Start"
     
     // Hide the extra buttons div
-    extraButtons.style.display = "none";  // Hide the div with the extra buttons
+    extraButtons.style.display = "none"; // Hide the div with the extra buttons
+    
+    // Hide the all-restaurants-section
+    allRestaurantsSection.style.display = "none"; // Hide the section
     
     isModelActive = false;
   }
 }
 
-// Start the prediction process
+
 async function startPrediction() {
   const video = document.getElementById("webcamPlayback");
+
+  // Map predicted classes to restaurant card IDs
+  const restaurantMap = {
+    "Amami": "amami-likelihood",
+    "Boost": "boost-likelihood",
+    "BurgerKing": "burgerking-likelihood",
+    "CafeCuba": "cafecuba-likelihood",
+    "Joli": "joli-likelihood",
+    "Ottoman": "ottoman-likelihood",
+    "PizzaHut": "pizzahut-likelihood",
+    "Starbucks": "starbucks-likelihood"
+  };
 
   // Keep running the predictions only if isPredicting is true
   setInterval(async () => {
     if (!isPredicting) return;
 
     // Predict the current frame
-    const prediction = await model.predict(video, false);
-    console.clear();
-    prediction.forEach(pred => {
-      console.log(pred.className + ": " + pred.probability.toFixed(2));
+    const predictions = await model.predict(video, false);
+
+    // Update each restaurant's card with the prediction probability
+    predictions.forEach(pred => {
+      const elementId = restaurantMap[pred.className]; // Find the corresponding card element
+      const likelihoodElement = document.getElementById(elementId);
+
+      if (likelihoodElement) {
+        likelihoodElement.textContent = `${(pred.probability * 100).toFixed(1)}%`; // Update likelihood
+      }
     });
-  }, 100); // Run prediction every 100ms
+  }, 500); // Run prediction every 100ms
 }
 
 // Stops all tracks in the provided media stream (not used here, since we only stop predictions)

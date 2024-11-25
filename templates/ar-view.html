@@ -200,13 +200,15 @@
       </button>
     </div>
 
-    <div class = "buttonSet" id="extraButtons" style="display: none;">
+    <div id="extraButtons" style="display: none; text-align: center;">
       <!-- Hide/Show Display -->
       <button id="toggleDisplay" aria-label="Hide or Show Webcam Display" onclick="toggleDisplay()">
         Hide Display
       </button>
+      <!-- Show Classification Predictions -->
+      <button id="toggleLabels" aria-label="Toggle Model Labels" onclick="toggleLabels()">Hide Predictions</button>
       <!-- Show Classification labels -->
-      <button id="toggleLabels" aria-label="Toggle Model Labels" onclick="toggleLabels()">Show Labels</button>
+      <button id="toggleReset" aria-label="Toggle Model Labels" onclick="toggleReset()">Reset</button>
     </div>
     
     <!-- Webcam Placeholder -->
@@ -222,7 +224,7 @@
 </section>
 
 <!-- All Restaurants Section -->
-<section id="all-restaurants-section" aria-labelledby="all-restaurants-title" style="margin-top: 20px; display: show;">
+<section id="all-restaurants-section" aria-labelledby="all-restaurants-title" style="margin-top: 20px; display: none;">
   <h2 id="all-restaurants-title" style="
       text-align: center; 
       font-family: var(--heading-font); 
@@ -261,7 +263,7 @@
       alt="Amami Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">85%</p>
+    <p id="amami-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
   
   <!-- Boost -->
@@ -282,7 +284,7 @@
       alt="Boost Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">85%</p>
+    <p id="boost-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Burger King -->
@@ -303,7 +305,7 @@
       alt="Burger King Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">90%</p>
+    <p id="burgerking-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Cafe Cuba -->
@@ -324,7 +326,7 @@
       alt="Cafe Cuba Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">75%</p>
+    <p id="cafecuba-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Individual Restaurant Cards Row 2 -->
@@ -346,7 +348,7 @@
       alt="Joli Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">60%</p>
+    <p id= "joli-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Ottoman -->
@@ -367,7 +369,7 @@
       alt="Ottoman Logo" 
       style="max-width: 110px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">65%</p>
+    <p id="ottoman-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Pizza Hut -->
@@ -388,7 +390,7 @@
       alt="Pizza Hut Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">80%</p>
+    <p id="pizzahut-likelihood"" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 
   <!-- Starbucks -->
@@ -409,7 +411,7 @@
       alt="Starbucks Logo" 
       style="max-width: 90px; margin-bottom: 10px;"
     >
-    <p style="font-size: 1rem; color: #555; margin: 0;">95%</p>
+    <p id="starbucks-likelihood" style="font-size: 1rem; color: #555; margin: 0;">XX%</p>
   </div>
 </div>
 </section>
@@ -558,11 +560,20 @@
     text-decoration: underline;
   }
   </style>
-  
-<!-- Template JS File -->
-<script src="assets/js/main.js"></script>
-<script src="assets2/js/main.js"></script>
-<script src="assets2/js/dashboard.js"></script>
-<script src="assets2/js/ar-main.js"></script>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
 </body>
 </html>

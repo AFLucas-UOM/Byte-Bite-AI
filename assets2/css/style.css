@@ -1031,3 +1031,16 @@ button:hover {
   color: var(--accent-color);
   font-weight: bold;
 }
+
+#extraButtons {
+  display: flex;
+  justify-content: center;  /* Center horizontally */
+  gap: 10px; /* Space between buttons */
+  margin-top: 10px; /* Optional, to add spacing from other elements above */
+}
+
+#extraButtons button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
