@@ -184,7 +184,7 @@ async function toggleModel() {
     
     // Start predictions
     isPredicting = true;
-    toggleButton.textContent = "Stop"; // Change button text to "Stop"
+    toggleButton.textContent = "Stop Model"; // Change button text to "Stop"
     
     // Show the extra buttons div
     extraButtons.style.display = "block"; // Show the div with the extra buttons
@@ -211,7 +211,7 @@ async function toggleModel() {
   } else {
     // If the model is active, stop the predictions but keep the webcam feed running
     isPredicting = false;
-    toggleButton.textContent = "Start"; // Change button text to "Start"
+    toggleButton.textContent = "Start Model"; // Change button text to "Start"
     
     // Hide the extra buttons div
     extraButtons.style.display = "none"; // Hide the div with the extra buttons
@@ -272,7 +272,7 @@ async function startPrediction() {
       const element = document.getElementById(restaurantMap[restaurant]);
       element.innerText = `${percentage.toFixed(2)}%`;
     });
-  }, 1000); // Run every second
+  }, 500); // Run every second
 }
 
 // Function to calculate the average likelihood for each restaurant
@@ -398,5 +398,5 @@ function toggleReset() {
       const element = document.getElementById(restaurantMap[restaurant]);
       element.innerText = previousState[restaurant]; // Restore original values
     }
-  }, 500); // Delay of 0.5 seconds
+  }, 1000); // Delay of 0.5 seconds
 }
