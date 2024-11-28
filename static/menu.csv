@@ -1,25 +1,132 @@
-﻿Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Ingredients,Has Gluten?,Has Nuts?
-Hamburger,Burger King,Burger,1.85,1050,112,"Bread, Beef, Ketchup, Pickles",Yes,No
-Chicken Supreme,Burger King,Burger,6.70,2480,217,"Bread, Fried Chicken, Mayonnaise",Yes,No
-"Double Steakhouse ",Burger King,Burger,10.60,4380,380,"Bread, Beef, Lettuce, Tomato, Bacon, Fried Onions, BBQ Sauce, Cheddar Cheese",Yes,No
-Pizza Margherita,Pizza Hut,Pizza,8.50,5400,750,"Pizza Dough, Tomato Sauce, Mozzarella Cheese, Oregano",Yes,No
-Pizza BBQ Chicken,Pizza Hut,Pizza,13.00,6200,850,"Pizza Dough, Tomato Sauce, Red Onions, Sweetcorn, Green Peppers, Mozzarella Cheese, BBQ Sauce",Yes,No
-Gluten Free Hawaiian,Pizza Hut,Pizza,10.10,5440,760,"Gluten-Free Pizza Dough, Savoury Ham, Sweet Pineapple, Tomato Sauce, Cheese",No,No
-Rigatoni Pesto,Cafe Cuba,Pasta,14.20,2900,300,"Rigatoni, Basil Pesto, Bacon, Grana Cheese",No,No
-Havana,Cafe Cuba,Burger,17.95,4180,400,"Bread, Beef, Bacon, Tomato, Onions, Cucumber, Cheese, Iceberg Lettuce, Onion Rings, Burger Sauce",Yes,No
-Spaghetti Calamari,Cafe Cuba,Pasta,15.75,2500,300,"Spaghetti, Calamari, Olives, Capers, Tomato Sauce, Fresh Herbs",Yes,No
-Lamb Chops,Posh Turkish,Lamb,16.50,3500,400,"Lamb, Chips, Pita, Basil Sauce",Yes,No
-Mixed Doner,Posh Turkish,Wrap,9.60,2900,350,"Lamb, Chicken, Couscous, Sweetcorn, Red Cabbage",Yes,No
-Special Posh,Posh Turkish,Pizza,13.60,4606,450,"Pizza Dough, Tomato Sauce, Mincemeat, Sausage, Salami, Pepperoni, Tomatoes, Green Peppers, Mozzarella",Yes,No
-Chick Overboard Salad,Boost,Salad,8.50,1975,92,"Avocado, Cherry Tomatoes, Chicken, Bacon, Eggs, Salad Leaves",Yes,No
-Tofu-Lish For You Wrap,Boost,Wrap,7.75,2184,130,"Chives, Couscous, Herbs, Tofu, Tortilla Wrap, Lettuce, Tomato, Beans, Onions",Yes,No
-Egg-Cellent Bacon Delight,Boost,Bread,7.05,2997,154,"Ciabatta, Bacon, Omelette, Cheese",No,No
-Salmon Nigiri,Amami,Sushi,2.75,400,50,"Salmon, Sushi Rice, Soy Sauce, Wasabi, Ginger",Yes,No
-Tuna Sashimi,Amami,Sushi,3.50,650,30,"Tuna, Soy Sauce, Wasabi, Ginger",Yes,No
-Dim Sum,Amami,Sushi,8.90,250,200,"Dough, Vegetables, Pork, Soy Sauce",Yes,No
-Muscle King Bowl,J'olli,Warm Bowl,12.95,3850,176,"Rice, Sweet Potato, Sweetcorn, Edamame, Chicken, Slaw, Egg, Ceaser Dressing, Onions",Yes,No
-Sweet Potato & Hummus Wrap,J'olli,Wrap,8.65,2636,133,"Quinoa, Lettuce, Cherry Tomatoes, Sweetcorn, Sweet Potatoes, Almonds, Hummus, Vinaigrette, Gluten- Free Tortilla Wrap",No,Yes
-Superfood Salad,J'olli,Salad,9.95,2172,91,"Kale, Quinoa, Cucumber, Carrot, Edamame, red Onion, Avocado, Vinaigrette Dressing, Almonds, Power Seeds",No,Yes
-Ham & Cheese Panini,Starbucks,Bread,5.50,1975,185,"Panini, Ham, Cheddar Cheese",Yes,No
-Chicken & Bacon Ceaser Wrap,Starbucks,Wrap,5.35,2527,221,"Bacon, Chicken, Lettuce, Mayonnaise, Barmarked Wrap",Yes,No
-Fruit & Nut Bar,Starbucks,Snack,2.95,1296,65,"Gluten-Free Oats, Nuts, Raisins, Apples, Grapes",No,Yes
+Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Is Vegerterian?,Has Gluten?,Has Nuts?
+Hamburger,BurgerKing,Burger,€1.85,"1,050.00",112.00,No,Yes,No
+Chicken Supreme,BurgerKing,Burger,€6.70,"2,480.00",217.00,No,Yes,No
+Double Steakhouse ,BurgerKing,Burger,€10.60,"4,380.00",380.00,No,Yes,No
+Whopper,BurgerKing,Burger,€6.85,"2,565.00",291.00,No,Yes,No
+Whopper Cheese,BurgerKing,Burger,€7.50,"2,889.00",312.00,No,Yes,No
+Big King,BurgerKing,Burger,€5.30,"1,286.00",213.00,No,Yes,No
+Double Cheese Bacon,BurgerKing,Burger,€5.95,"1,932.00",207.00,No,Yes,No
+Whopper Jr.,BurgerKing,Burger,€4.60,"1,367.00",157.00,No,Yes,No
+Whopper Jr. Cheese,BurgerKing,Burger,€5.25,"1,527.00",168.00,No,Yes,No
+Cheeseburger,BurgerKing,Burger,€2.35,"1,210.00",123.00,No,Yes,No
+BBQ Beef Wrap,BurgerKing,Wrap,€6.85,"2,434.00",231.00,No,Yes,No
+Gooey Cheddar King,BurgerKing,Burger,€13.10,"4,520.00",398.00,No,Yes,No
+Chicken Supreme Cheese,BurgerKing,Burger,€7.35,"2,803.00",240.00,No,Yes,No
+Crispy Chicken,BurgerKing,Burger,€5.65,"1,814.00",158.00,No,Yes,No
+Crispy Chicken Cheese,BurgerKing,Burger,€6.30,"1,974.00",170.00,No,Yes,No
+Crispy Chicken Wrap,BurgerKing,Wrap,€6.10,"2,208.00",215.00,No,Yes,No
+Chicken Cheddar King,BurgerKing,Burger,€10.50,"3,510.00",326.00,No,Yes,No
+King Fish,BurgerKing,Burger,€5.50,"2,032.00",179.00,No,Yes,No
+King Fish Cheese,BurgerKing,Burger,€6.15,"2,191.00",191.00,No,Yes,No
+Crunchy Chicken Salad,BurgerKing,Salad,€7.60,"1,063.00",318.00,No,No,No
+Garden Salad,BurgerKing,Salad,€5.75,225.00,240.00,Yes,No,No
+Plant-Based Whopper,BurgerKing,Burger,€6.85,"2,451.00",293.00,Yes,No,No
+Chicken Fries,BurgerKing,Snack,€3.95,726.00,72.00,No,Yes,No
+Fries,BurgerKing,Snack,€3.30,"1,331.00",116.00,No,Yes,No
+Chicken Nuggets,BurgerKing,Snack,€4.90,"1,035.00",102.00,No,Yes,No
+Onion Rings,BurgerKing,Snack,€3.15,"1,446.00",120.00,Yes,Yes,No
+BK Fusion Oreo,BurgerKing,Dessert,€3.55,"1,420.00",170.00,Yes,Yes,Yes
+Ice Cream Cone,BurgerKing,Dessert,,581.00,72.00,Yes,Yes,No
+Burger King Sundae,BurgerKing,Dessert,,192.00,130.00,Yes,No,No
+Hot Brownie with Ice Cream,BurgerKing,Dessert,,"1,744.00",120.00,Yes,Yes,Yes
+Vanilla Milkshake,BurgerKing,Dessert,,"1,961.00",401.00,Yes,Yes,Yes
+Chocolate Milkshake,BurgerKing,Dessert,,"2,226.00",431.00,Yes,No,No
+Strawberry Milkshake,BurgerKing,Dessert,,"2,222.00",431.00,Yes,No,No
+Pizza Margherita,PizzaHut,Pizza,€8.50,"5,400.00",750.00,Yes,Yes,No
+Pizza BBQ Chicken,PizzaHut,Pizza,€13.00,"6,200.00",850.00,No,Yes,No
+Gluten Free Hawaiian,PizzaHut,Pizza,€10.10,"5,440.00",760.00,Yes,No,No
+Chicken Bites,PizzaHut,Snack,€6.55,"1,662.00",191.00,No,Yes,No
+Spicy Chicken Drumettes,PizzaHut,Snack,€8.05,"1,790.00",200.00,No,Yes,No
+Onion Rings,PizzaHut,Snack,€3.35,"1,500.00",160.00,Yes,Yes,No
+Potato Wedges,PizzaHut,Snack,€3.65,"1,700.00",200.00,Yes,Yes,No
+Mozzarella Breadsticks,PizzaHut,Snack,€8.55,"2,250.00",180.00,Yes,Yes,No
+Garlic Bread,PizzaHut,Snack,€2.40,"1,000.00",90.00,Yes,Yes,No
+SFO Garlic Bites,PizzaHut,Snack,€4.90,"1,100.00",120.00,Yes,Yes,No
+Jalapeno Cream Cheese Poppers,PizzaHut,Snack,€5.60,"1,300.00",120.00,Yes,Yes,No
+Vegetable Lasagna,PizzaHut,Pasta,€10.00,"1,020.00",300.00,Yes,Yes,No
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+Rigatoni Pesto,CafeCuba,Pasta,€14.20,"2,900.00",300.00,,No,No
+Havana,CafeCuba,Burger,€17.95,"4,180.00",400.00,,Yes,No
+Spaghetti Calamari,CafeCuba,Pasta,€15.75,"2,500.00",300.00,,Yes,No
+Lamb Chops,Ottoman,Lamb,€16.50,"3,500.00",400.00,,Yes,No
+Mixed Doner,Ottoman,Wrap,€9.60,"2,900.00",350.00,,Yes,No
+Special Posh,Ottoman,Pizza,€13.60,"4,606.00",450.00,,Yes,No
+Chick Overboard Salad,Boost,Salad,€8.50,"1,975.00",92.00,,Yes,No
+Tofu-Lish For You Wrap,Boost,Wrap,€7.75,"2,184.00",130.00,,Yes,No
+Egg-Cellent Bacon Delight,Boost,Bread,€7.05,"2,997.00",154.00,,No,No
+Salmon Nigiri,Amami,Sushi,€2.75,400.00,50.00,,Yes,No
+Tuna Sashimi,Amami,Sushi,€3.50,650.00,30.00,,Yes,No
+Dim Sum,Amami,Sushi,€8.90,250.00,200.00,,Yes,No
+Avo Egg Bagel,Joli,Bread,€6.45,"1,753.00",78.00,Yes,Yes,No 
+Vegan Bagel,Joli,Bread,€5.95,"1,372.00",76.00,Yes,Yes,Yes
+Pestoparm Bagel,Joli,Bread,€6.65,"1,522.00",74.00,No,Yes,Yes
+Chorizo Bagel,Joli,Bread,€6.45,"1,610.00",77.00,No,Yes,No
+Beet Am Bagel,Joli,Bread,€6.65,"1,958.00",86.00,Yes,Yes,Yes
+Bacon Egg Bagel,Joli,Bread,€6.65,"1,744.00",85.00,No,Yes,No
+Apple Crumble Yogurt,Joli,Snack,€3.95,850.00,113.00,Yes,Yes,Yes
+Coco Jamboo Yogurt,Joli,Snack,€3.95,900.00,98.00,Yes,Yes,Yes
+Crunchy Caramel Yogurt,Joli,Snack,€3.95,950.00,100.00,Yes,Yes,Yes
+Hasta La Vista Yogurt,Joli,Snack,€3.95,"1,000.00",120.00,Yes,Yes,Yes
+Nutty Professor Yogurt,Joli,Snack,€4.95,"1,200.00",124.00,Yes,No,Yes
+Buffalo Chicken Wrap,Joli,Wrap,€8.45,"2,794.00",142.00,No,Yes,No
+Chicken Twist Wrap,Joli,Wrap,€7.95,"1,962.00",124.00,No,Yes,No
+Chicken Bacon Ranch Wrap,Joli,Wrap,€8.65,"2,757.00",138.00,No,Yes,No
+Protein Punch Wrap,Joli,Wrap,€8.45,"2,711.00",131.00,No,Yes,Yes
+Godzilla Wrap,Joli,Wrap,€8.95,"3,723.00",178.00,No,Yes,No
+Salmon Cream Wrap,Joli,Wrap,€9.50,"2,112.00",104.00,No,Yes,No
+Oriental Duck Wrap,Joli,Wrap,€9.50,"2,552.00",126.00,No,Yes,Yes
+Avo Cobbo Wrap,Joli,Wrap,€8.45,"2,878.00",120.00,Yes,Yes,No
+Tuna Feta Wrap,Joli,Wrap,€7.95,"2,648.00",117.00,No,Yes,No
+Chicken Jalapeno Wrap,Joli,Wrap,€8.45,"3,091.00",142.00,No,Yes,No
+Mykonos Wrap,Joli,Wrap,€7.95,"2,326.00",106.00,Yes,Yes,No
+Chicken Parma Wrap,Joli,Wrap,€8.45,"2,979.00",142.00,No,Yes,No
+Sweet Potato & Hummus Wrap,Joli,Wrap,€7.95,"2,635.00",133.00,Yes,Yes,Yes
+Zesty Tuna Salad,Joli,Salad,€8.95,"2,020.00",81.00,No,No,No
+Loaded Chicken BLT Salad,Joli,Salad,€9.45,"2,422.00",115.00,No,Yes,No
+Protein Bomb Salad,Joli,Salad,€9.45,"2,531.00",113.00,No,No,Yes
+Spiced Chicken Salad,Joli,Salad,€9.45,"2,443.00",114.00,No,Yes,No
+Beet It Salad,Joli,Salad,€8.95,"1,861.00",70.00,Yes,No,Yes
+Tofu Crunch Salad,Joli,Salad,€10.45,"1,828.00",91.00,Yes,No,Yes
+Chicken Egg Caesar,Joli,Salad,€8.95,"2,175.00",90.00,No,Yes,No
+Salmon Feta Salad,Joli,Salad,€12.45,"2,033.00",107.00,No,No,Yes
+Sesame Duck Salad,Joli,Salad,€11.95,"2,096.00",101.00,No,No,Yes
+Superfood Salad,Joli,Salad,"8,95","2,171.00",91.00,Yes,No,Yes
+Chicken Cashew Salad,Joli,Salad,€9.45,"2,104.00",111.00,No,No,Yes
+The Big Greek Salad,Joli,Salad,€9.95,"2,468.00",106.00,No,No,Yes
+King Kong Salad,Joli,Salad,€9.45,"3,175.00",147.00,No,Yes,No
+Duck Poke Bowl,Joli,Warm Bowl,€12.50,"2,606.00",128.00,No,No,Yes
+Chunky Tuna Bowl,Joli,Warm Bowl,€10.95,"3,209.00",145.00,No,No,Yes
+Muscle King Bowl,Joli,Warm Bowl,€11.95,"3,849.00",176.00,No,Yes,No
+Avo Energy Bowl,Joli,Warm Bowl,€11.45,"3,041.00",141.00,Yes,No,Yes
+Super Power Bowl,Joli,Warm Bowl,€11.95,"3,037.00",156.00,No,No,No
+Chicken Meze Bowl,Joli,Warm Bowl,€11.95,"3,443.00",168.00,No,Yes,Yes
+Salmon Beet Bowl,Joli,Warm Bowl,€13.95,"3,305.00",156.00,No,No,Yes
+Greek Melt Ciabatta,Joli,Bread,€7.85,"3,117.00",149.00,Yes,Yes,No
+Chicken Pesto Ciabatta,Joli,Bread,€8.45,"3,271.00",162.00,No,Yes,No
+Parma Ciabatta,Joli,Bread,€7.85,"2,589.00",128.00,No,Yes,No
+Hail Caesar Ciabatta,Joli,Bread,€8.45,"3,246.00",164.00,No,Yes,No
+Omega Boost Ciabatta,Joli,Bread,€9.50,"2,924.00",147.00,No,Yes,No
+Hoisin Duck Ciabatta,Joli,Bread,€9.50,"2,686.00",142.00,No,Yes,No
+Creamy Chorizo Feta Ciabatta,Joli,Bread,€7.85,"3,280.00",145.00,Yes,Yes,No
+Chocolate Brownie,Joli,Snack,€2.50,"2,500.00",125.00,Yes,No,Yes
+Milk Chocolate Cookie,Joli,Snack,€2.50,"1,354.00",89.00,Yes,Yes,No
+Vegal Energy Ball,Joli,Snack,€2.50,"1,240.00",34.00,Yes,No,No
+Coconut Bite Ball,Joli,Snack,€2.50,"1,245.00",35.00,Yes,No,No
+Real Salt & Vinegar Crisps,Joli,Snack,€2.50,"1,345.00",240.00,Yes,No,No
+Green Gains Liquid Meal,Joli,Smoothie,€5.95,853.54,41.00,Yes,No,No
+Iron Man Liquid Meal,Joli,Smoothie,€5.45,"1,221.73",57.00,Yes,No,No
+Power Shake Liquid Meal,Joli,Smoothie,€5.45,"1,301.22",62.00,Yes,No,Yes
+Tarzan Liquid Meal,Joli,Smoothie,€5.45,"1,774.02",74.00,Yes,No,Yes
+Berrylicious Juicw,Joli,Smoothie,€5.95,765.00,43.50,Yes,No,No
+Detox Queen Juice,Joli,Smoothie,€5.95,732.20,42.25,Yes,No,No
+Green Mile Juice,Joli,Smoothie,€5.95,564.84,33.25,Yes,No,No
+Hangover Destroyer Juice,Joli,Smoothie,€5.95,753.12,44.50,Yes,No,No
+Stay Home Doc Juice,Joli,Smoothie,€5.95,857.72,51.00,Yes,No,No
+Shakawaka Smoothie,Joli,Smoothie,€5.45,824.25,45.75,Yes,No,No
+Re-Charger Smoothie,Joli,Smoothie,€5.45,698.73,40.85,Yes,No,No
+Morning Delight Smoothie,Joli,Smoothie,€5.45,"1,171.52",60.00,Yes,No,No
+Morning Delight Smoothie,Joli,Smoothie,€5.45,937.22,53.50,Yes,No,No
+Blood Cleanser Smoothie,Joli,Smoothie,€5.45,979.06,40.50,Yes,No,No
