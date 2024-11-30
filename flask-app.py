@@ -449,4 +449,3 @@ def forbidden_error(error):
 if __name__ == '__main__':
     # Run the app without debug-level logs from Flask
     app.run(debug=True, use_reloader=True, host='0.0.0.0', port=1000)
-    
