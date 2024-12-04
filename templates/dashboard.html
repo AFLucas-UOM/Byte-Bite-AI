@@ -464,11 +464,11 @@
 
             <script>
             // Retrieve and parse the current user's data directly from localStorage
-            const rawUserData = JSON.parse(localStorage.getItem('currentuser'));
+            const rawUserData = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
 
             // Display the username at the top right
             const profileNameElement = document.getElementById('profileName');
-            profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error';
+            profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error1234';
 
             // Fetch the user data from JSON and match the current user
             fetch('/static/json/users.json')
