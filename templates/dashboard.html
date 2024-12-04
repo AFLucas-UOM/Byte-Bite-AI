@@ -882,7 +882,7 @@
               .then(data => {
                 // Fetch the current user's name from localStorage
                 const rawUsersData6 = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
-                const currentuserName6 = rawUsersData6 ? rawUsersData6.name : null; // Using currentuserName6 as per your request
+                const currentuserName6 = rawUsersData6 ? rawUsersData6.name : null; 
                 
                 // Filter orders by the logged-in user's name
                 const userOrders = data.filter(order => order.userName === currentuserName6);
