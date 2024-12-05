@@ -207,33 +207,49 @@
           </div>
         </div><!-- End Current Recommendations Card -->
 
-          <script>
-            async function loadRecommendation() {
-              // Fetch the user's data from localStorage
-              const rawUsersData = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
-
-              // Check if user data is available
-              if (!rawUsersData) {
-                  console.error("No user data found in localStorage.");
+        <script>
+          async function loadRecommendation() {
+              // Fetch the raw user data from localStorage
+              const rawUsersData = localStorage.getItem('BBAIcurrentuser');
+              let currentuserName = null;
+      
+              // Check if rawUsersData exists and handle accordingly
+              if (rawUsersData) {
+                  try {
+                      // Check if the data is a string or JSON
+                      if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
+                          const parsedData = JSON.parse(rawUsersData);
+                          currentuserName = parsedData.name || null;  // Safe access to name
+                      } else {
+                          // It's a plain string
+                          currentuserName = rawUsersData;
+                      }
+                  } catch (error) {
+                      console.error('Error parsing localStorage value:', error);
+                      return;
+                  }
+              } else {
+                  console.error('No user data found in localStorage');
                   return;
               }
-
-              // Fetch the users' favorite food from users.json using the user's name
+      
+              // Fetch the users' data from users.json using the current user name
               fetch('/static/json/users.json')
                   .then(response => response.json())
                   .then(userData => {
                       // Find the user in the users.json file based on their name
-                      const user = userData.find(u => u.Name.toLowerCase() === rawUsersData.name.toLowerCase());
+                      const user = userData.find(u => u.Name.toLowerCase() === currentuserName.toLowerCase());
                       console.log(user);
+      
                       // If no matching user is found
                       if (!user) {
                           console.error("User not found in users.json.");
                           return;
                       }
-
+      
                       // Retrieve the user's favourite food
-                      const userFavoriteFood = user.Favourite_food;  // Assuming 'Favourite_food' exists in the users.json
-
+                      const userFavoriteFood = user.Favourite_food;  // Assuming 'Favourite_food' exists in users.json
+      
                       // Fetch the CSV file
                       fetch('/static/menu.csv')
                           .then(response => response.text())
@@ -243,16 +259,16 @@
                                   header: true,
                                   skipEmptyLines: true
                               }).data;
-
+      
                               // Get the current time
                               const currentTime = new Date();
                               const currentHour = currentTime.getHours();
-
+      
                               // Initialize variables for dish details
                               let recommendedDish = '';
                               let dishLocation = '';
                               let dishKJ = '';
-
+      
                               // Define conditions based on the time of day
                               if (currentHour < 8) {
                                   // Before 8 AM: Look for Bread type dishes
@@ -260,7 +276,7 @@
                                       if (row.Type && row.Type.toLowerCase() === "bread") {
                                           recommendedDish = row.Name;  // Get the dish name
                                           dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
                                           break; // Stop looping after the first match
                                       }
                                   }
@@ -270,7 +286,7 @@
                                       if (row.Type && row.Type.toLowerCase() === userFavoriteFood.toLowerCase()) {
                                           recommendedDish = row.Name;  // Get the dish name
                                           dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
                                           break; // Stop looping after the first match
                                       }
                                   }
@@ -280,12 +296,12 @@
                                       if (row.Type && row.Type.toLowerCase() === "snack") {
                                           recommendedDish = row.Name;  // Get the dish name
                                           dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];             // Get the KJ value of the dish (5th column)
+                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
                                           break; // Stop looping after the first match
                                       }
                                   }
                               }
-
+      
                               // If a dish is found, update the UI
                               if (recommendedDish) {
                                   document.getElementById('recommendation-dish').textContent = `${recommendedDish}`;
@@ -302,10 +318,11 @@
                   .catch(error => {
                       console.error("Error fetching or parsing users.json file:", error);
                   });
-            }
-          
-            loadRecommendation();
-          </script>
+          }
+      
+          loadRecommendation();
+      </script>
+      
 
           <!-- Revenue Card -->
           <div class="col-xxl-4 col-md-6">
@@ -342,14 +359,21 @@
           </div><!-- End Revenue Card -->
           
           <script>
+            // Fetch the raw data from localStorage
             const rawUsersData = localStorage.getItem('BBAIcurrentuser');
             let currentuserName = null;
 
             if (rawUsersData) {
               try {
-                const parsedData = JSON.parse(rawUsersData);
-                console.log('Parsed Data:', parsedData);
-                currentuserName = parsedData.name || null; // Safely access 'name'
+                // Attempt to parse the data as JSON
+                if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
+                  const parsedData = JSON.parse(rawUsersData);
+                  console.log('Parsed Data:', parsedData);
+                  currentuserName = parsedData.name || null; // Safely access 'name'
+                } else {
+                  // If not JSON, assume it's a plain string
+                  currentuserName = rawUsersData;
+                }
               } catch (error) {
                 console.error('Error parsing localStorage value:', error);
               }
@@ -359,11 +383,12 @@
 
             console.log('Current User Name:', currentuserName);
 
-            // Example: Update the DOM if a valid user name exists
+            // Update the DOM with the current user's name or 'Guest' if unavailable
+            profileNameElement = document.getElementById('profileName');
             if (currentuserName) {
-              document.getElementById('profileName').textContent = currentuserName;
+              profileNameElement.textContent = currentuserName;
             } else {
-              document.getElementById('profileName').textContent = 'Guest';
+              profileNameElement.textContent = 'Guest';
             }
 
 
@@ -486,41 +511,83 @@
             </div><!-- End Current Weight Card -->
 
             <script>
-            // Retrieve and parse the current user's data directly from localStorage
-            const rawUserData = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
-
-            // Display the username at the top right
-            const profileNameElement = document.getElementById('profileName');
-            profileNameElement.textContent = rawUserData && rawUserData.name ? rawUserData.name : 'Walter Error1234';
-
-            // Fetch the user data from JSON and match the current user
-            fetch('/static/json/users.json')
-              .then(response => response.json())
-              .then(data => {
-                // Find the user in JSON data who matches the name in rawUserData
-                const userData = data.find(user => user.Name.toLowerCase() === rawUserData?.name.toLowerCase());
-
-                // If user data is found, update the weight and last update
-                if (userData) {
-                  document.getElementById('weight').textContent = `${userData.Weight} kg`;
-
-                  // Set the current date and time (hour and minute only, in the desired format) as the last update
-                  const options = { 
-                    day: 'numeric', 
-                    month: 'numeric', 
-                    year: 'numeric', 
-                    hour: 'numeric', 
-                    minute: 'numeric', 
-                    hour12: true 
-                  };
-                  const lastUpdate = new Date().toLocaleString('en-GB', options).replace(' am', ' AM').replace(' pm', 'PM').replace('AM', ' AM').replace('PM', ' PM');
-                  document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
-                } else {
-                  console.error('User not found in JSON data');
-                }
-              })
-              .catch(error => console.error('Error fetching user data:', error));
-            </script>
+              document.addEventListener('DOMContentLoaded', () => {
+                  // Retrieve the current user's data from localStorage
+                  const rawUsersData = localStorage.getItem('BBAIcurrentuser');
+                  let currentUserName = null;
+          
+                  if (rawUsersData) {
+                      try {
+                          // Try to parse the raw data as JSON
+                          const parsedData = JSON.parse(rawUsersData);
+                          console.log('Parsed Data:', parsedData);
+          
+                          // Check if it's an object with a 'name' property
+                          if (typeof parsedData === 'object' && 'name' in parsedData) {
+                              currentUserName = parsedData.name.split(' ')[0]; // Extract the first word
+                          } else {
+                              console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
+                              currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
+                          }
+                      } catch (error) {
+                          console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
+                          currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
+                      }
+                  } else {
+                      console.error('No BBAIcurrentuser found in localStorage');
+                  }
+          
+                  console.log('Current User Name Weight:', currentUserName);
+          
+                  // Update the profile name in the DOM
+                  const profileNameElement = document.getElementById('profileName');
+                  if (profileNameElement) {
+                      profileNameElement.textContent = currentUserName || 'Guest';
+                  } else {
+                      console.error('Element with id "profileName" not found in the DOM');
+                  }
+          
+                  // Fetch the user data from JSON and match the current user
+                  fetch('/static/json/users.json')
+                      .then(response => response.json())
+                      .then(data => {
+                          console.log('User data from JSON file:', data);
+          
+                          // Find the user in JSON data who matches the name in currentUserName
+                          const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName?.toLowerCase());
+          
+                          if (userData) {
+                              console.log('Matching user found in JSON:', userData);
+          
+                              // Update the weight
+                              document.getElementById('weight').textContent = `${userData.Weight} kg`;
+          
+                              // Set the current date and time (hour and minute only, in the desired format) as the last update
+                              const options = {
+                                  day: 'numeric',
+                                  month: 'numeric',
+                                  year: 'numeric',
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                  hour12: true,
+                              };
+                              const lastUpdate = new Date().toLocaleString('en-GB', options)
+                                  .replace(' am', ' AM')
+                                  .replace(' pm', ' PM')
+                                  .replace('AM', ' AM')
+                                  .replace('PM', ' PM');
+                              document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
+                          } else {
+                              console.error('No matching user found in JSON data for name:', currentUserName);
+                          }
+                      })
+                      .catch(error => console.error('Error fetching user data from JSON:', error));
+              });
+          </script>
+          
+          
+          
+          
 
             <!-- Current BMI Card -->
             <div class="col-xxl-4 col-md-6">
@@ -541,62 +608,86 @@
             </div><!-- End Current BMI Card -->
 
             <script>
-              // Initialize the variable for current user's data
-              let currentUserName = null;
-            
-              // Retrieve the current user's data from localStorage
-              const rawUserData2 = localStorage.getItem('BBAIcurrentuser');
-              if (rawUserData2) {
-                try {
-                  // Parse the stored user data
-                  const parsedData = JSON.parse(rawUserData2);
-                  console.log('Parsed User Data:', parsedData);
-                  currentUserName = parsedData?.name || null;  // Safely access 'name'
-                } catch (error) {
-                  console.error('Error parsing localStorage value:', error);
-                }
-              } else {
-                console.error('No currentuser found in localStorage');
-              }
-            
-              // Proceed only if currentUserName is available
-              if (currentUserName) {
-                // Fetch user data from the JSON file
-                fetch('/static/json/users.json')
-                  .then(response => response.json())
-                  .then(data => {
-                    // Find the user in the JSON data by matching the name
-                    const userData = data.find(user => user.Name.toLowerCase() === currentUserName.toLowerCase());
-            
-                    // If the user is found in the data, update the BMI and last update fields
-                    if (userData) {
-                      // BMI formula: BMI = weight / (height^2)
-                      const bmi = userData.Weight / (userData.Height * userData.Height);
-            
-                      // Update the BMI value in the DOM
-                      document.getElementById('bmi').textContent = bmi.toFixed(2);  // Rounded to 2 decimal places
-            
-                      // Set the current date and time as the last update
-                      const lastUpdate = new Date().toLocaleString('en-GB', {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true
-                      }).replace('am', 'AM').replace('pm', 'PM').replace('AM', ' AM').replace('PM', ' PM');
-            
-                      // Update the last update timestamp in the DOM
-                      document.getElementById('bmi-last-update').textContent = `As of: ${lastUpdate}`;
-                    } else {
-                      console.error('User not found in JSON data');
-                    }
-                  })
-                  .catch(error => console.error('Error fetching user data:', error));
-              } else {
-                console.error('Current user name is not available');
-              }
-            </script>
+              document.addEventListener('DOMContentLoaded', () => {
+                  // Retrieve the current user's data from localStorage
+                  const rawUserData2 = localStorage.getItem('BBAIcurrentuser');
+                  let currentUserName = null;
+          
+                  if (rawUserData2) {
+                      try {
+                          // Parse the stored user data
+                          const parsedData = JSON.parse(rawUserData2);
+                          console.log('Parsed User Data:', parsedData);
+          
+                          // Extract the first name if the data is valid
+                          if (typeof parsedData === 'object' && 'name' in parsedData) {
+                              currentUserName = parsedData.name.split(' ')[0]; // Use first name
+                          } else {
+                              console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
+                              currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
+                          }
+                      } catch (error) {
+                          console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
+                          currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
+                      }
+                  } else {
+                      console.error('No BBAIcurrentuser found in localStorage');
+                  }
+          
+                  console.log('Current User Name:', currentUserName);
+          
+                  // Proceed only if currentUserName is available
+                  if (currentUserName) {
+                      fetch('/static/json/users.json')
+                          .then(response => response.json())
+                          .then(data => {
+                              console.log('User data from JSON file:', data);
+          
+                              // Find the user in the JSON data by matching the first name
+                              const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName.toLowerCase());
+          
+                              if (userData) {
+                                  console.log('Matching user found in JSON:', userData);
+          
+                                  // Calculate BMI using the formula: BMI = weight / (height^2)
+                                  const bmi = userData.Weight / (userData.Height * userData.Height);
+          
+                                  // Update the BMI value in the DOM
+                                  const bmiElement = document.getElementById('bmi');
+                                  if (bmiElement) {
+                                      bmiElement.textContent = bmi.toFixed(2); // Round to 2 decimal places
+                                  } else {
+                                      console.error('Element with id "bmi" not found in the DOM');
+                                  }
+          
+                                  // Set the current date and time as the last update
+                                  const lastUpdate = new Date().toLocaleString('en-GB', {
+                                      day: 'numeric',
+                                      month: 'numeric',
+                                      year: 'numeric',
+                                      hour: 'numeric',
+                                      minute: 'numeric',
+                                      hour12: true,
+                                  }).replace('am', ' AM').replace('pm', ' PM').replace('AM', ' AM').replace('PM', ' PM');
+          
+                                  // Update the last update timestamp in the DOM
+                                  const lastUpdateElement = document.getElementById('bmi-last-update');
+                                  if (lastUpdateElement) {
+                                      lastUpdateElement.textContent = `As of: ${lastUpdate}`;
+                                  } else {
+                                      console.error('Element with id "bmi-last-update" not found in the DOM');
+                                  }
+                              } else {
+                                  console.error('No matching user found in JSON data for name:', currentUserName);
+                              }
+                          })
+                          .catch(error => console.error('Error fetching user data:', error));
+                  } else {
+                      console.error('Current user name is not available');
+                  }
+              });
+          </script>
+          
             
 
             <!-- Total Orders Card -->
@@ -640,24 +731,33 @@
               const comparisonTextSpan = document.getElementById('ordersComparison');
               // Select the element where the total orders will be displayed
               const totalOrdersElement = document.getElementById('totalOrders');
-            
+
               // Initialize variable for current user's name
               let currentuserName2 = null;
-            
+
               // Retrieve the current user's data from localStorage
               const rawUsersData2 = localStorage.getItem('BBAIcurrentuser');
               if (rawUsersData2) {
                 try {
-                  // Parse the stored user data
-                  const parsedData = JSON.parse(rawUsersData2);
-                  console.log('Parsed User Data:', parsedData);
-                  currentuserName2 = parsedData?.name || null;  // Safely access 'name'
+                  // Check if the stored data is a JSON string
+                  if (rawUsersData2.startsWith('{') && rawUsersData2.endsWith('}')) {
+                    // Parse the JSON data if it appears to be an object
+                    const parsedData = JSON.parse(rawUsersData2);
+                    console.log('Parsed User Data:', parsedData);
+                    currentuserName2 = parsedData?.name || null; // Safely access 'name'
+                  } else {
+                    // If it's a plain string, use it directly
+                    currentuserName2 = rawUsersData2;
+                  }
                 } catch (error) {
                   console.error('Error parsing localStorage value:', error);
                 }
               } else {
-                console.error('No currentuser found in localStorage');
+                console.error('No BBAIcurrentuser found in localStorage');
               }
+
+              // Log and update the total orders display based on the user's name
+              console.log('Current User Name:', currentuserName2);
             
               // Only proceed if the current user's name is found
               if (currentuserName2) {
@@ -795,6 +895,7 @@
                 console.error('No valid user found, orders data will not be loaded.');
               }
             </script>
+          
             
             
                                    
@@ -881,52 +982,72 @@
               .then(response => response.json())
               .then(data => {
                 // Fetch the current user's name from localStorage
-                const rawUsersData6 = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
-                const currentuserName6 = rawUsersData6 ? rawUsersData6.name : null; 
-                
+                const rawUsersData6 = localStorage.getItem('BBAIcurrentuser');
+                let currentuserName6 = null;
+          
+                if (rawUsersData6) {
+                  try {
+                    // Attempt to parse the data as JSON
+                    if (rawUsersData6.startsWith('{') && rawUsersData6.endsWith('}')) {
+                      const parsedData = JSON.parse(rawUsersData6);
+                      console.log('Parsed Data:', parsedData);
+                      currentuserName6 = parsedData.name || null; // Safely access 'name'
+                    } else {
+                      // If not JSON, assume it's a plain string
+                      currentuserName6 = rawUsersData6;
+                    }
+                  } catch (error) {
+                    console.error('Error parsing localStorage value:', error);
+                  }
+                } else {
+                  console.error('No BBAIcurrentuser found in localStorage');
+                }
+          
+                console.log('Current User Name:', currentuserName6);
+          
                 // Filter orders by the logged-in user's name
                 const userOrders = data.filter(order => order.userName === currentuserName6);
-                
+          
                 // Sort the filtered orders by date in descending order
                 const sortedOrders = userOrders.sort((a, b) => {
                   const dateA = new Date(a.Date.split('/').reverse().join('-')); 
                   const dateB = new Date(b.Date.split('/').reverse().join('-')); 
                   return dateB - dateA; // Sort descending
                 });
-        
+          
                 // Get the 5 most recent orders
                 const recentOrders = sortedOrders.slice(0, 5);
-        
+          
                 // Select the container where the activities will be displayed
                 const recentActivityContainer = document.getElementById('recentActivity');
-        
+          
                 // Array of colors for alternating activity badges
                 const colors = ['text-primary', 'text-success', 'text-warning', 'text-info', 'text-danger'];
-        
+          
                 // Iterate over the recent orders and dynamically create activity items
                 recentOrders.forEach((order, index) => {
                   const activityItem = document.createElement('div');
                   activityItem.classList.add('activity-item', 'd-flex');
-        
+          
                   const activityDate = document.createElement('div');
                   activityDate.classList.add('activite-label');
                   activityDate.textContent = order.Date;
-        
+          
                   // Get the color for the current activity
                   const colorClass = colors[index % colors.length];  // Cycle through colors
-        
+          
                   const activityBadge = document.createElement('i');
                   activityBadge.classList.add('bi', 'bi-circle-fill', 'activity-badge', colorClass, 'align-self-start'); // Apply dynamic color
-        
+          
                   const activityContent = document.createElement('div');
                   activityContent.classList.add('activity-content');
                   activityContent.innerHTML = `Ordered from <a class="fw-bold text-dark">${order.Restaurant}</a> - ${order["Name of dish"]}`;
-        
+          
                   // Append elements to the activity item
                   activityItem.appendChild(activityDate);
                   activityItem.appendChild(activityBadge);
                   activityItem.appendChild(activityContent);
-        
+          
                   // Append activity item to the container
                   recentActivityContainer.appendChild(activityItem);
                 });
@@ -934,7 +1055,10 @@
               .catch(error => {
                 console.error("Error fetching or parsing orders JSON file:", error);
               });
-        </script>
+          </script>
+          
+        
+        
         
           
           
@@ -959,7 +1083,7 @@
               <div id="purchaseChart" ></div>
               <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
               <script>
-                document.addEventListener("DOMContentLoaded", () => {
+                document.addEventListener('DOMContentLoaded', () => {
                     const chartContainer = document.querySelector("#purchaseChart");
                     const chart = echarts.init(chartContainer);
             
@@ -995,7 +1119,7 @@
                     const cardTitleRestaurantSpan = document.getElementById('restaurantTitleSpan');
             
                     filterItemsRestaurant.forEach(item => {
-                        item.addEventListener('click', function() {
+                        item.addEventListener('click', function () {
                             const selectedFilter = item.getAttribute('data-filter');
             
                             if (selectedFilter === 'restaurant-today') {
@@ -1015,32 +1139,62 @@
                     });
             
                     function updateChart(timeframe) {
-                      // Fetch the current user's name from localStorage
-                      const rawUsersData5 = JSON.parse(localStorage.getItem('BBAIcurrentuser'));
-                      const currentuserName5 = rawUsersData5 ? rawUsersData5.name : null; // Using currentuserName5 as per your request
-
-                      fetch('/static/json/orders.json')
-                          .then(response => response.json())
-                          .then(data => {
-                              // Filter orders by the current user's name
-                              const userOrders = data.filter(order => order.userName === currentuserName5);
-
-                              // Filter the orders based on the selected timeframe
-                              const filteredData = filterByTimeframe(userOrders, timeframe);
-                              const restaurantCounts = countRestaurants(filteredData);
-
-                              const chartData = Object.entries(restaurantCounts)
-                                  .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
-                                  .map(([name, count]) => ({
-                                      value: count,
-                                      name: name
-                                  }));
-
-                              chart.setOption({ series: [{ data: chartData }] });
-                          })
-                          .catch(error => console.error("Error fetching or parsing JSON data:", error));
-                  }
-
+                        // Fetch the current user's name from localStorage
+                        let rawUsersData = localStorage.getItem('BBAIcurrentuser');
+                        let currentuserName = null;
+            
+                        if (rawUsersData) {
+                            try {
+                                // Check if the stored data is a string or JSON object
+                                if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
+                                    const parsedData = JSON.parse(rawUsersData);
+                                    currentuserName = parsedData?.name?.split(' ')[0] || null; // Extract first name
+                                } else {
+                                    // If it's a plain string, use it directly
+                                    currentuserName = rawUsersData;
+                                }
+                            } catch (error) {
+                                console.warn('Error parsing localStorage value as JSON. Using fallback.', error);
+                            }
+                        }
+            
+                        if (!currentuserName) {
+                            console.error('Current user name not found.');
+                            return;
+                        }
+            
+                        console.log("Current User Name:", currentuserName);
+            
+                        fetch('/static/json/orders.json')
+                            .then(response => response.json())
+                            .then(data => {
+                                // Filter orders by checking if the current user's name is included in the order's userName
+                                const userOrders = data.filter(order => {
+                                    const userName = order.userName || "";
+                                    console.log(`Checking if order userName: ${userName} matches current user: ${currentuserName}`);
+                                    return userName.includes(currentuserName); // Check if the first name matches part of the full name
+                                });
+            
+                                console.log("Filtered Orders:", userOrders);
+            
+                                // Filter the orders based on the selected timeframe
+                                const filteredData = filterByTimeframe(userOrders, timeframe);
+                                console.log("Sorted Orders:", filteredData);
+            
+                                const restaurantCounts = countRestaurants(filteredData);
+            
+                                const chartData = Object.entries(restaurantCounts)
+                                    .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
+                                    .map(([name, count]) => ({
+                                        value: count,
+                                        name: name
+                                    }));
+            
+                                console.log("Most Recent Orders:", chartData);
+                                chart.setOption({ series: [{ data: chartData }] });
+                            })
+                            .catch(error => console.error("Error fetching or parsing JSON data:", error));
+                    }
             
                     function filterByTimeframe(data, timeframe) {
                         const today = new Date();
@@ -1080,6 +1234,8 @@
                     });
                 });
             </script>
+            
+            
                         
             </div>
           </div>
