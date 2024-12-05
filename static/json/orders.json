@@ -103,5 +103,40 @@
         "Restaurant": "CafeCuba",
         "Price": 15.75,
         "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "30/11/2024",
+        "Name of dish": "BBQ Ribs",
+        "Restaurant": "CafeCuba",
+        "Price": 16.99,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "01/12/2024",
+        "Name of dish": "Vegan Burger",
+        "Restaurant": "Joli",
+        "Price": 12.50,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "02/12/2024",
+        "Name of dish": "Pepperoni Pizza",
+        "Restaurant": "PizzaHut",
+        "Price": 14.00,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "03/12/2024",
+        "Name of dish": "Grilled Salmon",
+        "Restaurant": "CafeCuba",
+        "Price": 18.75,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "04/12/2024",
+        "Name of dish": "Beef Steak",
+        "Restaurant": "CafeCuba",
+        "Price": 21.50,
+        "userName": "Sean David Muscat"
     }
 ]
