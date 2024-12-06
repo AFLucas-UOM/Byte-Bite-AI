@@ -625,6 +625,45 @@ h6 {
   background: #e0f8e9;
 }
 
+.card.info-card.sales-card {
+  min-width: 625px;
+}
+
+/* Responsive styles for smaller screens */
+
+/* Medium screens (below 992px) */
+@media (max-width: 991px) {
+  .col-xxl-8.col-md-6 {
+    min-width: 550px !important; /* Adjust width for medium screens */
+  }
+  .card.info-card.sales-card {
+    min-width: 525px !important;
+  }
+}
+
+/* Small screens (below 768px) */
+@media (max-width: 767px) {
+  .col-xxl-8.col-md-6 {
+    min-width: 450px !important;
+    padding: 10px !important; /* Add padding to fit smaller screens */
+  }
+  .card.info-card.sales-card {
+    min-width: 425px !important;
+  }
+}
+
+/* Extra small screens (below 576px) */
+@media (max-width: 575px) {
+  .col-xxl-8.col-md-6 {
+    min-width: 100% !important; /* Allow the column to take the full width */
+  }
+  .card.info-card.sales-card {
+    min-width: 90% !important; /* Slight margin for small screens */
+    margin: 0 auto; /* Center the card */
+  }
+}
+
+
 /*--------------------------------------------------------------
 # Recent Activities
 --------------------------------------------------------------*/
