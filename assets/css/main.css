@@ -416,7 +416,7 @@ h6 {
 .footer {
   --heading-font: var(--default-font);
   color: var(--default-color);
-  margin-top: 3cm;
+  margin-top: 2cm;
   background-color: var(--background-color);
   font-size: 14px;
   padding: 40px 0;
@@ -1114,7 +1114,7 @@ section,
 
 .clients-slider {
   position: relative;
-  width: 100%;
+  width: 105%;
   padding-left: 1cm;
   padding-right:1cm;
 }

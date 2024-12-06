@@ -55,7 +55,7 @@
           <!-- Correctly reference the image path -->
           <img src="{{ profile_pic }}" alt="Profile" class="rounded-circle">
           <!-- Placeholder span for the user's name -->
-          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em;">Loading... </span>
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em; padding-left: 0 !important;">Loading... </span>
         </a><!-- End Profile Image Icon -->
         
         <script>
@@ -175,7 +175,7 @@
       <div class="col-lg-8">
         <div class="row">
         <!-- Current Recommendations Card -->
-        <div class="col-xxl-8 col-md-6">
+        <div class="col-xxl-8 col-md-6" style="min-width: 500px;">
           <div class="card info-card sales-card">
             <div class="card-body position-relative">
               <h5 class="card-title">
@@ -239,7 +239,6 @@
                   .then(userData => {
                       // Find the user in the users.json file based on their name
                       const user = userData.find(u => u.Name.toLowerCase() === currentuserName.toLowerCase());
-                      console.log(user);
       
                       // If no matching user is found
                       if (!user) {
@@ -380,8 +379,6 @@
             } else {
               console.error('No BBAIcurrentuser found in localStorage');
             }
-
-            console.log('Current User Name:', currentuserName);
 
             // Update the DOM with the current user's name or 'Guest' if unavailable
             profileNameElement = document.getElementById('profileName');
@@ -537,8 +534,6 @@
                       console.error('No BBAIcurrentuser found in localStorage');
                   }
           
-                  console.log('Current User Name Weight:', currentUserName);
-          
                   // Update the profile name in the DOM
                   const profileNameElement = document.getElementById('profileName');
                   if (profileNameElement) {
@@ -633,8 +628,6 @@
                   } else {
                       console.error('No BBAIcurrentuser found in localStorage');
                   }
-          
-                  console.log('Current User Name:', currentUserName);
           
                   // Proceed only if currentUserName is available
                   if (currentUserName) {
@@ -755,9 +748,6 @@
               } else {
                 console.error('No BBAIcurrentuser found in localStorage');
               }
-
-              // Log and update the total orders display based on the user's name
-              console.log('Current User Name:', currentuserName2);
             
               // Only proceed if the current user's name is found
               if (currentuserName2) {
@@ -1003,8 +993,6 @@
                   console.error('No BBAIcurrentuser found in localStorage');
                 }
           
-                console.log('Current User Name:', currentuserName6);
-          
                 // Filter orders by the logged-in user's name
                 const userOrders = data.filter(order => order.userName === currentuserName6);
           
@@ -1080,7 +1068,7 @@
           
             <div class="card-body pb-0">
               <h5 id="restaurantTrafficCardTitle" class="card-title">Your Orders <span id="restaurantTitleSpan">| This Month</span></h5>
-              <div id="purchaseChart" ></div>
+              <div id="purchaseChart" style="width: 100% !important; height: 100% !important;"></div>
               <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
               <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -1163,8 +1151,6 @@
                             return;
                         }
             
-                        console.log("Current User Name:", currentuserName);
-            
                         fetch('/static/json/orders.json')
                             .then(response => response.json())
                             .then(data => {
@@ -1233,10 +1219,7 @@
                         chart.resize();
                     });
                 });
-            </script>
-            
-            
-                        
+            </script>   
             </div>
           </div>
           <!-- End Restaurant Purchase Traffic -->

@@ -143,7 +143,7 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  margin-top: 60px;
+  margin-top: 65px;
   padding: 20px 30px;
   transition: all 0.3s;
 }
@@ -185,7 +185,7 @@ h6 {
 }
 
 .card-title {
-  padding: 20px 0 15px 0;
+  padding: 30px 0 35px 0;
   font-size: 18px;
   font-weight: bolder;
   color: var(--accent-color);
@@ -593,6 +593,9 @@ h6 {
 --------------------------------------------------------------*/
 .dashboard .info-card {
   padding-bottom: 10px;
+  min-height: 211px;
+  min-width: 217px;
+  max-width: 500px;
 }
 
 .dashboard .info-card h6 {
@@ -725,6 +728,46 @@ h6 {
   max-width: 120px;
 }
 
+@media (max-width: 767px) {
+  .profile .profile-card img {
+    max-width: 100px;
+  }
+
+  .profile .profile-card h2 {
+    font-size: 20px;
+  }
+
+  .profile .profile-card h3 {
+    font-size: 16px;
+  }
+
+  .profile .profile-card .social-links a {
+    font-size: 18px;
+  }
+
+  .profile .profile-overview .row {
+    font-size: 14px;
+  }
+
+  .profile .profile-overview .card-title {
+    font-size: 18px;
+  }
+
+  .profile .profile-overview .label {
+    font-size: 14px;
+  }
+
+  .profile .profile-edit label {
+    font-size: 14px;
+  }
+
+  .profile .profile-edit img {
+    max-width: 100px;
+  }
+}
+.rounded-circle {
+  margin-right: 10px;
+}
 /*--------------------------------------------------------------
 # FAQs Page
 --------------------------------------------------------------*/
@@ -803,6 +846,8 @@ body {
   justify-content: center; /* Centering the chart horizontally */
   align-items: center; /* Centering the chart vertically */
   min-height: 48.5vh; /* Minimum height for the chart */
+  width: 100% !important; /* Full width */
+  height: 100% !important; /* Full height */
   box-sizing: border-box; /* Ensures padding/margin don't affect dimensions */
   transition: width 0.3s ease, height 0.3s ease; /* Smooth transition */
 }
