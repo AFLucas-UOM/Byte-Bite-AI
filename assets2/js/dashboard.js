@@ -32,47 +32,56 @@ function signOut() {
     window.location.href = "/";
 }
 
-/** Thumbsup & Down Baic Alert */
-document.addEventListener("DOMContentLoaded", function() {
-    const thumbsUpButton = document.getElementById("thumbs-up");
-    const thumbsDownButton = document.getElementById("thumbs-down");
-    const feedbackAlert = document.getElementById("feedback-alert");
-    const feedbackText = document.getElementById("feedback-text");
+/** Thumbs-up & Down Basic Alert */
+document.addEventListener("DOMContentLoaded", () => {
+  const thumbsUpButton = document.getElementById("thumbs-up");
+  const thumbsDownButton = document.getElementById("thumbs-down");
+  const feedbackAlert = document.getElementById("feedback-alert");
+  const feedbackText = document.getElementById("feedback-text");
 
-    thumbsUpButton.addEventListener("click", function() {
+  let alertTimeout;  // Variable to hold the timeout reference
+
+  const showFeedbackAlert = (message, isSuccess) => {
+      feedbackText.textContent = message;
+      feedbackAlert.classList.toggle("alert-success", isSuccess);
+      feedbackAlert.classList.toggle("alert-danger", !isSuccess);
       feedbackAlert.style.display = "block";
-      feedbackText.textContent = "You liked the AI's Recommendation!";
-      feedbackAlert.classList.remove("alert-danger");
-      feedbackAlert.classList.add("alert-success");
+      
+      // Clear the previous timeout (if any)
+      if (alertTimeout) {
+          clearTimeout(alertTimeout);
+      }
+      
+      // Set the new timeout
       hideAlertAfterTimeout();
-    });
+  };
 
-    thumbsDownButton.addEventListener("click", function() {
-      feedbackAlert.style.display = "block";
-      feedbackText.textContent = "You disliked the AI's Recommendation!";
-      feedbackAlert.classList.remove("alert-success");
-      feedbackAlert.classList.add("alert-danger");
-      hideAlertAfterTimeout();
-    });
-
-    // Function to hide the alert after 5 seconds
-    function hideAlertAfterTimeout() {
-      setTimeout(function() {
-        feedbackAlert.style.display = "none";
-      }, 3000); // 3 seconds
-    }
+  thumbsUpButton.addEventListener("click", () => {
+      showFeedbackAlert("You liked the AI's Recommendation!", true);
   });
 
- /** CurrentTime */
-  function updateTime() {
-    const now = new Date();
-    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const day = daysOfWeek[now.getDay()];
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById("current-time").innerText = `| ${day}, ${hours}:${minutes}`;
-  }
-          
+  thumbsDownButton.addEventListener("click", () => {
+      showFeedbackAlert("You disliked the AI's Recommendation!", false);
+  });
+
+  // Function to hide the alert after a timeout
+  const hideAlertAfterTimeout = () => {
+      alertTimeout = setTimeout(() => {
+          feedbackAlert.style.display = "none";
+      }, 3000); // 3 seconds
+  };
+  /** Current Time */
+  const updateTime = () => {
+      const now = new Date();
+      const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const day = daysOfWeek[now.getDay()];
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeString = `| ${day}, ${hours}:${minutes}`;
+      document.getElementById("current-time").innerText = timeString;
+  };
+
   // Update time immediately and then every minute
   updateTime();
   setInterval(updateTime, 60000);
+});
