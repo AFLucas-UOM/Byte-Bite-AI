@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
           feedbackAlert.style.display = "none";
       }, 3000); // 3 seconds
   };
+  
   /** Current Time */
   const updateTime = () => {
       const now = new Date();
