@@ -1,4 +1,4 @@
-Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Is Vegerterian?,Has Gluten?,Has Nuts?
+Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Is Vegetarian?,Has Gluten?,Has Nuts?
 Hamburger,BurgerKing,Burger,€1.85,"1,050.00",112.00,No,Yes,No
 Chicken Supreme,BurgerKing,Burger,€6.70,"2,480.00",217.00,No,Yes,No
 Double Steakhouse ,BurgerKing,Burger,€10.60,"4,380.00",380.00,No,Yes,No
@@ -26,15 +26,12 @@ Fries,BurgerKing,Snack,€3.30,"1,331.00",116.00,No,Yes,No
 Chicken Nuggets,BurgerKing,Snack,€4.90,"1,035.00",102.00,No,Yes,No
 Onion Rings,BurgerKing,Snack,€3.15,"1,446.00",120.00,Yes,Yes,No
 BK Fusion Oreo,BurgerKing,Dessert,€3.55,"1,420.00",170.00,Yes,Yes,Yes
-Ice Cream Cone,BurgerKing,Dessert,,581.00,72.00,Yes,Yes,No
-Burger King Sundae,BurgerKing,Dessert,,192.00,130.00,Yes,No,No
-Hot Brownie with Ice Cream,BurgerKing,Dessert,,"1,744.00",120.00,Yes,Yes,Yes
-Vanilla Milkshake,BurgerKing,Dessert,,"1,961.00",401.00,Yes,Yes,Yes
-Chocolate Milkshake,BurgerKing,Dessert,,"2,226.00",431.00,Yes,No,No
-Strawberry Milkshake,BurgerKing,Dessert,,"2,222.00",431.00,Yes,No,No
-Pizza Margherita,PizzaHut,Pizza,€8.50,"5,400.00",750.00,Yes,Yes,No
-Pizza BBQ Chicken,PizzaHut,Pizza,€13.00,"6,200.00",850.00,No,Yes,No
-Gluten Free Hawaiian,PizzaHut,Pizza,€10.10,"5,440.00",760.00,Yes,No,No
+Ice Cream Cone,BurgerKing,Dessert,€1.45,581.00,72.00,Yes,Yes,No
+Burger King Sundae,BurgerKing,Dessert,€2.50,192.00,130.00,Yes,No,No
+Hot Brownie with Ice Cream,BurgerKing,Dessert,€3.60,"1,744.00",120.00,Yes,Yes,Yes
+Vanilla Milkshake,BurgerKing,Dessert,€2.50,"1,961.00",401.00,Yes,Yes,Yes
+Chocolate Milkshake,BurgerKing,Dessert,€3.00,"2,226.00",431.00,Yes,No,No
+Strawberry Milkshake,BurgerKing,Dessert,€3.00,"2,222.00",431.00,Yes,No,No
 Chicken Bites,PizzaHut,Snack,€6.55,"1,662.00",191.00,No,Yes,No
 Spicy Chicken Drumettes,PizzaHut,Snack,€8.05,"1,790.00",200.00,No,Yes,No
 Onion Rings,PizzaHut,Snack,€3.35,"1,500.00",160.00,Yes,Yes,No
@@ -44,22 +41,93 @@ Garlic Bread,PizzaHut,Snack,€2.40,"1,000.00",90.00,Yes,Yes,No
 SFO Garlic Bites,PizzaHut,Snack,€4.90,"1,100.00",120.00,Yes,Yes,No
 Jalapeno Cream Cheese Poppers,PizzaHut,Snack,€5.60,"1,300.00",120.00,Yes,Yes,No
 Vegetable Lasagna,PizzaHut,Pasta,€10.00,"1,020.00",300.00,Yes,Yes,No
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-Rigatoni Pesto,CafeCuba,Pasta,€14.20,"2,900.00",300.00,,No,No
-Havana,CafeCuba,Burger,€17.95,"4,180.00",400.00,,Yes,No
-Spaghetti Calamari,CafeCuba,Pasta,€15.75,"2,500.00",300.00,,Yes,No
-Lamb Chops,Ottoman,Lamb,€16.50,"3,500.00",400.00,,Yes,No
-Mixed Doner,Ottoman,Wrap,€9.60,"2,900.00",350.00,,Yes,No
-Special Posh,Ottoman,Pizza,€13.60,"4,606.00",450.00,,Yes,No
+Pizza Margherita,PizzaHut,Pizza,€8.50,"5,400.00",750.00,Yes,Yes,No
+Pizza BBQ Chicken,PizzaHut,Pizza,€13.00,"6,200.00",850.00,No,Yes,No
+Gluten Free Hawaiian,PizzaHut,Pizza,€10.10,"5,440.00",760.00,Yes,No,No
+Al Funghi,PizzaHut,Pizza,€9.75,"5,300.00",750.00,Yes,Yes,No
+Pepperoni Lovers,PizzaHut,Pizza,€9.75,"6,400.00",800.00,No,Yes,No
+Farmhouse,PizzaHut,Pizza,€9.75,"5,800.00",770.00,No,Yes,No
+Quattro Colori,PizzaHut,Pizza,€9.75,"5,600.00",760.00,No,Yes,No
+Garden Lovers,PizzaHut,Pizza,€9.75,"5,100.00",740.00,Yes,Yes,No
+Hot n'Zesty,PizzaHut,Pizza,€9.75,"6,200.00",780.00,No,Yes,No
+Capricciosa,PizzaHut,Pizza,€11.00,"5,900.00",770.00,No,Yes,No
+Deep Blue,PizzaHut,Pizza,€11.00,"6,000.00",760.00,No,Yes,No
+Supreme,PizzaHut,Pizza,€13.00,"6,300.00",800.00,No,Yes,No
+Chicken Supreme,PizzaHut,Pizza,€13.00,"6,100.00",780.00,No,Yes,No
+Meat Lovers,PizzaHut,Pizza,€13.00,"6,800.00",810.00,No,Yes,No
+Super Supreme,PizzaHut,Pizza,€13.90,"7,000.00",820.00,No,Yes,No
+Bajd u Bacon,PizzaHut,Pizza,€9.75,"5,700.00",770.00,No,Yes,No
+BBQ Lovers,PizzaHut,Pizza,€13.00,"6,500.00",800.00,No,Yes,No
+Havana,CafeCuba,Burger,€17.95,"4,180.00",400.00,No,Yes,No
+Vegetarian Wrap,CafeCuba,Wrap,€8.75,"1,500.00",260.00,Yes,Yes,No
+Chicken and Cucumber Wrap,CafeCuba,Wrap,€8.95,"1,505.00",283.00,No,Yes,No
+Chicken Fajita Wrap,CafeCuba,Wrap,€8.95,"1,600.00",300.00,No,Yes,No
+Pork Wrap,CafeCuba,Wrap,€8.95,"1,800.00",280.00,No,Yes,Yes
+Mushroom Tacos,CafeCuba,Snack,€8.50,"1,100.00",200.00,Yes,Yes,No
+Vegan 'Daikon Radish' BLT,CafeCuba,Bread,€6.95,"1,400.00",250.00,Yes,Yes,No
+Vegan Protein Bowl,CafeCuba,Salad,€11.30,"1,800.00",350.00,Yes,No,Yes
+Salmon Salad,CafeCuba,Salad,€13.95,"2,100.00",300.00,No,No,No
+Beef and Kale Salad,CafeCuba,Salad,€14.75,"2,300.00",350.00,No,No,No
+Chicken Salad,CafeCuba,Salad,€12.50,"1,700.00",320.00,No,No,No
+Asian Chicken Salad,CafeCuba,Salad,€12.95,"1,900.00",340.00,No,Yes,Yes
+Lentil Salad,CafeCuba,Salad,€11.50,"1,500.00",300.00,No,No,No
+Havana Beef Salad,CafeCuba,Salad,€13.50,"2,400.00",400.00,No,Yes,Yes
+Achiote Spice Grilled Chicken Breast,CafeCuba,Chicken,€18.95,"3,000.00",500.00,No,Yes,No
+Pita De Pollo,CafeCuba,Snack,€7.95,"1,700.00",250.00,No,Yes,No
+Taco De Pollo,CafeCuba,Snack,€9.50,"1,500.00",200.00,No,Yes,No
+Fluata De Carne,CafeCuba,Snack,€9.50,"2,200.00",250.00,No,Yes,No
+Chicken Dynamite,CafeCuba,Snack,€8.95,"1,800.00",200.00,Yes,Yes,No
+Nachos Mexicano,CafeCuba,Snack,€13.50,"2,500.00",300.00,No,Yes,No
+Cuban Bun,CafeCuba,Snack,€9.50,"1,400.00",150.00,No,Yes,No
+Chicken Burrito,CafeCuba,Wrap,€16.95,"2,600.00",400.00,No,Yes,No
+Pork Burrito,CafeCuba,Wrap,€16.95,"2,800.00",400.00,No,Yes,No
+Beef Burrito,CafeCuba,Wrap,€16.95,"3,000.00",400.00,No,Yes,No
+Spaghetti Calamari,CafeCuba,Pasta,€15.75,"2,500.00",300.00,No,Yes,No
+Rigatoni Pesto,CafeCuba,Pasta,€14.20,"2,900.00",300.00,No,No,No
+Ravioli Porchini,CafeCuba,Pasta,€14.75,"2,100.00",350.00,Yes,Yes,No
+Rigatoni Beef Ragu,CafeCuba,Pasta,€15.75,"2,400.00",400.00,No,Yes,No
+Spaghetti All' Amatriciana,CafeCuba,Pasta,€13.95,"2,200.00",350.00,No,Yes,No
+Risotto Nduja,CafeCuba,Pasta,€15.75,"2,300.00",350.00,No,No,No
+La Berenjena,CafeCuba,Burger,€9.95,"2,300.00",320.00,Yes,Yes,No
+Barbacao,CafeCuba,Burger,€9.95,"3,000.00",400.00,No,Yes,No
+El Primero,CafeCuba,Burger,€9.95,"2,200.00",300.00,No,Yes,No
+Cuba,CafeCuba,Burger,€16.50,"3,200.00",420.00,No,Yes,No
+El Toro,CafeCuba,Burger,€16.50,"3,400.00",430.00,No,Yes,No
+El Pollo Supremo,CafeCuba,Burger,€15.95,"2,800.00",380.00,No,Yes,No
+Trinidad,CafeCuba,Burger,€17.95,"3,800.00",480.00,No,Yes,No
+BBQ Pork Ribs,CafeCuba,Pork,€25.95,"5,200.00",600.00,No,Yes,No
+Pollo A La Plancha,CafeCuba,Chicken,€19.60,"3,900.00",500.00,No,No,No
+Beef Tagliata,CafeCuba,Beef,€27.50,"4,200.00",550.00,No,Yes,No
+Ropa Vieja,CafeCuba,Beef,€20.25,"3,800.00",500.00,No,Yes,No
+Fish and Chips,CafeCuba,Fish,€19.95,"3,600.00",450.00,No,Yes,No
+Panuzzo La Campagnola,CafeCuba,Bread,€14.35,"2,600.00",380.00,Yes,Yes,No
+Panuzzo La Boscaiola,CafeCuba,Bread,€13.85,"2,800.00",390.00,No,Yes,No
+Panuzza Del Sud,CafeCuba,Bread,€13.45,"3,000.00",400.00,No,Yes,No
+Panuzzo Creme E Prosciutto,CafeCuba,Bread,€13.45,"2,900.00",390.00,No,Yes,No
+Panuzzo Pollo E Pancetta,CafeCuba,Bread,€13.95,"3,200.00",420.00,No,Yes,No
+Panuzzo Al Pistachi E Mortazza,CafeCuba,Bread,€13.50,"3,000.00",400.00,No,Yes,No
+Panuzzo Biz Zejt,CafeCuba,Bread,€12.85,"2,700.00",380.00,No,Yes,No
+Focaccia Erasmo,CafeCuba,Pizza,€10.30,"4,200.00",320.00,Yes,Yes,No
+Focaccia Rosmarino,CafeCuba,Pizza,€8.95,"2,800.00",280.00,No,Yes,No
+Focaccia Caprese,CafeCuba,Pizza,€12.95,"3,600.00",300.00,Yes,Yes,No
+Margherita,CafeCuba,Pizza,€9.75,"3,500.00",300.00,Yes,Yes,No
+La Bufala,CafeCuba,Pizza,€13.95,"3,800.00",320.00,Yes,Yes,No
+Contadina,CafeCuba,Pizza,€13.95,"4,100.00",350.00,No,Yes,No
+La Pescatrice,CafeCuba,Pizza,€13.75,"4,000.00",330.00,No,Yes,No
+El Diablo,CafeCuba,Pizza,€13.75,"4,300.00",330.00,No,Yes,No
+Mortadelle E Pistacchio,CafeCuba,Pizza,€14.95,"4,500.00",340.00,No,Yes,Yes
+San Daniele,CafeCuba,Pizza,€14.35,"4,800.00",350.00,No,Yes,No
+La Rustica,CafeCuba,Pizza,€13.45,"4,200.00",340.00,No,Yes,No
+Capricciosa,CafeCuba,Pizza,€13.25,"4,300.00",350.00,No,Yes,No
+Annati,CafeCuba,Pizza,€13.95,"4,400.00",360.00,No,Yes,No
+Pizza Pollo E Nachos,CafeCuba,Pizza,€12.95,"4,600.00",370.00,No,Yes,No
+Pizza Bianca Al Funghi,CafeCuba,Pizza,€13.75,"4,300.00",350.00,Yes,Yes,No
+La Nduja,CafeCuba,Pizza,€14.50,"4,700.00",360.00,No,Yes,No
+Speck E Patata,CafeCuba,Pizza,€13.50,"4,500.00",350.00,No,Yes,No
+Calzone Classico,CafeCuba,Pizza,€13.65,"4,800.00",,No,Yes,No
 Chick Overboard Salad,Boost,Salad,€8.50,"1,975.00",92.00,,Yes,No
 Tofu-Lish For You Wrap,Boost,Wrap,€7.75,"2,184.00",130.00,,Yes,No
 Egg-Cellent Bacon Delight,Boost,Bread,€7.05,"2,997.00",154.00,,No,No
-Salmon Nigiri,Amami,Sushi,€2.75,400.00,50.00,,Yes,No
-Tuna Sashimi,Amami,Sushi,€3.50,650.00,30.00,,Yes,No
-Dim Sum,Amami,Sushi,€8.90,250.00,200.00,,Yes,No
 Avo Egg Bagel,Joli,Bread,€6.45,"1,753.00",78.00,Yes,Yes,No 
 Vegan Bagel,Joli,Bread,€5.95,"1,372.00",76.00,Yes,Yes,Yes
 Pestoparm Bagel,Joli,Bread,€6.65,"1,522.00",74.00,No,Yes,Yes
@@ -130,3 +198,183 @@ Re-Charger Smoothie,Joli,Smoothie,€5.45,698.73,40.85,Yes,No,No
 Morning Delight Smoothie,Joli,Smoothie,€5.45,"1,171.52",60.00,Yes,No,No
 Morning Delight Smoothie,Joli,Smoothie,€5.45,937.22,53.50,Yes,No,No
 Blood Cleanser Smoothie,Joli,Smoothie,€5.45,979.06,40.50,Yes,No,No
+Prawn Toast,Amami,Snack,€8.80,"1,464.00",160.00,No,Yes,Yes
+Edamame,Amami,Snack,€4.90,650.00,120.00,Yes,Yes,No
+Vegetable Spring Roll,Amami,Snack,€6.90,850.00,150.00,Yes,Yes,Yes
+Tobasaki Chicken Wings,Amami,Snack,€9.80,"2,200.00",200.00,No,Yes,Yes
+Japanese Arancini,Amami,Snack,€7.00,"1,100.00",180.00,No,Yes,Yes
+Sweet Potato Fries,Amami,Snack,€4.90,"1,300.00",200.00,Yes,Yes,No
+Wasabi Fries,Amami,Snack,€2.90,"1,040.00",150.00,Yes,Yes,No
+Fried Taiwanese Chicken Chop,Amami,Snack,€12.90,"2,600.00",300.00,No,Yes,Yes
+Diced Salmon Poke,Amami,Poke Bowl,€14.90,"2,100.00",250.00,No,Yes,Yes
+Tofu Poke,Amami,Poke Bowl,€10.00,"1,500.00",250.00,Yes,Yes,No
+Beef Brisket Poke,Amami,Poke Bowl,€14.90,"2,700.00",300.00,No,Yes,Yes
+A.F.B Chicken Sushi Sandwich,Amami,Snack,€9.90,"1,800.00",200.00,No,Yes,Yes
+Salmon Sushi Sandwich,Amami,Snack,€6.90,"1,400.00",180.00,No,Yes,Yes
+Salmon Burrito,Amami,Snack,€13.00,"2,300.00",250.00,No,Yes,Yes
+"Ultimate Platte, 32 pieces",Amami,Sushi,€39.90,"6,500.00",800.00,No,Yes,Yes
+"A.F.B. Platter, 16 pieces",Amami,Suhsi,€19.90,"3,700.00",450.00,No,Yes,Yes
+Tofu Salad,Amami,Salad,€13.90,"1,200.00",300.00,Yes,No,No
+Lemongrass Salad,Amami,Salad,€8.90,900.00,250.00,Yes,No,Yes
+Ginger Beef,Amami,Salad,€13.90,"1,700.00",300.00,No,No,No
+Pulled Chicken,Amami,Salad,€11.90,"1,500.00",300.00,No,No,No
+Salmon Noodle Salad,Amami,Salad,€10.90,"1,400.00",300.00,No,Yes,No
+Pork Okonomiyaki,Amami,Snack,€12.50,"2,200.00",350.00,No,Yes,No
+Vegetarian Okonomiyaki,Amami,Snack,€8.90,"1,900.00",300.00,Yes,Yes,No
+Chicken Okonomiyaki,Amami,Snack,€12.50,"2,100.00",350.00,No,Yes,No
+Salmon Okonomiyaki,Amami,Snack,€13.90,"2,300.00",350.00,No,Yes,No
+Fire Cracker Udon,Amami,Noodles,€13.90,"2,400.00",350.00,No,Yes,No
+Braised Black Pepper Beef Noodle,Amami,Noodles,€12.90,"2,300.00",350.00,No,Yes,No
+Wok Rice Noodles,Amami,Noodles,€11.80,"2,000.00",350.00,Yes,No,No
+Wok Noodles,Amami,Noodles,€10.80,"2,000.00",350.00,No,No,No
+Tuna Nigiri (Per Piece),Amami,Sushi,€2.75,300.00,50.00,No,No,No
+Salmon Nigiri (Per Piece),Amami,Sushi,€2.75,300.00,50.00,No,No,No
+Salmon Sashimi (Per Piece),Amami,Sushi,€3.50,400.00,50.00,No,No,No
+Tuna Sashimi (Per Piece),Amami,Sushi,€3.50,400.00,50.00,No,No,No
+Crispy Duck Spring Rolls,Amami,Snack,€6.90,"1,500.00",200.00,No,Yes,No
+Pork Dumplings,Amami,Snack,€7.50,"1,600.00",200.00,No,Yes,No
+Wagyu Beef Gyoza,Amami,Snack,€14.90,"2,000.00",200.00,No,Yes,No
+Vegetable Tempura,Amami,Snack,€8.90,"1,100.00",150.00,Yes,Yes,No
+Ebi Popcorn,Amami,Snack,€10.90,"1,800.00",200.00,No,Yes,No
+Chicken Popcorn,Amami,Snack,€6.90,"1,500.00",200.00,No,Yes,No
+Ebi Shrimp Dumpling,Amami,Snack,€7.90,"1,600.00",200.00,No,Yes,No
+Chicken Wonton,Amami,Snack,€6.90,"1,400.00",200.00,No,Yes,No
+Chicken Soup Dumpling,Amami,Soup,€10.90,"1,200.00",250.00,No,Yes,No
+Miso & Tofu Soup,Amami,Soup,€10.90,900.00,250.00,Yes,Yes,No
+Fried Rice,Amami,Snack,€11.90,"1,800.00",350.00,No,Yes,No
+Chili Prawn,Amami,Fish,€14.90,"2,200.00",350.00,No,Yes,No
+Sesame Mushroom,Amami,Noodles,€13.90,"2,000.00",350.00,Yes,Yes,No
+Chicken Katsu Curry,Amami,Chicken,€14.90,"2,500.00",350.00,No,Yes,No
+Thai Red Curry,Amami,Chicken,€11.40,"2,000.00",350.00,Yes,Yes,No
+Kimchi Chicken,Amami,Chicken,€13.90,"2,300.00",350.00,No,Yes,No
+Katsu Chicken Ramen,Amami,Chicken,€12.90,"2,100.00",350.00,No,Yes,No
+"Tempura Tofu Sushi, 8 pieces",Amami,Sushi ,€8.90,"1,400.00",200.00,Yes,Yes,No
+A.F.C Sushi,Amami,Sushi ,€6.90,"1,200.00",200.00,No,Yes,No
+"Volcano  Sushi, 8 pieces",Amami,Sushi ,€10.90,"1,500.00",200.00,No,Yes,No
+"Dragon Roll  Sushi, 8 pieces",Amami,Sushi ,€9.90,"1,700.00",200.00,No,Yes,No
+"Rock'n' Roll  Sushi, 8 pieces",Amami,Sushi ,€9.90,"1,600.00",200.00,No,Yes,No
+"Ebi-ten  Sushi, 8 pieces",Amami,Sushi ,€10.90,"1,500.00",200.00,No,Yes,No
+"Crab Futomaki Sushi , 8 pieces",Amami,Sushi ,€14.90,"1,900.00",200.00,No,Yes,No
+Spicy Tuna Hosomaki,Amami,Sushi ,€6.90,"1,400.00",200.00,No,Yes,No
+"Spicy Sake Crazy Roll Sushi, 8 pieces",Amami,Sushi ,€10.90,"1,700.00",200.00,No,Yes,No
+"Duck Roll  Sushi, 8 pieces",Amami,Sushi ,€9.90,"1,600.00",200.00,No,Yes,No
+"Fried Dynamite Roll  Sushi, 8 pieces",Amami,Sushi ,€9.90,"1,800.00",200.00,No,Yes,No
+Torched Salmon Maki,Amami,Sushi ,€9.90,"1,500.00",200.00,No,Yes,No
+Yagi Amai Maki,Amami,Sushi ,€9.90,"1,700.00",200.00,Yes,Yes,No
+Japanese Mochi Doughnuts,Amami,Dessert,€1.00,400.00,50.00,Yes,No,Yes
+Matcha Brownie,Amami,Dessert,€4.30,"1,200.00",100.00,Yes,Yes,No
+Green Tea & Banana Cake,Amami,Dessert,€4.30,"1,400.00",120.00,Yes,Yes,No
+Steamed Boa Buns,Amami,Dessert,€4.00,"1,000.00",80.00,Yes,Yes,No
+Mango & Passion Fruit Fluffy Cake,Amami,Dessert,€3.90,800.00,100.00,Yes,Yes,Yes
+Coconut Shortbread Cookies,Amami,Dessert,€1.00,300.00,20.00,Yes,Yes,No
+Mango Passion Boba,Amami,Drink,€4.90,600.00,250.00,Yes,No,No
+Peach Passion Boba,Amami,Drink,€4.90,550.00,250.00,Yes,No,No
+Mix Berries Boba,Amami,Drink,€4.90,500.00,250.00,Yes,No,No
+Lychee & Lemon Boba,Amami,Drink,€4.50,500.00,250.00,Yes,No,No
+Just Iced Tea Boba,Amami,Drink,€4.50,400.00,250.00,Yes,No,No
+Coffee Boba,Amami,Drink,€4.50,600.00,250.00,Yes,No,No
+Classic Lemon Boba,Amami,Drink,€4.50,450.00,250.00,Yes,No,No
+Chicken Shish,Ottoman,Chicken,€15.90,"2,500.00",350.00,No,Yes,No
+Beef Shish,Ottoman,Meat,€15.90,"2,600.00",350.00,No,Yes,No
+Mixed Shish,Ottoman,Meat,€15.90,"2,700.00",350.00,No,Yes,No
+Lamb Adana Kebab,Ottoman,Lamb,€15.90,"2,800.00",350.00,No,Yes,No
+Chicken Adana Kebab,Ottoman,Chicken,€15.90,"2,600.00",350.00,No,Yes,No
+Lamb Kofte,Ottoman,Lamb,€15.90,"2,400.00",350.00,No,Yes,No
+Chicken Kofte,Ottoman,Chicken,€15.90,"2,200.00",350.00,No,Yes,No
+Chicken Breast,Ottoman,Chicken,€15.90,"2,100.00",350.00,No,Yes,No
+Chicken Thighs,Ottoman,Chicken,€15.90,"2,200.00",350.00,No,Yes,No
+Chicken Wings,Ottoman,Chicken,€13.90,"2,500.00",300.00,No,Yes,No
+Mixed Kofte,Ottoman,Meat,€15.90,"2,600.00",350.00,No,Yes,No
+Chicken Doner Plate,Ottoman,Chicken,€14.50,"2,400.00",400.00,No,Yes,No
+Mixed Doner Plate,Ottoman,Meat,€14.50,"2,600.00",400.00,No,Yes,No
+Falafel Plate,Ottoman,Falafel,€12.50,"2,000.00",400.00,Yes,Yes,No
+Lamb & Beef Doner Plate,Ottoman,Lamb,€14.50,"2,700.00",400.00,No,Yes,No
+Chicken Doner Tombik,Ottoman,Tombik,€9.50,"1,800.00",300.00,No,Yes,No
+Lamb & Beef Doner Tombik,Ottoman,Tombik,€9.50,"2,000.00",300.00,No,Yes,No
+Mixed Doner Tombik,Ottoman,Tombik,€9.50,"2,200.00",300.00,No,Yes,No
+Grilled Meat in a Tombik,Ottoman,Tombik,€10.90,"2,400.00",350.00,No,Yes,No
+Falafel Tombik,Ottoman,Tombik,€8.50,"1,600.00",300.00,Yes,Yes,No
+Vegetarian Tombik,Ottoman,Tombik,€8.50,"1,500.00",300.00,Yes,Yes,No
+Chicken Doner Wrap,Ottoman,Wrap,€8.90,"2,000.00",300.00,No,Yes,No
+Lamb & Beef Doner Wrap,Ottoman,Wrap,€8.90,"2,200.00",300.00,No,Yes,No
+Mixed Doner Wrap,Ottoman,Wrap,€8.90,"2,400.00",300.00,No,Yes,No
+Grilled Meat in a Wrap,Ottoman,Wrap,€10.50,"2,500.00",350.00,No,Yes,No
+Falafel Wrap,Ottoman,Wrap,€7.90,"1,800.00",300.00,Yes,Yes,No
+Vegetarian Wrap,Ottoman,Wrap,€7.90,"1,600.00",300.00,Yes,Yes,No
+Falafel Burger,Ottoman,Burgers,€9.50,"2,100.00",350.00,Yes,Yes,No
+Crispy Chicken Fillet Burger,Ottoman,Burgers,€11.50,"2,600.00",350.00,No,Yes,No
+Classic Beef Burger,Ottoman,Burgers,€10.50,"2,700.00",350.00,No,Yes,No
+Posh Special Burger,Ottoman,Burgers,€14.50,"3,100.00",400.00,No,Yes,No
+Margherita Pizza,Ottoman,Pizza,€9.90,"2,600.00",450.00,Yes,Yes,No
+Pepperoni Pizza,Ottoman,Pizza,€11.90,"3,000.00",450.00,No,Yes,No
+Funghi Pizza,Ottoman,Pizza,€12.90,"2,900.00",450.00,Yes,Yes,No
+Doner Deluxe Pizza,Ottoman,Pizza,€12.90,"3,200.00",450.00,No,Yes,No
+Tuna Pizza,Ottoman,Pizza,€12.90,"3,100.00",450.00,No,Yes,No
+BBQ Chicken Pizza,Ottoman,Pizza,€12.90,"3,300.00",450.00,No,Yes,No
+Posh Special Pizza,Ottoman,Pizza,€13.50,"3,500.00",450.00,No,Yes,No
+Vegetarian Pizza,Ottoman,Pizza,€11.90,"2,900.00",450.00,Yes,Yes,No
+Capricciosa Pizza,Ottoman,Pizza,€12.50,"3,100.00",450.00,No,Yes,No
+Quattro Formaggi Pizza,Ottoman,Pizza,€12.50,"3,400.00",450.00,Yes,Yes,No
+Chicken Supreme Pizza,Ottoman,Pizza,€12.90,"3,300.00",450.00,No,Yes,No
+Ksarlı Pide,Ottoman,Pide,€10.50,"2,800.00",450.00,Yes,Yes,No
+Funghi Pide,Ottoman,Pide,€10.90,"2,900.00",450.00,Yes,Yes,No
+Vegetarian Pide,Ottoman,Pide,€11.90,"3,100.00",450.00,Yes,Yes,No
+Tuna Pide,Ottoman,Pide,€12.50,"3,300.00",450.00,No,Yes,No
+Turkish Salami Pide,Ottoman,Pide,€11.50,"3,200.00",450.00,No,Yes,No
+Lamb Mince Pide,Ottoman,Pide,€12.50,"3,500.00",450.00,No,Yes,No
+Doner Deluxe Pide,Ottoman,Pide,€12.50,"3,700.00",450.00,No,Yes,No
+Posh Special Pide,Ottoman,Pide,€13.50,"3,800.00",450.00,No,Yes,No
+Margherita Pide,Ottoman,Pide,€10.50,"2,600.00",450.00,Yes,Yes,No
+Regular Salad,Ottoman,Salads,€7.50,900.00,300.00,Yes,No,No
+Large Salad,Ottoman,Salads,€9.90,"1,200.00",400.00,Yes,No,No
+Tombik Bread,Ottoman,Snack,€1.50,600.00,100.00,Yes,Yes,No
+Chips,Ottoman,Snack,€4.50,"1,500.00",200.00,Yes,No,No
+Chicken Nuggets,Ottoman,Snack,€6.90,"1,800.00",250.00,No,Yes,No
+Portion Doner,Ottoman,Snack,€3.90,"1,000.00",150.00,No,Yes,No
+Kofte,Ottoman,Snack,€2.50,900.00,150.00,No,Yes,No
+Grilled Meat,Ottoman,Snack,€10.50,"2,500.00",300.00,No,Yes,No
+Baklava Finger,Ottoman,Dessert,€1.90,800.00,80.00,Yes,Yes,Yes
+Bülbül Yuvasi,Ottoman,Dessert,€2.90,"1,000.00",80.00,Yes,Yes,Yes
+Magnolia Dark Chocolate,Ottoman,Dessert,€3.90,"1,200.00",100.00,Yes,Yes,No
+Magnolia White Chocolate,Ottoman,Dessert,€3.90,"1,300.00",100.00,Yes,Yes,No
+Carrot Sliced Baklava,Ottoman,Dessert,€3.90,"1,500.00",100.00,Yes,Yes,Yes
+Brownie Cookie,Ottoman,Dessert,€1.50,600.00,50.00,Yes,Yes,No
+Sutlac (Rice Pudding),Ottoman,Dessert,€3.90,"1,100.00",150.00,Yes,Yes,No
+Butter Croissant,Starbucks,Bakery,€2.90,"1,046.00",58.00,Yes,Yes,No
+Pain Aux Chocolat,Starbucks,Bakery,€3.10,"1,149.00",66.00,Yes,Yes,Yes
+Cinnamon Swirl,Starbucks,Bakery,€3.50,"1,632.00",120.00,Yes,Yes,No
+Luxury Fruit Bread,Starbucks,Bakery,€4.00,"2,072.00",145.00,Yes,Yes,Yes
+Fruit Scone,Starbucks,Bakery,€3.90,"1,444.00",95.00,Yes,Yes,No
+Almond Croissant,Starbucks,Bakery,€3.90,"1,434.00",85.00,Yes,Yes,Yes
+Chocolate & Hazelnut Cruffin,Starbucks,Bakery,€4.50,"1,651.00",95.00,Yes,Yes,Yes
+Triple Chocolate Muffin,Starbucks,Muffins,€3.90,"1,801.00",107.00,Yes,Yes,No
+Blueberry Muffin,Starbucks,Muffins,€3.90,"1,544.00",110.00,Yes,Yes,No
+Lemon Muffin,Starbucks,Muffins,€3.90,"1,655.00",110.00,Yes,Yes,No
+Toffee Apple Muffin,Starbucks,Muffins,€3.90,"1,756.00",110.00,Yes,Yes,No
+Chocolate Chunk Cookie,Starbucks,Cookies,€3.50,"1,417.00",76.00,Yes,Yes,No
+Raspberry Mallow Top,Starbucks,Cookies,€3.50,"1,299.00",72.00,Yes,Yes,No
+Raspberry & White Chocolate Cookie,Starbucks,Cookies,€3.50,"1,531.00",80.00,Yes,Yes,No
+Carrot Cake Loaf,Starbucks,Loaf Cakes,€4.90,"1,634.00",100.00,Yes,Yes,No
+Victoria Triple Layer Sponge,Starbucks,Loaf Cakes,€5.00,"1,495.00",75.00,Yes,Yes,No
+Raspberry & Coconut Loaf,Starbucks,Loaf Cakes,€5.00,"1,694.00",100.00,Yes,Yes,Yes
+Coffee & Walnut Loaf Cake Bar,Starbucks,Loaf Cakes,€4.90,"1,588.00",80.00,Yes,Yes,Yes
+Ham And Cheese Croissant,Starbucks,Breakfast,€4.50,"1,476.00",108.00,No,Yes,No
+Cheese & Mushroom Croissant,Starbucks,Breakfast,€4.50,"1,580.00",128.50,Yes,Yes,No
+Breakfast Panini,Starbucks,Breakfast,€5.90,"2,132.00",188.00,No,Yes,No
+Brunch Burrito,Starbucks,Breakfast,€6.50,"2,236.00",234.00,No,Yes,No
+Chicken Salad Sandwich,Starbucks,Sandwiches,€4.90,"1,636.00",225.00,No,Yes,No
+Lemon Chicken Sandwich,Starbucks,Sandwiches,€5.90,"1,593.00",165.00,No,Yes,No
+Double Egg & Cress Sandwich,Starbucks,Sandwiches,€4.90,"1,849.00",200.00,Yes,Yes,No
+Ham & Cheese Toastie,Starbucks,Sandwiches,€5.50,"1,860.00",199.00,No,Yes,No
+Tuna Melt Toastie,Starbucks,Sandwiches,€5.90,"1,962.00",194.00,No,Yes,No
+Chicken & Bacon Caesar Wrap,Starbucks,Wraps,€6.50,"2,527.00",221.00,No,Yes,No
+Chicken Fajita Burrito,Starbucks,Wraps,€6.90,"1,902.00",224.00,No,Yes,No
+Sweet Chilli Chickpea Wrap,Starbucks,Wraps,€6.50,"1,997.00",240.00,Yes,Yes,No
+Mediterranean Focaccia,Starbucks,Focaccia,€5.90,"1,712.00",182.00,Yes,Yes,No
+"Chorizo, Mozzarella & Red Pepper Romana",Starbucks,Focaccia,€6.50,"1,753.00",185.00,No,Yes,No
+Popchips,Starbucks,Snack,€2.00,418.00,23.00,Yes,No,No
+Dark Chocolate Bar,Starbucks,Snack,€2.50,932.00,40.00,Yes,Yes,No
+Milk Chocolate Bar,Starbucks,Snack,€2.50,925.00,40.00,Yes,Yes,No
+Roasted & Salted Nuts,Starbucks,Snack,€2.50,933.00,35.00,Yes,No,Yes
+Shortbread Biscuits 50g,Starbucks,Snack,€1.50,561.00,50.00,Yes,Yes,No
+Caramel Waffles 78g,Starbucks,Snack,€2.00,739.00,78.00,Yes,Yes,No
