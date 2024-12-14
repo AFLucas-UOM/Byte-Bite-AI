@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (alertTimeout) {
           clearTimeout(alertTimeout);
       }
-      
       // Set the new timeout
       hideAlertAfterTimeout();
   };
