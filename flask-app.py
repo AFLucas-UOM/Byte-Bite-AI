@@ -176,9 +176,9 @@ def query_ollama(prompt, retries=3, delay=2):
         try:
             ollama_logger.info(f"Attempt {attempt + 1}: Sending prompt to Ollama.")
             result = subprocess.run(
-                ['ollama', 'run', 'tinyllama:1.1b-chat'],
+                ['ollama', 'run', 'orca-mini:latest'],
                 input=prompt,
-                capture_output=True, text=True, timeout=10
+                capture_output=True, text=True
             )
             if result.returncode == 0 and result.stdout.strip():
                 ollama_logger.info("Ollama responded successfully.")
