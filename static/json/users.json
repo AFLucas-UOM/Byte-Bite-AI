@@ -3,12 +3,14 @@
         "Name": "Sean David Muscat",
         "Height": 1.6,
         "Weight": 75,
+        "Target_weight": 70,
         "Favourite_food": "Pizza"
     },
     {
         "Name": "Andrea Filiberto Lucas",
         "Height": 1.2,
         "Weight": 85,
+        "Target_weight": 100,
         "Favourite_food": "Pasta"
     }
 ]
