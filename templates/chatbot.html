@@ -449,241 +449,241 @@
           }
     </style>
 
-<script>
-  // Ensure browser compatibility for SpeechRecognition
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    document.getElementById('chat-input').placeholder = "Speech recognition not supported by this browser.";
-  }
-
-  // Initialize SpeechRecognition
-  const recognition = new SpeechRecognition();
-  recognition.lang = 'en-US'; // Set the language for recognition
-  recognition.continuous = false; // Stop after the first recognition
-  recognition.interimResults = true; // Display real-time results
-
-  // DOM elements
-  const micButton = document.getElementById("mic-button");
-  const sendButton = document.getElementById("send-button");
-  const chatInput = document.getElementById("chat-input");
-  const messageContainer = document.getElementById("message-container");
-
-  // Function to get the current favicon URL (either light or dark)
-  function getCurrentFavicon() {
-      const faviconElement = document.getElementById('favicon');
-      const lightIcon = faviconElement.getAttribute('data-light-icon');
-      const darkIcon = faviconElement.getAttribute('data-dark-icon');
-
-      // Check which icon is currently used and return it
-      const currentFavicon = faviconElement.getAttribute('href') === lightIcon ? lightIcon : darkIcon;
-      return currentFavicon;
-  }
-
-  // Update the bot icon to match the current favicon
-  function updateBotIcon() {
-      const botIcon = document.querySelector('.bot-icon');
-      const currentFavicon = getCurrentFavicon();
-      botIcon.src = currentFavicon; // Update the bot icon's source to the current favicon
-  }
-
-  // Run the function to update the bot icon when the page loads
-  window.addEventListener('DOMContentLoaded', () => {
-      updateBotIcon();  // Set the bot icon based on initial favicon
-  });
-
-  // Add listener to detect favicon changes if needed
-  document.addEventListener('DOMContentLoaded', function() {
-      const favicon = document.getElementById('favicon');
-      if (favicon) {
-          updateBotIcon(); // Set initial icon based on the favicon when the page is loaded
-      }
-  });
-
-  // Handle when speech recognition starts
-  recognition.onstart = function() {
-      micButton.innerHTML = `<i class="bi bi-mic-fill"></i>`; // Change mic icon to indicate listening
-      micButton.style.color = 'green'; // Change mic button color to green
-      chatInput.placeholder = "Listening..."; // Change placeholder to indicate listening
-  };
-
-  // Handle when speech recognition ends
-  recognition.onend = function() {
-      micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset mic icon
-      micButton.style.color = '#585B5E'; // Reset mic button color
-      chatInput.placeholder = "Message Byte Bite-AI"; // Reset placeholder text
-  };
-
-  // Handle speech recognition result
-  recognition.onresult = function(event) {
-      let transcript = '';
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-      }
-      chatInput.value = transcript; // Set the input field to the recognized speech
-  };
-
-  // Handle errors during recognition
-  recognition.onerror = function(event) {
-    if (event.error === 'not-allowed') {
-      chatInput.placeholder = "Permission to use the microphone was denied.";
-      micButton.innerHTML = `<i class="bi bi-mic-slash-fill"></i>`; // Show a slashed mic icon
-      micButton.style.color = 'red'; // Change mic button color to red
-    } else {
-      chatInput.placeholder = "Error occurred during speech recognition.";
+  <script>
+    // Ensure browser compatibility for SpeechRecognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      document.getElementById('chat-input').placeholder = "Speech recognition not supported by this browser.";
     }
-  };
 
-  // Request microphone permission before starting speech recognition
-  function requestMicrophonePermission() {
-  // Check if microphone permission has already been granted
-  navigator.permissions.query({ name: 'microphone' }).then(function(result) {
-    if (result.state === 'denied') {
-      // Inform user that microphone permission is denied
-      chatInput.placeholder = "Microphone access is required to use NLW.";
-      micButton.innerHTML = `<i class="bi bi-mic-mute"></i>`; // Show a slashed icon
-      micButton.style.color = 'red'; // Change mic button color to red
-      micButton.disabled = true; // Disable mic button to prevent further attempts
+    // Initialize SpeechRecognition
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US'; // Set the language for recognition
+    recognition.continuous = false; // Stop after the first recognition
+    recognition.interimResults = true; // Display real-time results
 
-      // Ensure the mic button is still visible but styled appropriately for the denied state
-      micButton.style.opacity = 0.6; // Optional: Reduce opacity to indicate it's disabled
-    } else {
-      // If permission is not denied, continue with the recognition
-      micButton.disabled = false;
-      micButton.style.opacity = 1; // Ensure full opacity if permission is granted
+    // DOM elements
+    const micButton = document.getElementById("mic-button");
+    const sendButton = document.getElementById("send-button");
+    const chatInput = document.getElementById("chat-input");
+    const messageContainer = document.getElementById("message-container");
+
+    // Function to get the current favicon URL (either light or dark)
+    function getCurrentFavicon() {
+        const faviconElement = document.getElementById('favicon');
+        const lightIcon = faviconElement.getAttribute('data-light-icon');
+        const darkIcon = faviconElement.getAttribute('data-dark-icon');
+
+        // Check which icon is currently used and return it
+        const currentFavicon = faviconElement.getAttribute('href') === lightIcon ? lightIcon : darkIcon;
+        return currentFavicon;
     }
-  }).catch(function(error) {
-    console.error("Permission error: ", error);
-    chatInput.placeholder = "Unable to check microphone permission.";
-  });
-}
 
+    // Update the bot icon to match the current favicon
+    function updateBotIcon() {
+        const botIcon = document.querySelector('.bot-icon');
+        const currentFavicon = getCurrentFavicon();
+        botIcon.src = currentFavicon; // Update the bot icon's source to the current favicon
+    }
 
-  // Re-prompt user for microphone access if the mic button is clicked again after rejection
-  micButton.addEventListener('click', function() {
-    // If the microphone permission was previously denied, ask again
-    if (micButton.innerHTML.includes('mic-slash-fill')) {
-      navigator.permissions.query({ name: 'microphone' }).then(function(result) {
-        if (result.state === 'denied') {
-          // Prompt the user to grant access again
-          recognition.start(); // Attempt to start recognition again, prompting for microphone access
+    // Run the function to update the bot icon when the page loads
+    window.addEventListener('DOMContentLoaded', () => {
+        updateBotIcon();  // Set the bot icon based on initial favicon
+    });
+
+    // Add listener to detect favicon changes if needed
+    document.addEventListener('DOMContentLoaded', function() {
+        const favicon = document.getElementById('favicon');
+        if (favicon) {
+            updateBotIcon(); // Set initial icon based on the favicon when the page is loaded
         }
-      });
-    } else {
-      // If the microphone is active and user clicks, stop recognition
-      if (micButton.innerHTML.includes('mic-fill')) {
-        recognition.stop(); // Stop speech recognition immediately
-        micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset the icon to unfilled mic
-        micButton.style.color = '#585B5E'; // Reset color
+    });
+
+    // Handle when speech recognition starts
+    recognition.onstart = function() {
+        micButton.innerHTML = `<i class="bi bi-mic-fill"></i>`; // Change mic icon to indicate listening
+        micButton.style.color = 'green'; // Change mic button color to green
+        chatInput.placeholder = "Listening..."; // Change placeholder to indicate listening
+    };
+
+    // Handle when speech recognition ends
+    recognition.onend = function() {
+        micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset mic icon
+        micButton.style.color = '#585B5E'; // Reset mic button color
+        chatInput.placeholder = "Message Byte Bite-AI"; // Reset placeholder text
+    };
+
+    // Handle speech recognition result
+    recognition.onresult = function(event) {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+        chatInput.value = transcript; // Set the input field to the recognized speech
+    };
+
+    // Handle errors during recognition
+    recognition.onerror = function(event) {
+      if (event.error === 'not-allowed') {
+        chatInput.placeholder = "Permission to use the microphone was denied.";
+        micButton.innerHTML = `<i class="bi bi-mic-slash-fill"></i>`; // Show a slashed mic icon
+        micButton.style.color = 'red'; // Change mic button color to red
       } else {
-        recognition.start(); // Start recognition if mic is available
+        chatInput.placeholder = "Error occurred during speech recognition.";
       }
-    }
-  });
+    };
 
-  // Handle sending message on Enter or Send Button click
-  sendButton.addEventListener("click", function(event) {
-      event.preventDefault(); // Prevent page refresh if this is within a form
-      sendMessage();
-  });
+    // Request microphone permission before starting speech recognition
+    function requestMicrophonePermission() {
+    // Check if microphone permission has already been granted
+    navigator.permissions.query({ name: 'microphone' }).then(function(result) {
+      if (result.state === 'denied') {
+        // Inform user that microphone permission is denied
+        chatInput.placeholder = "Microphone access is required to use NLW.";
+        micButton.innerHTML = `<i class="bi bi-mic-mute"></i>`; // Show a slashed icon
+        micButton.style.color = 'red'; // Change mic button color to red
+        micButton.disabled = true; // Disable mic button to prevent further attempts
 
-  chatInput.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-          event.preventDefault(); // Prevent default form submission behavior
-          sendMessage();
+        // Ensure the mic button is still visible but styled appropriately for the denied state
+        micButton.style.opacity = 0.6; // Optional: Reduce opacity to indicate it's disabled
+      } else {
+        // If permission is not denied, continue with the recognition
+        micButton.disabled = false;
+        micButton.style.opacity = 1; // Ensure full opacity if permission is granted
       }
-  });
+    }).catch(function(error) {
+      console.error("Permission error: ", error);
+      chatInput.placeholder = "Unable to check microphone permission.";
+    });
+  }
 
-  // Send message function
-  function sendMessage() {
-    const userInput = chatInput.value;
 
-    if (userInput.trim()) {
-        // Disable send button and change it to a cross
-        sendButton.disabled = true;
-        sendButton.innerHTML = "&#10005;"; // Cross symbol
-
-        // Create user message
-        const userMessage = document.createElement("div");
-        userMessage.classList.add("message", "user-message");
-        userMessage.innerHTML = `
-                <div class="message-content_user">
-                    <div class="message-text_user_input"><p>${userInput}</p></div>
-                    <div class="message-icon" style="min-width: 10%">
-                        <!-- Dynamically load user profile picture -->
-                        <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
-                    </div>
-                </div>`;
-        // Append the message to the message container
-        if (messageContainer) {
-            messageContainer.appendChild(userMessage);
-
-            // Clear input field
-            chatInput.value = "";
-
-            // Scroll to the bottom of the chat
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-
-            // Send the user input to the chatbot API
-            fetch("http://127.0.0.1:1000/chatbot", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ prompt: userInput }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const botResponse = data.response;
-
-                // Create bot message
-                const botMessage = document.createElement("div");
-                botMessage.classList.add("message", "bot-message");
-                botMessage.innerHTML = `
-                        <div class="message-content_bot">
-                            <div class="message-icon_bot">
-                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                            </div>
-                        </div>
-                        <div class="message-text">
-                            <p>${botResponse}</p>
-                        </div>
-                    </div>
-                `;
-                messageContainer.appendChild(botMessage);
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-            })
-            .catch(error => {
-                console.error("Error fetching chatbot response:", error);
-                const errorMessage = document.createElement("div");
-                errorMessage.classList.add("message", "bot-message");
-                errorMessage.innerHTML = `
-                        <div class="message-content_bot">
-                            <div class="message-icon_bot">
-                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                            </div>
-                        </div>
-                        <div class="message-text">
-                            <p>Oops! Something went wrong. Please try again later.</p>
-                        </div>
-                    </div>
-                `;
-                messageContainer.appendChild(errorMessage);
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-            })
-            .finally(() => {
-                // Re-enable the send button and change it back to the arrow
-                sendButton.disabled = false;
-                sendButton.innerHTML = "↑"; // Reset the button to the arrow
-            });
+    // Re-prompt user for microphone access if the mic button is clicked again after rejection
+    micButton.addEventListener('click', function() {
+      // If the microphone permission was previously denied, ask again
+      if (micButton.innerHTML.includes('mic-slash-fill')) {
+        navigator.permissions.query({ name: 'microphone' }).then(function(result) {
+          if (result.state === 'denied') {
+            // Prompt the user to grant access again
+            recognition.start(); // Attempt to start recognition again, prompting for microphone access
+          }
+        });
+      } else {
+        // If the microphone is active and user clicks, stop recognition
+        if (micButton.innerHTML.includes('mic-fill')) {
+          recognition.stop(); // Stop speech recognition immediately
+          micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset the icon to unfilled mic
+          micButton.style.color = '#585B5E'; // Reset color
         } else {
-            console.error("Message container not found.");
+          recognition.start(); // Start recognition if mic is available
         }
-    }
-}
+      }
+    });
 
-  // Call requestMicrophonePermission to check permission when the page loads
-  requestMicrophonePermission();
-</script>
+    // Handle sending message on Enter or Send Button click
+    sendButton.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent page refresh if this is within a form
+        sendMessage();
+    });
+
+    chatInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default form submission behavior
+            sendMessage();
+        }
+    });
+
+    // Send message function
+    function sendMessage() {
+      const userInput = chatInput.value;
+
+      if (userInput.trim()) {
+          // Disable send button and change it to a cross
+          sendButton.disabled = true;
+          sendButton.innerHTML = "&#10005;"; // Cross symbol
+
+          // Create user message
+          const userMessage = document.createElement("div");
+          userMessage.classList.add("message", "user-message");
+          userMessage.innerHTML = `
+                  <div class="message-content_user">
+                      <div class="message-text_user_input"><p>${userInput}</p></div>
+                      <div class="message-icon" style="min-width: 10%">
+                          <!-- Dynamically load user profile picture -->
+                          <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
+                      </div>
+                  </div>`;
+          // Append the message to the message container
+          if (messageContainer) {
+              messageContainer.appendChild(userMessage);
+
+              // Clear input field
+              chatInput.value = "";
+
+              // Scroll to the bottom of the chat
+              messageContainer.scrollTop = messageContainer.scrollHeight;
+
+              // Send the user input to the chatbot API
+              fetch("http://127.0.0.1:1000/chatbot", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ prompt: userInput }),
+              })
+              .then(response => response.json())
+              .then(data => {
+                  const botResponse = data.response;
+
+                  // Create bot message
+                  const botMessage = document.createElement("div");
+                  botMessage.classList.add("message", "bot-message");
+                  botMessage.innerHTML = `
+                          <div class="message-content_bot">
+                              <div class="message-icon_bot">
+                                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+                              </div>
+                          </div>
+                          <div class="message-text">
+                              <p>${botResponse}</p>
+                          </div>
+                      </div>
+                  `;
+                  messageContainer.appendChild(botMessage);
+                  messageContainer.scrollTop = messageContainer.scrollHeight;
+              })
+              .catch(error => {
+                  console.error("Error fetching chatbot response:", error);
+                  const errorMessage = document.createElement("div");
+                  errorMessage.classList.add("message", "bot-message");
+                  errorMessage.innerHTML = `
+                          <div class="message-content_bot">
+                              <div class="message-icon_bot">
+                                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+                              </div>
+                          </div>
+                          <div class="message-text">
+                              <p>Oops! Something went wrong. Please try again later.</p>
+                          </div>
+                      </div>
+                  `;
+                  messageContainer.appendChild(errorMessage);
+                  messageContainer.scrollTop = messageContainer.scrollHeight;
+              })
+              .finally(() => {
+                  // Re-enable the send button and change it back to the arrow
+                  sendButton.disabled = false;
+                  sendButton.innerHTML = "↑"; // Reset the button to the arrow
+              });
+          } else {
+              console.error("Message container not found.");
+          }
+      }
+  }
+
+    // Call requestMicrophonePermission to check permission when the page loads
+    requestMicrophonePermission();
+  </script>
 
   </main><!-- End #main -->
   

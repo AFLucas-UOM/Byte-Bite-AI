@@ -52,7 +52,14 @@
 /*--------------------------------------------------------------
 # General Styling & Shared Classes
 --------------------------------------------------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
+  overflow-x: hidden;
   color: var(--default-color);
   background-color: var(--background-color);
   font-family: var(--default-font);
