@@ -367,7 +367,6 @@
                 // Attempt to parse the data as JSON
                 if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
                   const parsedData = JSON.parse(rawUsersData);
-                  console.log('Parsed Data:', parsedData);
                   currentuserName = parsedData.name || null; // Safely access 'name'
                 } else {
                   // If not JSON, assume it's a plain string
@@ -423,7 +422,6 @@
               try {
                 const response = await fetch('/static/json/orders.json'); // Correct the path to your orders.json
                 const orders = await response.json();
-                console.log('Orders fetched:', orders);
                 return orders;
               } catch (error) {
                 console.error('Error fetching orders data:', error);
@@ -517,7 +515,6 @@
                       try {
                           // Try to parse the raw data as JSON
                           const parsedData = JSON.parse(rawUsersData);
-                          console.log('Parsed Data:', parsedData);
           
                           // Check if it's an object with a 'name' property
                           if (typeof parsedData === 'object' && 'name' in parsedData) {
@@ -546,14 +543,10 @@
                   fetch('/static/json/users.json')
                       .then(response => response.json())
                       .then(data => {
-                          console.log('User data from JSON file:', data);
-          
                           // Find the user in JSON data who matches the name in currentUserName
                           const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName?.toLowerCase());
           
                           if (userData) {
-                              console.log('Matching user found in JSON:', userData);
-          
                               // Update the weight
                               document.getElementById('weight').textContent = `${userData.Weight} kg`;
           
@@ -612,8 +605,6 @@
                       try {
                           // Parse the stored user data
                           const parsedData = JSON.parse(rawUserData2);
-                          console.log('Parsed User Data:', parsedData);
-          
                           // Extract the first name if the data is valid
                           if (typeof parsedData === 'object' && 'name' in parsedData) {
                               currentUserName = parsedData.name.split(' ')[0]; // Use first name
@@ -634,14 +625,10 @@
                       fetch('/static/json/users.json')
                           .then(response => response.json())
                           .then(data => {
-                              console.log('User data from JSON file:', data);
-          
                               // Find the user in the JSON data by matching the first name
                               const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName.toLowerCase());
           
                               if (userData) {
-                                  console.log('Matching user found in JSON:', userData);
-          
                                   // Calculate BMI using the formula: BMI = weight / (height^2)
                                   const bmi = userData.Weight / (userData.Height * userData.Height);
           
@@ -736,7 +723,6 @@
                   if (rawUsersData2.startsWith('{') && rawUsersData2.endsWith('}')) {
                     // Parse the JSON data if it appears to be an object
                     const parsedData = JSON.parse(rawUsersData2);
-                    console.log('Parsed User Data:', parsedData);
                     currentuserName2 = parsedData?.name || null; // Safely access 'name'
                   } else {
                     // If it's a plain string, use it directly
@@ -980,7 +966,6 @@
                     // Attempt to parse the data as JSON
                     if (rawUsersData6.startsWith('{') && rawUsersData6.endsWith('}')) {
                       const parsedData = JSON.parse(rawUsersData6);
-                      console.log('Parsed Data:', parsedData);
                       currentuserName6 = parsedData.name || null; // Safely access 'name'
                     } else {
                       // If not JSON, assume it's a plain string
@@ -1157,26 +1142,17 @@
                                 // Filter orders by checking if the current user's name is included in the order's userName
                                 const userOrders = data.filter(order => {
                                     const userName = order.userName || "";
-                                    console.log(`Checking if order userName: ${userName} matches current user: ${currentuserName}`);
                                     return userName.includes(currentuserName); // Check if the first name matches part of the full name
                                 });
-            
-                                console.log("Filtered Orders:", userOrders);
-            
                                 // Filter the orders based on the selected timeframe
                                 const filteredData = filterByTimeframe(userOrders, timeframe);
-                                console.log("Sorted Orders:", filteredData);
-            
                                 const restaurantCounts = countRestaurants(filteredData);
-            
                                 const chartData = Object.entries(restaurantCounts)
                                     .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
                                     .map(([name, count]) => ({
                                         value: count,
                                         name: name
                                     }));
-            
-                                console.log("Most Recent Orders:", chartData);
                                 chart.setOption({ series: [{ data: chartData }] });
                             })
                             .catch(error => console.error("Error fetching or parsing JSON data:", error));
