@@ -1,22 +1,33 @@
-from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory, jsonify, make_response, abort
+import os
+import sys
+import time
+import json
+import logging
+import subprocess
+import importlib
+from datetime import datetime, timedelta
+from functools import wraps
+from typing import Dict, Any, List, Optional
+
+import bleach
+from flask import (
+    Flask, render_template, redirect, url_for, request, session,
+    send_from_directory, jsonify, make_response, abort
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-from datetime import datetime, timedelta
-import json, importlib, subprocess, sys, os, time, logging, bleach 
 
-# ======================================== Auto Installer ========================================
-# ANSI escape codes for colored output
+# ============================= Colored Output for Installation ===================================
 GREEN = "\033[92m"
 RED = "\033[91m"
 YELLOW = "\033[93m"
 RESET = "\033[0m"
 
-# Global flag to prevent redundant library loading messages
-libraries_loaded = False
-
-def colored_output(message, color):
-    """Print the message with the given color for the tick or cross."""
-    # Color only the tick or cross, not the entire message
+def colored_output(message: str, color: str) -> None:
+    """
+    Print the message with the given color for the tick or cross.
+    Color only the tick or cross, not the entire message.
+    """
     if "[✔]" in message:
         print(f"{color}[✔]{RESET} {message[3:]}")
     elif "[✖]" in message:
@@ -24,87 +35,74 @@ def colored_output(message, color):
     else:
         print(message)
 
-def check_and_install_libraries(libraries):
-    """Check if libraries are installed and install them if needed."""
-    global libraries_loaded
-    if libraries_loaded:
-        return  # Prevent redundant checks once libraries are loaded
+# ============================= Automatic Library Installer ========================================
+class LibraryInstaller:
+    """
+    A class to handle library installation checks, ensuring we only check/install once.
+    """
+    _libraries_loaded = False
 
-    for lib, import_name in libraries.items():
+    @classmethod
+    def load_libraries_from_json(cls, file_path: str) -> Dict[str, str]:
+        """Load libraries from a JSON file."""
+        if not os.path.exists(file_path):
+            colored_output(f"[✖] JSON file '{file_path}' not found!", RED)
+            return {}
         try:
-            importlib.import_module(import_name)
-            colored_output(f"[✔] Library '{lib}' is already installed.", GREEN)
-        except ImportError:
-            colored_output(f"[✖] Library '{lib}' is not installed. Attempting to install...", YELLOW)
+            with open(file_path, 'r') as file:
+                libraries = json.load(file)
+            colored_output(f"[✔] Loaded libraries from '{file_path}'.", GREEN)
+            return libraries
+        except json.JSONDecodeError:
+            colored_output(f"[✖] Error parsing JSON file '{file_path}'. Check file format.", RED)
+            return {}
+
+    @classmethod
+    def check_and_install_libraries(cls, libraries: Dict[str, str]) -> None:
+        """Check if libraries are installed and install them if needed."""
+        if cls._libraries_loaded:
+            return  # Prevent redundant checks once libraries are loaded
+
+        for lib, import_name in libraries.items():
             try:
-                subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
-                colored_output(f"[✔] Successfully installed '{lib}'.", GREEN)
-            except subprocess.CalledProcessError:
-                colored_output(f"[✖] Failed to install '{lib}'. Please install it manually.", RED)
+                importlib.import_module(import_name)
+                colored_output(f"[✔] Library '{lib}' is already installed.", GREEN)
+            except ImportError:
+                colored_output(f"[✖] Library '{lib}' is not installed. Attempting to install...", YELLOW)
+                try:
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+                    colored_output(f"[✔] Successfully installed '{lib}'.", GREEN)
+                except subprocess.CalledProcessError:
+                    colored_output(f"[✖] Failed to install '{lib}'. Please install it manually.", RED)
 
-    libraries_loaded = True
+        cls._libraries_loaded = True
 
-def load_libraries_from_json(file_path):
-    """Load libraries from a JSON file."""
-    if not os.path.exists(file_path):
-        colored_output(f"[✖] JSON file '{file_path}' not found!", RED)
-        return {}
-    try:
-        with open(file_path, 'r') as file:
-            libraries = json.load(file)
-        colored_output(f"[✔] Loaded libraries from '{file_path}'.", GREEN)
-        return libraries
-    except json.JSONDecodeError:
-        colored_output(f"[✖] Error parsing JSON file '{file_path}'. Check file format.", RED)
-        return {}
-
-# Load libraries from JSON and check/install them
-json_file_path = 'static/json/lib.json'
-libraries = load_libraries_from_json(json_file_path)
-if libraries:
-    check_and_install_libraries(libraries)
-else:
-    colored_output(f"[✖] No valid libraries found in '{json_file_path}'.", RED)
-
-# ======================================== Flask app Setup ========================================
-app = Flask(__name__)
-
-# Secret key for sessions
-app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
-
-app.static_folder = 'static' # Set the static folder to the 'static' folder in the current directory
-app.template_folder = 'templates' # Set the template folder to the 'templates' folder in the current directory
-
-# Session lifetime configuration
-app.permanent_session_lifetime = timedelta(minutes=60)
-
-# ======================================== Constants ========================================
+# ============================= Constants and Configuration ========================================
 USER_JSON_PATH = "static/json/credentials.json"
 DEFAULT_PFP = 'default.png'
-URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"; # URL of the Teachable Machine model
-AUTHENTICATION_TOKEN = 'a123' # Authentication token for the user
+TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
+AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 MAX_FILE_SIZE = 10 * 1024 * 1024
-ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em']  # Only allow basic text formatting
-ALLOWED_ATTRIBUTES = {} # No attributes allowed
-ALLOWED_PROTOCOLS = []  # No protocols allowed
+ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em']  # Basic text formatting
+ALLOWED_ATTRIBUTES = {}
+ALLOWED_PROTOCOLS = []
 
 # Log folder configuration
-log_folder = "chatbot-logs"
-os.makedirs(log_folder, exist_ok=True)
+LOG_FOLDER = "chatbot-logs"
+os.makedirs(LOG_FOLDER, exist_ok=True)
 
-# ======================================== Helper Functions ========================================
-
-# Save user credentials with pretty formatting
-def save_credentials_pretty(data):
+# ============================= Utility / Helper Functions =========================================
+def save_credentials_pretty(data: List[Dict[str, Any]]) -> None:
+    """Save user credentials with pretty JSON formatting."""
     try:
         with open(USER_JSON_PATH, 'w') as f:
             json.dump(data, f, indent=4)
     except Exception as e:
         print(f"Error saving to {USER_JSON_PATH}: {e}")
 
-# Check if an email already exists
-def email_exists(email):
+def email_exists(email: str) -> bool:
+    """Check if an email already exists in the credentials file."""
     try:
         if os.path.exists(USER_JSON_PATH):
             with open(USER_JSON_PATH, 'r') as f:
@@ -114,64 +112,115 @@ def email_exists(email):
         print(f"Error reading {USER_JSON_PATH}: {e}")
     return False
 
-# Authenticate a user
-def authenticate_user(email, password):
+def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
+    """Authenticate a user by email and password."""
     try:
         if os.path.exists(USER_JSON_PATH):
             with open(USER_JSON_PATH, 'r') as f:
                 users = json.load(f)
                 return next(
-                    (user for user in users if user['email'] == email and check_password_hash(user['password'], password)),
+                    (user for user in users
+                     if user['email'] == email and check_password_hash(user['password'], password)),
                     None
                 )
     except Exception as e:
         print(f"Error reading {USER_JSON_PATH}: {e}")
     return None
 
-def sanitize_input(input_data):
+def sanitize_input(input_data: str) -> str:
+    """Clean user input with Bleach, allowing only specified tags and no attributes/protocols."""
     return bleach.clean(
         input_data,
         tags=ALLOWED_TAGS,
         attributes=ALLOWED_ATTRIBUTES,
         protocols=ALLOWED_PROTOCOLS,
-        strip=True  # Strip disallowed tags instead of escaping them
+        strip=True
     )
 
-# Load all user credentials
-def load_credentials():
+def load_credentials() -> List[Dict[str, Any]]:
+    """Load all user credentials from the JSON file."""
     try:
         if os.path.exists(USER_JSON_PATH):
             with open(USER_JSON_PATH, 'r') as f:
                 return json.load(f)
-        return []
     except Exception as e:
         print(f"Error loading {USER_JSON_PATH}: {e}")
-        return []
+    return []
 
-# Log cleanup function
-def clear_logs():
-    for file_name in os.listdir(log_folder):
-        file_path = os.path.join(log_folder, file_name)
+def get_current_user() -> Optional[Dict[str, Any]]:
+    """
+    Retrieve the currently logged-in user by cookie.
+    Returns the user object if found, or None otherwise.
+    """
+    current_user_name = request.cookies.get('BBAIcurrentuser')
+    if not current_user_name:
+        return None
+    
+    user_data = load_credentials()
+    return next((user for user in user_data if user['name'] == current_user_name), None)
+
+def clear_logs() -> None:
+    """Clears old log files from the log folder."""
+    for file_name in os.listdir(LOG_FOLDER):
+        file_path = os.path.join(LOG_FOLDER, file_name)
         try:
             if os.path.isfile(file_path):
                 os.remove(file_path)
         except Exception as e:
             print(f"Error deleting file {file_name}: {e}")
 
-clear_logs()
-# Generate a filename with the current date and time for the new log
-log_filename = datetime.now().strftime("ollama_query_%d-%m-%Y_%H:%M.log")
-log_path = os.path.join(log_folder, log_filename)
-# Create a custom logger for Ollama
-ollama_logger = logging.getLogger("ollama_logger")
-ollama_logger.setLevel(logging.INFO)
-# Configure file handler only for the Ollama logger
-file_handler = logging.FileHandler(log_path)
-file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-ollama_logger.addHandler(file_handler)
+def authenticate(token: str) -> bool:
+    """Return True if the provided token matches the authentication token, False otherwise."""
+    return token == AUTHENTICATION_TOKEN
 
-# Query Ollama AI with retries
-def query_ollama(prompt, retries=3, delay=2):
+def login_required(f):
+    """
+    Decorator to ensure that a route can only be accessed if the user is logged in.
+    Otherwise, the user is redirected to the login page.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not request.cookies.get('BBAIcurrentuser'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def authenticate_and_send_file(token: str, file_path: str):
+    """Authenticate and send a static file to the client, or abort with 403 if unauthorized."""
+    if authenticate(token):
+        print('Authenticated, sending', file_path, 'to the client...')
+        return send_from_directory('static', file_path)
+    else:
+        abort(403)
+
+# ============================= Ollama / Chatbot Setup ============================================
+def setup_ollama_logger() -> logging.Logger:
+    """
+    Sets up a logger dedicated to Ollama interactions and returns it.
+    """
+    # Clear any old logs first
+    clear_logs()
+
+    # Generate a filename with the current date and time for the new log
+    log_filename = datetime.now().strftime("ollama_query_%d-%m-%Y_%H:%M.log")
+    log_path = os.path.join(LOG_FOLDER, log_filename)
+
+    # Create and configure the Ollama logger
+    ollama_logger = logging.getLogger("ollama_logger")
+    ollama_logger.setLevel(logging.INFO)
+
+    # Configure file handler only for the Ollama logger
+    file_handler = logging.FileHandler(log_path)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    ollama_logger.addHandler(file_handler)
+
+    return ollama_logger
+
+def query_ollama(prompt: str, ollama_logger: logging.Logger, retries: int = 3, delay: int = 2) -> str:
+    """
+    Query the Ollama AI with a given prompt, retrying on failure.
+    Returns Ollama's response, or a failure message if all retries fail.
+    """
     for attempt in range(retries):
         try:
             ollama_logger.info(f"Attempt {attempt + 1}: Sending prompt to Ollama.")
@@ -201,251 +250,288 @@ def query_ollama(prompt, retries=3, delay=2):
     ollama_logger.error("All attempts to reach Ollama failed.")
     return "I'm sorry, your question could not be answered right now! Please contact admin for assistance."
 
-# Authentication function - return True if the user is authorised to access the file, False otherwise
-def authenticate(token):
-    if token == AUTHENTICATION_TOKEN:
-        return True
+# ============================= Flask App Factory ================================================
+def create_app() -> Flask:
+    """
+    Create and configure the Flask application.
+    This function can be imported and called from a WSGI server or directly run.
+    """
+    # Load and check/install libraries from JSON
+    json_file_path = 'static/json/lib.json'
+    libraries = LibraryInstaller.load_libraries_from_json(json_file_path)
+    if libraries:
+        LibraryInstaller.check_and_install_libraries(libraries)
     else:
-        return False
-    
-# Authenticate and send the file to the client
-def authenticate_and_send_file(token, file_path):
-    if authenticate(token):
-        print('Authenticated, sending', file_path, 'to the client...')
-        return send_from_directory('static', file_path)
-    else:
-        abort(403)
+        colored_output(f"[✖] No valid libraries found in '{json_file_path}'.", RED)
 
-# ======================================== Routes ========================================
+    # Create Flask app
+    app = Flask(__name__)
+    app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
+    app.static_folder = 'static'
+    app.template_folder = 'templates'
+    app.permanent_session_lifetime = timedelta(minutes=60)
 
-@app.route('/assets/<path:filename>')
-def serve_assets(filename):
-    return send_from_directory('assets', filename)
+    # Initialize Ollama logger once (so it's not recreated on each request)
+    ollama_logger = setup_ollama_logger()
 
-@app.route('/assets2/<path:filename>')
-def serve_assets2(filename):
-    return send_from_directory('assets2', filename)
+    # ============================ Flask Routes ==================================
 
-@app.route('/check-email', methods=['POST'])
-def check_email():
-    email = sanitize_input(request.json.get('email'))
-    return jsonify({"exists": email_exists(email)})
+    @app.route('/assets/<path:filename>')
+    def serve_assets(filename):
+        return send_from_directory('assets', filename)
 
-@app.route('/clear-cookies', methods=['POST'])
-def clear_cookies():
-    resp = make_response('Cookies cleared')
-    resp.delete_cookie('BBAIcurrentuser')
-    resp.delete_cookie('BBAIemail')
-    print('Cookies cleared')
-    return resp
+    @app.route('/assets2/<path:filename>')
+    def serve_assets2(filename):
+        return send_from_directory('assets2', filename)
 
-@app.route('/signout')
-def signout():
-    session.pop('user', None)  # Clear user session
-    resp = make_response(redirect(url_for('index')))  # Redirect to the homepage after clearing session
-    resp.set_cookie('BBAIemail', '', expires=0)  # Clear the cookies
-    resp.set_cookie('BBAIcurrentuser', '', expires=0)
-    return resp
+    @app.route('/check-email', methods=['POST'])
+    def check_email():
+        email = sanitize_input(request.json.get('email', ''))
+        return jsonify({"exists": email_exists(email)})
 
-# Feed the Teachable Machine model to the client
-@app.route('/model')
-def get_model():
-    return send_from_directory('static', 'tm-ByteBite-model/model.json')
+    @app.route('/clear-cookies', methods=['POST'])
+    def clear_cookies():
+        resp = make_response('Cookies cleared')
+        resp.delete_cookie('BBAIcurrentuser')
+        resp.delete_cookie('BBAIemail')
+        print('Cookies cleared')
+        return resp
 
-# Feed the Teachable Machine metadata to the client
-@app.route('/metadata')
-def get_metadata():
-    return send_from_directory('static', 'tm-ByteBite-model/metadata.json')
+    @app.route('/signout')
+    def signout():
+        session.pop('user', None)
+        resp = make_response(redirect(url_for('index')))
+        resp.set_cookie('BBAIemail', '', expires=0)
+        resp.set_cookie('BBAIcurrentuser', '', expires=0)
+        return resp
 
-# Feed the Teachable Machine weights to the client
-@app.route('/weights.bin')
-def get_weights():
-    return send_from_directory('static', 'tm-ByteBite-model/weights.bin')
+    # Teachable Machine model files
+    @app.route('/model')
+    def get_model():
+        return send_from_directory('static', 'tm-ByteBite-model/model.json')
 
-# Feed the Teachable Machine URL to the client
-@app.route('/url')
-def get_url():
-    if authenticate(request.headers.get('token')):
-        return URL
-    else:
-        abort(403)
+    @app.route('/metadata')
+    def get_metadata():
+        return send_from_directory('static', 'tm-ByteBite-model/metadata.json')
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    @app.route('/weights.bin')
+    def get_weights():
+        return send_from_directory('static', 'tm-ByteBite-model/weights.bin')
 
-@app.route('/faqs')
-def faqs():
-    current_user_name = request.cookies.get('BBAIcurrentuser')
-    if not current_user_name:  # If no user is logged in
-        return redirect(url_for('login'))  # Redirect to login page
+    @app.route('/url')
+    def get_url():
+        if authenticate(request.headers.get('token', '')):
+            return TEACHABLE_MACHINE_URL
+        else:
+            abort(403)
 
-    user_data = load_credentials()
-    current_user = next((user for user in user_data if user['name'] == current_user_name), None)
-    
-    if current_user:
-        profile_pic = current_user.get('profile_pic')
-        if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
-            profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
+    @app.route('/')
+    def index():
+        return render_template('index.html')
 
-        profile_pic_path = f"static/img/PFPs/{profile_pic}"
-        return render_template('faqs.html', profile_pic=profile_pic_path)
-    else:
-        # Handle case when the user isn't found in the credentials file
-        return redirect(url_for('login'))  # Redirect to login if user not found
-    
-@app.route('/ar-view')
-def arview():
-    current_user_name = request.cookies.get('BBAIcurrentuser')
-    if not current_user_name:  # If no user is logged in
-        return redirect(url_for('login'))  # Redirect to login page
-
-    user_data = load_credentials()
-    current_user = next((user for user in user_data if user['name'] == current_user_name), None)
-    
-    if current_user:
-        profile_pic = current_user.get('profile_pic')
-        if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
-            profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
-
-        profile_pic_path = f"static/img/PFPs/{profile_pic}"
-        return render_template('ar-view.html', profile_pic=profile_pic_path)
-    else:
-        # Handle case when the user isn't found in the credentials file
-        return redirect(url_for('login'))  # Redirect to login if user not found
-
-
-@app.route('/in-dev')
-def in_dev():
-    return render_template('in-dev.html')
-
-@app.route('/chatbot')
-def chatbot():
-    current_user_name = request.cookies.get('BBAIcurrentuser')
-    if not current_user_name:  # If no user is logged in
-        return redirect(url_for('login'))  # Redirect to login page
-
-    user_data = load_credentials()
-    current_user = next((user for user in user_data if user['name'] == current_user_name), None)
-    
-    if current_user:
-        profile_pic = current_user.get('profile_pic')
-        if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
-            profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
-
-        profile_pic_path = f"static/img/PFPs/{profile_pic}"
-        return render_template('chatbot.html', profile_pic=profile_pic_path)
-    else:
-        # Handle case when the user isn't found in the credentials file
-        return redirect(url_for('login'))  # Redirect to login if user not found
-
-# Define the chatbot API endpoint
-@app.route("/chatbot", methods=["POST"])
-def chatbot_api():
-    user_input = request.json.get("prompt", "")
-    print(f"Received prompt from user: {user_input}")
-    response = query_ollama(user_input)
-    print(f"Sending response back to user: {response}")
-    return jsonify({"response": response})
-
-@app.route('/dashboard')
-def dashboard():
-    current_user_name = request.cookies.get('BBAIcurrentuser')
-    if current_user_name:
-        user_data = load_credentials()
-        current_user = next((user for user in user_data if user['name'] == current_user_name), None)
+    @app.route('/faqs')
+    @login_required
+    def faqs():
+        current_user = get_current_user()
         if current_user:
-            # Attempt to get the profile picture, falling back to 'default.png' if it's unavailable or invalid
-            profile_pic = current_user.get('profile_pic')
+            profile_pic = current_user.get('profile_pic', DEFAULT_PFP)
             if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
-                profile_pic = 'default.png'  # Fallback to default if the image doesn't exist
+                profile_pic = DEFAULT_PFP
+            return render_template('faqs.html', profile_pic=f"static/img/PFPs/{profile_pic}")
+        return redirect(url_for('login'))
 
-            profile_pic_path = f"static/img/PFPs/{profile_pic}"
-            return render_template('dashboard.html', profile_pic=profile_pic_path)
-    
-    return redirect(url_for('login'))
+    @app.route('/ar-view')
+    @login_required
+    def arview():
+        current_user = get_current_user()
+        if current_user:
+            profile_pic = current_user.get('profile_pic', DEFAULT_PFP)
+            if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+                profile_pic = DEFAULT_PFP
+            return render_template('ar-view.html', profile_pic=f"static/img/PFPs/{profile_pic}")
+        return redirect(url_for('login'))
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        if request.is_json:
-            data = request.get_json()
-            email = sanitize_input(data.get('email'))
-            password = sanitize_input(data.get('password'))
-            user = authenticate_user(email, password)
-            
-            if user:
-                session['user'] = user['email']
-                resp = make_response(jsonify({
-                    "success": True,
-                    "message": "Login successful",
-                    "redirect": url_for('dashboard'),
-                    "name": user['name']
-                }))
-                resp.set_cookie('BBAIcurrentuser', user['name'], max_age=timedelta(days=30), httponly=False, path='/')
-                resp.set_cookie('BBAIemail', user['email'], max_age=timedelta(days=30), httponly=False, path='/')
+    @app.route('/in-dev')
+    def in_dev():
+        return render_template('in-dev.html')
+
+    @app.route('/chatbot')
+    @login_required
+    def chatbot():
+        current_user = get_current_user()
+        if current_user:
+            profile_pic = current_user.get('profile_pic', DEFAULT_PFP)
+            if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+                profile_pic = DEFAULT_PFP
+            return render_template('chatbot.html', profile_pic=f"static/img/PFPs/{profile_pic}")
+        return redirect(url_for('login'))
+
+    @app.route("/chatbot", methods=["POST"])
+    def chatbot_api():
+        user_input = request.json.get("prompt", "")
+        print(f"Received prompt from user: {user_input}")
+        response = query_ollama(user_input, ollama_logger)
+        print(f"Sending response back to user: {response}")
+        return jsonify({"response": response})
+
+    @app.route('/dashboard')
+    @login_required
+    def dashboard():
+        current_user = get_current_user()
+        if current_user:
+            profile_pic = current_user.get('profile_pic', DEFAULT_PFP)
+            if not profile_pic or not os.path.exists(f"static/img/PFPs/{profile_pic}"):
+                profile_pic = DEFAULT_PFP
+            return render_template('dashboard.html', profile_pic=f"static/img/PFPs/{profile_pic}")
+        return redirect(url_for('login'))
+
+    # ============================ LOGIN ROUTE (UPDATED) ==================================
+    @app.route('/login', methods=['GET', 'POST'])
+    def login():
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+                email = sanitize_input(data.get('email', ''))
+                password = sanitize_input(data.get('password', ''))
+                remember_me = data.get('rememberMe', False)  # <-- 'rememberMe' from JSON
+
+                user = authenticate_user(email, password)
+                if user:
+                    # Put user in session
+                    session['user'] = user['email']
+
+                    # Build a JSON response
+                    response_data = {
+                        "success": True,
+                        "message": "Login successful",
+                        "redirect": url_for('dashboard'),
+                        "name": user['name'],
+                        "saveToLocalStorage": (remember_me is False)  # This signals front-end storage action
+                    }
+
+                    resp = make_response(jsonify(response_data))
+
+                    # If "rememberMe" is True => set 30-day cookies
+                    # If "rememberMe" is False => set session cookies (no max_age)
+                    if remember_me:
+                        max_age = timedelta(days=30)
+                    else:
+                        max_age = None  # This will create a session cookie
+
+                    resp.set_cookie(
+                        'BBAIcurrentuser',
+                        user['name'],
+                        max_age=max_age,
+                        httponly=False,
+                        path='/'
+                    )
+                    resp.set_cookie(
+                        'BBAIemail',
+                        user['email'],
+                        max_age=max_age,
+                        httponly=False,
+                        path='/'
+                    )
+                    if remember_me:
+                        resp.set_cookie(
+                            'BBAIremembered',
+                            'true',
+                            max_age=max_age,
+                            httponly=False,
+                            path='/'
+                        )
+                    else:
+                        resp.set_cookie(
+                            'BBAIremembered',
+                            '',
+                            max_age=max_age,
+                            httponly=False,
+                            path='/'
+                        )
+                    return resp
+                else:
+                    return jsonify({"success": False, "message": "Incorrect email or password"})
+            return jsonify({"success": False, "message": "Request must be JSON"})
+
+        # If already logged in via cookies and "Remember Me"
+        if request.cookies.get('BBAIemail') and request.cookies.get('BBAIcurrentuser') and request.cookies.get('BBAIremembered') == 'true':
+            session['user'] = request.cookies.get('BBAIemail')
+            return redirect(url_for('dashboard'))
+        return render_template('login.html')
+
+    @app.route('/signup', methods=['GET', 'POST'])
+    def signup():
+        if request.method == 'POST':
+            try:
+                data = request.get_json()
+                name = sanitize_input(data.get('name', ''))
+                email = sanitize_input(data.get('email', ''))
+                password = sanitize_input(data.get('password', ''))
+                confirm_password = sanitize_input(data.get('confirmPassword', ''))
+
+                if not all([name, email, password, confirm_password]):
+                    return jsonify({"success": False, "message": "Invalid input"}), 400
+
+                if email_exists(email):
+                    return jsonify({"success": False, "message": "An account with this email already exists."}), 400
+
+                if password != confirm_password:
+                    return jsonify({"success": False, "message": "Passwords do not match"}), 400
+
+                if len(password) < 8 or not any(char.isdigit() for char in password):
+                    return jsonify({
+                        "success": False,
+                        "message": "Password must be at least 8 characters and include a number"
+                    }), 400
+
+                hashed_password = generate_password_hash(password)
+                user_data = {
+                    "name": name,
+                    "email": email,
+                    "password": hashed_password,
+                    "profile_pic": DEFAULT_PFP
+                }
+
+                existing_users = load_credentials()
+                existing_users.append(user_data)
+                save_credentials_pretty(existing_users)
+
+                # For signup, let's assume we always set 30-day cookies to auto-login the user
+                # after successful signup (or you can do session cookies).
+                resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
+                resp.set_cookie(
+                    'BBAIcurrentuser',
+                    name,
+                    max_age=timedelta(days=30),
+                    httponly=False,
+                    path='/'
+                )
+                resp.set_cookie(
+                    'BBAIemail',
+                    email,
+                    max_age=timedelta(days=30),
+                    httponly=False,
+                    path='/'
+                )
                 return resp
-            else:
-                return jsonify({"success": False, "message": "Incorrect email or password"})
-        return jsonify({"success": False, "message": "Request must be JSON"})
 
-    email = request.cookies.get('BBAIemail')
-    name = request.cookies.get('BBAIcurrentuser')
-    if email and name:
-        session['user'] = email
-        return redirect(url_for('dashboard'))
-    return render_template('login.html')
+            except Exception as e:
+                return jsonify({"success": False, "message": f"Server error: {e}"}), 500
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        try:
-            data = request.get_json()
-            name = sanitize_input(data.get('name'))
-            email = sanitize_input(data.get('email'))
-            password = sanitize_input(data.get('password'))
-            confirm_password = sanitize_input(data.get('confirmPassword'))
+        return render_template('signup.html')
 
-            if not all([name, email, password, confirm_password]):
-                return jsonify({"success": False, "message": "Invalid input"}), 400
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('404.html'), 404
 
-            if email_exists(email):
-                return jsonify({"success": False, "message": "An account with this email already exists."}), 400
+    @app.errorhandler(403)
+    def forbidden_error(error):
+        return render_template('404.html', error=error), 403
 
-            if password != confirm_password:
-                return jsonify({"success": False, "message": "Passwords do not match"}), 400
+    return app
 
-            if len(password) < 8 or not any(char.isdigit() for char in password):
-                return jsonify({"success": False, "message": "Password must be at least 8 characters long and include a number"}), 400
-
-            hashed_password = generate_password_hash(password)
-            user_data = {"name": name, "email": email, "password": hashed_password, "profile_pic": DEFAULT_PFP}
-
-            existing_users = load_credentials()
-            existing_users.append(user_data)
-            save_credentials_pretty(existing_users)
-
-            resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
-            resp.set_cookie('BBAIcurrentuser', name, max_age=timedelta(days=30), httponly=False, path='/')
-            resp.set_cookie('BBAIemail', email, max_age=timedelta(days=30), httponly=False, path='/')
-
-            return resp
-        
-        except Exception as e:
-            return jsonify({"success": False, "message": "Server error"}), 500
-
-    return render_template('signup.html')
-
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
-
-# Page to display when access is forbidden
-@app.errorhandler(403)
-def forbidden_error(error):
-    return render_template('404.html', error=error), 403
-
-# ======================================== Run the Application ========================================
+# ============================= Entry Point ======================================================
 if __name__ == '__main__':
-    # Run the app without debug-level logs from Flask
-    app.run(debug=True, use_reloader=True, host='0.0.0.0', port=1000)
+    flask_app = create_app()
+    # Run the app without debug-level logs from Flask; set debug=False in production.
+    flask_app.run(debug=True, use_reloader=True, host='0.0.0.0', port=1000)
