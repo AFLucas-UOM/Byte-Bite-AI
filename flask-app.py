@@ -1,8 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory, jsonify, make_response, abort
+import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import json, importlib, subprocess, sys, os, time, logging, bleach 
+import json, importlib, subprocess, sys, os, time, logging, bleach
+import chardet
 
 # ======================================== Auto Installer ========================================
 # ANSI escape codes for colored output
@@ -170,35 +172,74 @@ file_handler = logging.FileHandler(log_path)
 file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 ollama_logger.addHandler(file_handler)
 
-# Query Ollama AI with retries
+# Function to detect encoding of the CSV file
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return result['encoding']
+
+# Function to query Ollama with the CSV and prompt
+def query_ollama_with_csv(prompt):
+    try:
+        # Automatically determine the absolute path of the CSV file
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Directory of the script
+        CSV_FILE_PATH = os.path.join(BASE_DIR, "static", "menu.csv")
+
+        # Detect the encoding of the CSV file
+        encoding = detect_encoding(CSV_FILE_PATH)
+        print(f"Detected encoding: {encoding}")
+
+        # Read the CSV file using the detected encoding
+        df = pd.read_csv(CSV_FILE_PATH, encoding=encoding)
+        csv_data = df.to_string(index=False)  # Convert CSV data to a readable string
+
+        # Combine the CSV data and the user's prompt
+        combined_prompt = f"Here is the data from the CSV file:\n{csv_data}\n\n{prompt}"
+        print(f"Sending prompt to Ollama with CSV: {combined_prompt}")  # Debugging log
+
+        # Interact with the LLM
+        result = subprocess.run(
+            ['ollama', 'run', 'orca-mini:latest'],
+            input=combined_prompt,
+            capture_output=True, text=True, shell=True
+        )
+        response = result.stdout.strip()
+
+        if result.stderr:
+            print(f"Error output: {result.stderr}")
+        print(f"Ollama response: {response}")
+        
+        return response
+    except Exception as e:
+        print(f"Error querying Ollama with CSV: {str(e)}")
+        return f"Error querying Ollama: {str(e)}"
+
+# Function to query Ollama AI with retries
 def query_ollama(prompt, retries=3, delay=2):
     for attempt in range(retries):
         try:
-            ollama_logger.info(f"Attempt {attempt + 1}: Sending prompt to Ollama.")
             result = subprocess.run(
                 ['ollama', 'run', 'orca-mini:latest'],
                 input=prompt,
                 capture_output=True, text=True
             )
             if result.returncode == 0 and result.stdout.strip():
-                ollama_logger.info("Ollama responded successfully.")
                 return result.stdout.strip()
             else:
-                ollama_logger.warning(f"Attempt {attempt + 1} failed: {result.stderr}")
+                print(f"Attempt {attempt + 1} failed: {result.stderr}")
 
         except subprocess.TimeoutExpired:
-            ollama_logger.warning("Timeout occurred. Retrying...")
+            print("Timeout occurred. Retrying...")
 
         except FileNotFoundError:
-            ollama_logger.error("Ollama executable not found.")
+            print("Ollama executable not found.")
             return "Ollama could not be found. Please check if it's installed correctly."
 
         except Exception as e:
-            ollama_logger.error(f"Unexpected error on attempt {attempt + 1}: {str(e)}")
+            print(f"Unexpected error on attempt {attempt + 1}: {str(e)}")
 
         time.sleep(delay)
 
-    ollama_logger.error("All attempts to reach Ollama failed.")
     return "I'm sorry, your question could not be answered right now! Please contact admin for assistance."
 
 # Authentication function - return True if the user is authorised to access the file, False otherwise
@@ -344,7 +385,7 @@ def chatbot():
 def chatbot_api():
     user_input = request.json.get("prompt", "")
     print(f"Received prompt from user: {user_input}")
-    response = query_ollama(user_input)
+    response = query_ollama_with_csv(user_input)
     print(f"Sending response back to user: {response}")
     return jsonify({"response": response})
 
