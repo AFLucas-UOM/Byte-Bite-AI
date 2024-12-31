@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>My Profile - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+  <!-- JS for AR-VIEW -->
+  <!-- TensorFlow.js for model handling -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <!-- Teachable Machine Image library -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="{{ url_for('serve_assets2', filename='js/ar-main.js') }}"></script>
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#" class="logo d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
+      <h1 class="sitename" onclick="location.reload();">
+        <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+      </h1>
+    </a>      
+  </div><!-- End BBAI-Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        <!-- Profile Image Icon -->
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <!-- Correctly reference the image path -->
+          <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+          <!-- Placeholder span for the user's name -->
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em; padding-left: 0 !important;">Loading... </span>
+        </a><!-- End Profile Image Icon -->
+        
+        <script>
+          // Check if 'BBAIcurrentuser' exists in localStorage
+          const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+          if (currentUser) {
+            // Split the full name into an array and get the first part (first name)
+            const firstName = currentUser.split(' ')[0];
+            // Update the span text with the first name
+            document.getElementById('profileName').textContent = firstName;
+          } else {
+            // If no user is found, keep the default "Loading..."
+            document.getElementById('profileName').textContent = 'Walter Error';
+          }
+        </script>
+        
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/my-profile">
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/faqs">
+              <i class="ri-question-mark"></i>
+              <span>Need Help</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>         
+          </li><!-- End Profile Nav -->
+        </ul>
+      </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard" aria-label="Dashboard" aria-expanded="false">
+        <i class="rbi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="My-Profile">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/chatbot" aria-label="Chatbot" aria-expanded="false">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/AR-View" aria-label="AR-View" aria-expanded="false">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1 id="profileHeading"><b>'s Profile</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Pages</li>
+          <li class="breadcrumb-item active">My Profile</li>
+        </ol>
+      </nav>
+    </div> <!-- End Page Title -->
+    
+    <script>
+      // Check if 'BBAIcurrentuser' exists in localStorage
+      const currentUser2 = localStorage.getItem('BBAIcurrentuser');
+    
+      if (currentUser2) {
+        // Split the full name into an array and get the first part (first name)
+        const firstName = currentUser2.split(' ')[0];
+        // Update the <h1> element with the first name
+        document.getElementById('profileHeading').innerHTML = `<b>${firstName}'s Profile</b>`;
+      } else {
+        // If no user is found, keep a default message
+        document.getElementById('profileHeading').innerHTML = `<b>Walter Error's Profile</b>`;
+      }
+    </script>
+    
+
+    <section class="section profile">
+      <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-xl-4">
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <!-- Profile Picture -->
+              <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+              <h2>{{ user_data['Full Name'] }}</h2>
+              <h3>{{ user_data['Current Course'] }}</h3>
+    
+              <!-- Social Links -->
+              <div class="social-links mt-2">
+                {% if user_data['Social Links'].get('Instagram') %}
+                  <a href="{{ user_data['Social Links']['Instagram'] }}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Facebook') %}
+                  <a href="{{ user_data['Social Links']['Facebook'] }}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Twitter') %}
+                  <a href="{{ user_data['Social Links']['Twitter'] }}" class="twitter" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Threads') %}
+                  <a href="{{ user_data['Social Links']['Threads'] }}" class="threads" target="_blank"><i class="bi bi-threads"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Profile Main Content -->
+        <div class="col-xl-8">
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Tab Navigation -->
+              <ul class="nav nav-tabs nav-tabs-bordered">
+                <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">AI Settings</button>
+                </li>
+              </ul>
+    
+              <!-- Tab Content -->
+              <div class="tab-content pt-2">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                  <!-- About Section -->
+                  <h5 class="card-title">About</h5>
+                  {% if user_data['about'] %}
+                    <p class="small fst-italic">{{ user_data['about'] }}</p>
+                  {% else %}
+                    <p class="small fst-italic text-muted text-center">No information provided.</p>
+                  {% endif %}
+    
+                  <!-- Profile Details -->
+                  <h5 class="card-title">Profile Details</h5>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Full Name'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Occupation</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Current Course</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Current Course'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Nationality</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Nationality'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Mobile Number</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Mobile Number'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Email</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Email'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Member Since</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Member Since'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Favorite Food</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Favourite Food'] }}</div>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+
+                  <!-- Profile Edit Form -->
+                  <form>
+                    <div class="row mb-3">
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                      <div class="col-md-8 col-lg-9">
+                        <img src="static/img/PFPs/default.png" alt="Profile">
+                        <div class="pt-2">
+                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
+                          <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea name="about" class="form-control" id="about" style="height: 100px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</textarea>
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="company" type="text" class="form-control" id="company" value="Student/Teacher/Staff @ University of Malta">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Nationality</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="country" type="text" class="form-control" id="Country" value="🇲🇹 Maltese">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="phone" type="text" class="form-control" id="MobileNumber" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="email" type="email" class="form-control" id="Email" value="">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/">
+                      </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">X Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="twitter" type="text" class="form-control" id="Twitter" value="https://x.com/">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="Threads" class="col-md-4 col-lg-3 col-form-label">Threads Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="threads" type="text" class="form-control" id="Twitter" value="https://www.threads.net/@">
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form><!-- End Profile Edit Form -->
+
+                </div>
+
+                <div class="tab-pane fade pt-3" id="profile-settings">
+
+                  <!-- Settings Form -->
+                  <form>
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="changesMade" checked>
+                          <label class="form-check-label" for="changesMade">
+                            Changes made to your account
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="newProducts" checked>
+                          <label class="form-check-label" for="newProducts">
+                            Information on new products and services
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="proOffers">
+                          <label class="form-check-label" for="proOffers">
+                            Marketing and promo offers
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
+                          <label class="form-check-label" for="securityNotify">
+                            Security alerts
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form><!-- End settings Form -->
+
+                </div>
+
+                <div class="tab-pane fade pt-3" id="profile-change-password">
+                  <!-- Change Password Form -->
+                  <form>
+
+                    <div class="row mb-3">
+                      <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="password" type="password" class="form-control" id="currentPassword">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Confirm New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                  </form><!-- End Change Password Form -->
+
+                </div>
+
+              </div><!-- End Bordered Tabs -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  
+<!-- ======= Footer ======= -->
+<footer style= "align-items: center;" id="footer" class="footer position-relative dark-background" role="contentinfo">
+  <div class="credits">
+    Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
+  </div>
+  <div class="credits">
+    Template from <a href="https://bootstrapmade.com/">Bootstrap</a>
+  </div>
+</footer>
+
+<style>
+  /* Style the footer to stay at the bottom */
+  html, body {
+      height: 100%; /* Ensure full page height */
+      display: flex;
+      flex-direction: column; /* Stack content vertically */
+      margin: 0;
+      padding: 0;
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    .header~main {
+      margin-left: 90px;
+    }
+
+    .header~main .hero {
+      margin-left: -160px;
+      width: 100vw;
+    }
+  }
+  .bold-link:hover {
+    text-decoration: underline;
+  }
+  </style>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
+</body>
+</html>

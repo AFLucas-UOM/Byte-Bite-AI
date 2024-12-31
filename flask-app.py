@@ -79,6 +79,7 @@ class LibraryInstaller:
 
 # ============================= Constants and Configuration ========================================
 USER_JSON_PATH = "static/json/credentials.json"
+USER_DATA_FILE = "static/json/users.json"
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
 AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
@@ -350,6 +351,35 @@ def create_app() -> Flask:
                 profile_pic = DEFAULT_PFP
             return render_template('ar-view.html', profile_pic=f"static/img/PFPs/{profile_pic}")
         return redirect(url_for('login'))
+    
+    @app.route('/my-profile')
+    @login_required
+    def myprofile():
+        current_user = get_current_user()
+        
+        if current_user:
+        # Load user data from JSON
+            with open(USER_DATA_FILE, 'r') as f:
+                users = json.load(f)
+            
+            # Find the logged-in user's data based on their name
+            user_data = next((user for user in users if user['Full Name'] == current_user['name']), None)
+            
+            if user_data:
+                profile_pic = user_data.get('profile_pic', DEFAULT_PFP)
+                
+                # Validate the profile picture path
+                if not profile_pic or not os.path.exists(profile_pic):
+                    profile_pic = DEFAULT_PFP
+                
+                # Pass all user data to the template
+                return render_template(
+                    'my-profile.html',
+                    user_data=user_data,
+                    profile_pic=profile_pic
+                )
+        # Redirect to login if user not found
+        return redirect(url_for('login'))
 
     @app.route('/in-dev')
     def in_dev():
@@ -496,8 +526,6 @@ def create_app() -> Flask:
                 existing_users.append(user_data)
                 save_credentials_pretty(existing_users)
 
-                # For signup, let's assume we always set 30-day cookies to auto-login the user
-                # after successful signup (or you can do session cookies).
                 resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
                 resp.set_cookie(
                     'BBAIcurrentuser',
