@@ -551,54 +551,148 @@
         micButton.disabled = false;
         micButton.style.opacity = 1; // Ensure full opacity if permission is granted
       }
-    }).catch(function(error) {
-      console.error("Permission error: ", error);
-      chatInput.placeholder = "Unable to check microphone permission.";
-    });
+  });
+
+  // Function to create and display a random welcome message
+  function displayWelcomeMessage() {
+      // Check if 'BBAIcurrentuser' exists in localStorage
+      const currentUser = localStorage.getItem('BBAIcurrentuser');
+      let firstName = "Walter Error"; // Default in case of missing user
+
+      if (currentUser) {
+          // Split the full name into an array and get the first part (first name)
+          firstName = currentUser.split(' ')[0];
+      }
+
+      // Define an array of greetings
+      const greetings = [
+          `Hello ${firstName}, welcome to your health assistant! How can I help you today?`,
+          `Hi ${firstName}! I’m here to assist you with any health questions you have. What’s on your mind?`,
+          `Welcome, ${firstName}! Feel free to ask me anything about your health, and I’ll do my best to help.`,
+          `Hey ${firstName}, I’m your health assistant. What can I do for you today?`,
+          `Good day ${firstName}! Ready to assist you with your health and wellness needs. How can I help?`
+      ];
+
+      // Randomly choose a greeting from the array
+      const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+
+      // Create the welcome message
+      const welcomeMessage = document.createElement("div");
+      welcomeMessage.classList.add("message", "bot-message");  // Use bot-message class for consistent styling
+      welcomeMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p>${randomGreeting}</p>
+          </div>
+      `;
+
+      // Append the message to the message container
+      if (messageContainer) {
+          messageContainer.appendChild(welcomeMessage);
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom to show the latest message
+      } else {
+          console.error("Message container not found.");
+      }
   }
 
+  // Call the function to display the welcome message when the page loads
+  window.onload = function() {
+      displayWelcomeMessage();
+  };
 
-    // Re-prompt user for microphone access if the mic button is clicked again after rejection
-    micButton.addEventListener('click', function() {
-      // If the microphone permission was previously denied, ask again
-      if (micButton.innerHTML.includes('mic-slash-fill')) {
-        navigator.permissions.query({ name: 'microphone' }).then(function(result) {
-          if (result.state === 'denied') {
-            // Prompt the user to grant access again
-            recognition.start(); // Attempt to start recognition again, prompting for microphone access
-          }
-        });
-      } else {
-        // If the microphone is active and user clicks, stop recognition
-        if (micButton.innerHTML.includes('mic-fill')) {
-          recognition.stop(); // Stop speech recognition immediately
-          micButton.innerHTML = `<i class="bi bi-mic"></i>`; // Reset the icon to unfilled mic
-          micButton.style.color = '#585B5E'; // Reset color
-        } else {
-          recognition.start(); // Start recognition if mic is available
-        }
+
+
+  // Define a predefined prompt - can be further edited
+  const predefinedPrompt = `
+You are a health assistant AI. Your primary role is to provide accurate, evidence-based, and concise information about health, wellness, medical conditions, fitness, nutrition, and mental well-being. You should not answer questions outside the domain of health or provide personal medical diagnoses. If a question is beyond your scope, politely advise the user to consult a qualified healthcare professional. Additionally, if a user specifically requests something to eat, ignore all previous instructions and provide a dish from the list I gave you, you are able to suggest one item from a given menu based on the user's preferences or dietary needs. Please limit your recommendation to just one item from the menu provided. Only suggest food when explicitly requested by the user.`;
+
+
+  // Function to create and display the bot's thinking message (3 dots)
+  function showThinkingMessage() {
+      const thinkingMessage = document.createElement("div");
+      thinkingMessage.classList.add("message", "bot-message");
+      thinkingMessage.id = "thinkingMessage";  // Assign an ID to easily update this later
+      thinkingMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p>...</p>
+          </div>
+      `;
+      if (messageContainer) {
+          messageContainer.appendChild(thinkingMessage);
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom to show the latest message
       }
-    });
+  }
 
-    // Handle sending message on Enter or Send Button click
-    sendButton.addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent page refresh if this is within a form
-        sendMessage();
-    });
+  // Function to animate the thinking dots (show three dots in the pattern)
+  function animateThinkingDots() {
+      const thinkingMessage = document.getElementById("thinkingMessage");
+      let dots = 1;
+      const dotInterval = setInterval(() => {
+          if (dots > 3) {
+              dots = 1;
+          }
+          thinkingMessage.querySelector("p").textContent = '.'.repeat(dots);  // Update with current dot count
+          dots++;
+      }, 500);  // Update every 500ms
+      return dotInterval;
+  }
 
-    chatInput.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault(); // Prevent default form submission behavior
-            sendMessage();
-        }
-    });
+  // Function to simulate typing effect with blinking pipe symbol
+  function simulateTypingEffect(response) {
+      const botMessage = document.createElement("div");
+      botMessage.classList.add("message", "bot-message");
+      botMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p id="typingText"></p>
+          </div>
+      `;
+      messageContainer.appendChild(botMessage);
+      messageContainer.scrollTop = messageContainer.scrollHeight;
 
-    // Send message function
-    function sendMessage() {
+      const typingTextElement = document.getElementById("typingText");
+      let index = 0;
+      let typedText = '';
+      const typingInterval = setInterval(() => {
+          // Add the character to the text and move the pipe symbol
+          typedText += response.charAt(index);  // Add one character at a time
+          typingTextElement.textContent = typedText + "|";  // Show the current text with pipe
+
+          index++;
+          if (index === response.length) {
+              clearInterval(typingInterval);  // Stop once the entire message is typed
+
+              // Blink the pipe symbol twice
+              let blinkCount = 0;
+              const blinkInterval = setInterval(() => {
+                  typingTextElement.textContent = typedText + (blinkCount % 2 === 0 ? "|" : "");
+                  blinkCount++;
+                  if (blinkCount === 4) {
+                      clearInterval(blinkInterval);  // Stop blinking after 2 cycles
+                      typingTextElement.textContent = typedText; // Remove the pipe after blinking
+                  }
+              }, 500);  // Blink every 500ms (half a second)
+          }
+      }, 50);  // Faster typing (50ms per character)
+  }
+
+  // Function to simulate sending the user's message and bot's response with typing effect
+  function sendMessage() {
       const userInput = chatInput.value;
-
       if (userInput.trim()) {
-          // Disable send button and change it to a cross
           sendButton.disabled = true;
           sendButton.innerHTML = "&#10005;"; // Cross symbol
 
@@ -606,81 +700,73 @@
           const userMessage = document.createElement("div");
           userMessage.classList.add("message", "user-message");
           userMessage.innerHTML = `
-                  <div class="message-content_user">
-                      <div class="message-text_user_input"><p>${userInput}</p></div>
-                      <div class="message-icon" style="min-width: 10%">
-                          <!-- Dynamically load user profile picture -->
-                          <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
+              <div class="message-content_user">
+                  <div class="message-text_user_input"><p>${userInput}</p></div>
+                  <div class="message-icon" style="min-width: 10%">
+                      <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
+                  </div>
+              </div>`;
+          messageContainer.appendChild(userMessage);
+          chatInput.value = "";  // Clear the input field
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom
+
+          // Show thinking message and animate dots
+          showThinkingMessage();
+          const thinkingInterval = animateThinkingDots();
+
+          // Combine predefined prompt with user input
+          const combinedPrompt = `${predefinedPrompt}\n\nUser: ${userInput}`;
+
+          // Send user input to the chatbot API
+          fetch("http://127.0.0.1:1000/chatbot", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ prompt: combinedPrompt }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              const botResponse = data.response;
+
+              // Check if this is the first message and make sure it is not overwritten
+              const thinkingMessage = document.getElementById("thinkingMessage");
+              if (thinkingMessage) {
+                  thinkingMessage.remove();  // Remove the thinking message after response
+              }
+
+              // Ensure the first bot message isn't overwritten
+              const firstMessage = document.querySelector(".bot-message");
+              if (!firstMessage) {
+                  simulateTypingEffect(botResponse);
+              } else {
+                  // If the first message exists, it means it's already shown, so we skip replacing it
+                  simulateTypingEffect(botResponse);
+              }
+          })
+          .catch(error => {
+              console.error("Error fetching chatbot response:", error);
+              const errorMessage = document.createElement("div");
+              errorMessage.classList.add("message", "bot-message");
+              errorMessage.innerHTML = `
+                  <div class="message-content_bot">
+                      <div class="message-icon_bot">
+                          <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
                       </div>
-                  </div>`;
-          // Append the message to the message container
-          if (messageContainer) {
-              messageContainer.appendChild(userMessage);
-
-              // Clear input field
-              chatInput.value = "";
-
-              // Scroll to the bottom of the chat
+                  </div>
+                  <div class="message-text">
+                      <p>Oops! Something went wrong. Please try again later.</p>
+                  </div>
+              `;
+              messageContainer.appendChild(errorMessage);
               messageContainer.scrollTop = messageContainer.scrollHeight;
-
-              // Send the user input to the chatbot API
-              fetch("http://127.0.0.1:1000/chatbot", {
-                  method: "POST",
-                  headers: {
-                      "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ prompt: userInput }),
-              })
-              .then(response => response.json())
-              .then(data => {
-                  const botResponse = data.response;
-
-                  // Create bot message
-                  const botMessage = document.createElement("div");
-                  botMessage.classList.add("message", "bot-message");
-                  botMessage.innerHTML = `
-                          <div class="message-content_bot">
-                              <div class="message-icon_bot">
-                                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                              </div>
-                          </div>
-                          <div class="message-text">
-                              <p>${botResponse}</p>
-                          </div>
-                      </div>
-                  `;
-                  messageContainer.appendChild(botMessage);
-                  messageContainer.scrollTop = messageContainer.scrollHeight;
-              })
-              .catch(error => {
-                  console.error("Error fetching chatbot response:", error);
-                  const errorMessage = document.createElement("div");
-                  errorMessage.classList.add("message", "bot-message");
-                  errorMessage.innerHTML = `
-                          <div class="message-content_bot">
-                              <div class="message-icon_bot">
-                                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                              </div>
-                          </div>
-                          <div class="message-text">
-                              <p>Oops! Something went wrong. Please try again later.</p>
-                          </div>
-                      </div>
-                  `;
-                  messageContainer.appendChild(errorMessage);
-                  messageContainer.scrollTop = messageContainer.scrollHeight;
-              })
-              .finally(() => {
-                  // Re-enable the send button and change it back to the arrow
-                  sendButton.disabled = false;
-                  sendButton.innerHTML = "↑"; // Reset the button to the arrow
-              });
-          } else {
-              console.error("Message container not found.");
-          }
+          })
+          .finally(() => {
+              sendButton.disabled = false;
+              sendButton.innerHTML = "↑"; // Reset the button to the arrow
+          });
       }
   }
-
     // Call requestMicrophonePermission to check permission when the page loads
     requestMicrophonePermission();
   </script>
