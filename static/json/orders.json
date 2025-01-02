@@ -126,17 +126,25 @@
         "userName": "Sean David Muscat"
     },
     {
-        "Date": "03/12/2024",
+        "Date": "02/12/2024",
         "Name of dish": "Grilled Salmon",
         "Restaurant": "CafeCuba",
         "Price": 18.75,
         "userName": "Sean David Muscat"
     },
     {
-        "Date": "04/12/2024",
+        "Date": "03/12/2024",
         "Name of dish": "Beef Steak",
         "Restaurant": "CafeCuba",
         "Price": 21.50,
         "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "02/01/2025",
+        "Name of dish": "Kebab",
+        "Restaurant": "Ottoman",
+        "Price": 21.50,
+        "userName": "Sean David Muscat"
     }
+
 ]
