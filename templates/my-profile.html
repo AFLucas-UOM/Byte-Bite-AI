@@ -190,7 +190,6 @@
       }
     </script>
     
-
     <section class="section profile">
       <div class="row">
         <!-- Profile Sidebar -->
@@ -199,8 +198,8 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
               <!-- Profile Picture -->
               <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
-              <h2 class="text-center">{{ user_data['Full Name'] }}</h2>
-              <h3>{{ user_data['Current Course'] }}</h3>
+              <h2 class="text-center" style="color: #212529 !important">{{ user_data['Full Name'] }}</h2>
+              <h3 style="color: #212529 !important">{{ user_data['Current Course'] }}</h3>
       
               <!-- Social Links -->
               <div class="social-links mt-2">
@@ -217,6 +216,17 @@
                   <a href="{{ user_data['Social Links']['Threads'] }}" class="threads" target="_blank"><i class="bi bi-threads"></i></a>
                 {% endif %}
               </div>
+              <style>
+                .social-links a i {
+                  color: #80B794 !important; /* Default color */
+                  transition: color 0.3s ease; /* Smooth transition */
+                }
+              
+                .social-links a i:hover {
+                  color: #036628 !important; /* Hover color */
+                }
+              </style>
+              
             </div>
           </div>
         </div>    
@@ -228,25 +238,55 @@
               <!-- Tab Navigation -->
               <ul class="nav nav-tabs nav-tabs-bordered">
                 <li class="nav-item">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" style="color: #036628">Overview</button>
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" style="color: #212529">Overview</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" style="color: #036628">Edit Profile</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" style="color: #212529">Edit Profile</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" style="color: #036628">Change Password</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" style="color: #212529">Change Password</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" style="color: #036628">AI Settings</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" style="color: #212529">AI Settings</button>
                 </li>
               </ul>
-    
+              
+              <style>
+                /* Scoped styling for the nav-tabs in this specific card-body */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link {
+                  color: #212529 !important; /* Default text color */
+                  background-color: transparent !important; /* Default background */
+                  border: var(--bs-nav-tabs-border-width) solid transparent !important; /* Transparent border */
+                  border-radius: 0.25rem !important; /* Keep original border radius for top corners */
+                  transition: all 0.3s ease !important; /* Smooth transition */
+                }
+                
+                /* Remove rounded corners at the bottom for active and focus states */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link.active,
+                .card-body.pt-3 .nav-tabs-bordered .nav-link:focus {
+                  color: #0F6E32 !important; /* Green text color */
+                  background-color: #EFFCF2 !important; /* Light green background */
+                  border-color: #0F6E32 !important; /* Green border */
+                  border-bottom-left-radius: 0 !important; /* Remove bottom left rounded corner */
+                  border-bottom-right-radius: 0 !important; /* Remove bottom right rounded corner */
+                }
+                
+                /* Hover state styling remains the same */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link:hover {
+                  color: #0F6E32 !important; /* Green text color */
+                  background-color: #EFFCF2 !important; /* Light green background */
+                  border-color: #0F6E32 !important; /* Green border */
+                  border-bottom-left-radius: 0 !important; /* Remove bottom left rounded corner */
+                  border-bottom-right-radius: 0 !important; /* Remove bottom right rounded corner */
+                }
+                </style>
+                
               <!-- Tab Content -->
               <div class="tab-content pt-2">
                 <!-- Overview Tab -->
                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                   <!-- About Section -->
-                  <h5 class="card-title">About</h5>
+                  <h5 class="card-title" style="color: #036628 !important">About</h5>
                   {% if user_data['about'] %}
                     <p class="small fst-italic">{{ user_data['about'] }}</p>
                   {% else %}
@@ -254,44 +294,79 @@
                   {% endif %}
     
                   <!-- Profile Details -->
-                  <h5 class="card-title">Profile Details</h5>
+                  <h5 class="card-title" style="color: #036628 !important">Profile Details</h5>
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Full Name</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Full Name'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Occupation</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Occupation</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Current Course</div>
-                    <div class="col-lg-9 col-md-8">{{ user_data['Current Course'] }}</div>
-                  </div>
-    
+                    <div class="col-lg-3 col-md-4 label" id="dynamicLabel" style="color: #212529 !important">
+                      {% if user_data.get('Occupation', '').startswith('Student') %}
+                        Current Course
+                      {% elif user_data.get('Occupation', '').startswith('Lecturer') %}
+                        Department
+                      {% else %}
+                        Occupation Details
+                      {% endif %}
+                    </div>
+                    <div class="col-lg-9 col-md-8" id="dynamicValue">
+                      {% if user_data.get('Occupation', '').startswith('Student') or user_data.get('Occupation', '').startswith('Lecturer') %}
+                        {{ user_data['Current Course'] }}
+                      {% else %}
+                        {{ user_data['Occupation'] }}
+                      {% endif %}
+                    </div>
+                  </div>          
+                  
+                  <script>
+                    function updateDynamicLabel() {
+                      const occupation = "{{ user_data.get('Occupation', '') }}";
+                      const dynamicLabel = document.getElementById('dynamicLabel');
+                      const dynamicValue = document.getElementById('dynamicValue');
+                  
+                      if (occupation.startsWith('Student')) {
+                        dynamicLabel.textContent = 'Current Course';
+                        dynamicValue.textContent = "{{ user_data['Current Course'] }}";
+                      } else if (occupation.startsWith('Lecturer')) {
+                        dynamicLabel.textContent = 'Department';
+                        dynamicValue.textContent = "{{ user_data['Current Course'] }}";
+                      } else {
+                        dynamicLabel.textContent = 'Occupation Details';
+                        dynamicValue.textContent = "{{ user_data['Occupation'] }}";
+                      }
+                    }
+                  
+                    document.addEventListener('DOMContentLoaded', updateDynamicLabel);
+                  </script>
+                      
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Nationality</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Nationality</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Nationality'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Mobile Number</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Mobile Number</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Mobile Number'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Email</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Email</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Email'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Member Since</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Member Since</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Member Since'] }}</div>
                   </div>
     
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Favorite Food</div>
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Favorite Food</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Favourite Food'] }}</div>
                   </div>
                 </div>
@@ -301,7 +376,7 @@
                   <form>
                     <!-- Profile Image -->
                     <div class="row mb-3">
-                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
                         <!-- Profile Image -->
                         <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle">
@@ -378,7 +453,7 @@
                                     
                     <!-- Full Name -->
                     <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Full Name</label>
                       <div class="col-md-8 col-lg-9">
                         <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
                               oninput="validateFullName(this)" required>
@@ -388,7 +463,7 @@
 
                     <!-- About -->
                     <div class="row mb-3">
-                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">About</label>
                       <div class="col-md-8 col-lg-9">
                         <textarea name="about" class="form-control" id="about" style="height: 100px" oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
                         <small id="aboutError" class="text-danger d-none">Content must not contain harmful / hurtful language.</small>
@@ -467,11 +542,11 @@
          
                     <!-- Occupation -->
                     <div class="row mb-3">
-                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
+                      <label for="occupation" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Occupation</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <!-- Dropdown for Occupation -->
-                          <select name="occupation" id="occupation" class="form-control" style="width: 5px;" onchange="toggleCustomOccupationField()">
+                          <select name="occupation" id="occupation" class="form-control" style="width: 10px !important" onchange="updateOccupationField()">
                             <option value="Student" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Student' %}selected{% endif %}>Student</option>
                             <option value="Lecturer" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Lecturer' %}selected{% endif %}>Lecturer</option>
                             <option value="Staff" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Staff' %}selected{% endif %}>Staff</option>
@@ -486,9 +561,9 @@
                           <span class="input-group-text" style="width: auto !important">@</span>
 
                           <!-- Location Input -->
-                          <input name="location" type="text" class="form-control" id="location" list="locations"
-                                placeholder="Enter location"
-                                value="{{ user_data.get('Occupation', '').split(' @ ')[1] if ' @ ' in user_data.get('Occupation', '') else '' }}">
+                          <input name="location" type="text" class="form-control rounded-end" id="location" list="locations"
+                          placeholder="Enter location"
+                          value="{{ user_data.get('Occupation', '').split(' @ ')[1] if ' @ ' in user_data.get('Occupation', '') else '' }}">
                           <datalist id="locations">
                             <option value="University of Malta">
                             <option value="Campus Hub">
@@ -497,40 +572,63 @@
                       </div>
                     </div>
 
+                    <!-- Current Course or Department -->
+                    <div id="dependentField" class="row mb-3 d-none">
+                      <label id="dependentLabel" for="Job" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important"></label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="{{ user_data.get('Current Course', '') }}">
+                      </div>
+                    </div>
+
                     <script>
-                      function toggleCustomOccupationField() {
+                      function updateOccupationField() {
                         const occupationSelect = document.getElementById('occupation');
                         const customOccupationField = document.getElementById('customOccupation');
+                        const dependentField = document.getElementById('dependentField');
+                        const dependentLabel = document.getElementById('dependentLabel');
+                        const jobInput = document.getElementById('Job');
+                        const locationInput = document.getElementById('location');
                         const selectedOccupation = occupationSelect.value;
 
                         // Show/hide custom occupation field
                         if (selectedOccupation === 'Other') {
                           customOccupationField.classList.remove('d-none');
-                          occupationSelect.classList.add('d-none'); // Hide dropdown
+                          occupationSelect.classList.add('d-none');
+                          customOccupationField.value = '';
                         } else {
                           customOccupationField.classList.add('d-none');
-                          occupationSelect.classList.remove('d-none'); // Show dropdown
-                          customOccupationField.value = ''; // Clear custom occupation field
+                          occupationSelect.classList.remove('d-none');
+                        }
+
+                        // Update Current Course or Department field based on occupation
+                        if (selectedOccupation === 'Student') {
+                          dependentField.classList.remove('d-none');
+                          dependentLabel.textContent = 'Current Course';
+                          jobInput.placeholder = 'Enter your current course';
+                        } else if (selectedOccupation === 'Lecturer') {
+                          dependentField.classList.remove('d-none');
+                          dependentLabel.textContent = 'Department';
+                          jobInput.placeholder = 'Enter your department';
+                        } else {
+                          dependentField.classList.add('d-none');
+                          jobInput.value = ''; // Clear the field
+                        }
+
+                        // Clear location input if Other is selected
+                        if (selectedOccupation === 'Other') {
+                          locationInput.value = '';
                         }
                       }
 
-                      // Initialize visibility of custom occupation field on page load
+                      // Initialize on page load
                       document.addEventListener('DOMContentLoaded', () => {
-                        toggleCustomOccupationField();
+                        updateOccupationField();
                       });
                     </script>
 
-                    <!-- Current Course -->
-                    <div class="row mb-3">
-                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="{{ user_data.get('Current Course', '') }}">
-                      </div>
-                    </div>
-                
                     <!-- Nationality -->
                     <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Nationality</label>
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Nationality</label>
                       <div class="col-md-8 col-lg-9">
                         <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
                           <!-- Show user's nationality -->
@@ -550,7 +648,7 @@
 
                     <!-- Mobile Number -->
                     <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Mobile Number</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <span class="input-group-text" id="CountryCode" style="width: auto !important">
@@ -582,7 +680,7 @@
 
                     <!-- Email -->
                     <div class="row mb-3">
-                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Email</label>
                       <div class="col-md-8 col-lg-9">
                         <input
                           name="email"
@@ -624,7 +722,7 @@
 
                     <!-- Instagram -->
                     <div class="row mb-3">
-                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Insta Profile</label>
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Insta Profile</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <span class="input-group-text">instagram.com/</span>
@@ -636,7 +734,7 @@
 
                     <!-- Facebook -->
                     <div class="row mb-3">
-                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">FB Profile</label>
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">FB Profile</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <span class="input-group-text">facebook.com/</span>
@@ -648,7 +746,7 @@
 
                     <!-- Twitter -->
                     <div class="row mb-3">
-                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">X Profile</label>
+                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">X Profile</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <span class="input-group-text">x.com/</span>
@@ -660,7 +758,7 @@
 
                     <!-- Threads -->
                     <div class="row mb-3">
-                      <label for="Threads" class="col-md-4 col-lg-3 col-form-label">Threads Profile</label>
+                      <label for="Threads" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Threads Profile</label>
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <span class="input-group-text">threads.net/</span>
@@ -711,6 +809,18 @@
                       <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                   </form>
+                  <style>
+                    .btn-primary {
+                      border: none;
+                      background-color: #036628 !important; /* Default background color */
+                      color: white; /* Ensure text is visible */
+                      transition: background-color 0.3s ease; /* Smooth transition */
+                    }
+                  
+                    .btn-primary:hover {
+                      background-color: #297D48 !important; /* Hover background color */
+                    }
+                  </style>                  
                 </div>                
 
                 <div class="tab-pane fade pt-3" id="profile-settings">
