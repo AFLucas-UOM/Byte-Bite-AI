@@ -228,16 +228,16 @@
               <!-- Tab Navigation -->
               <ul class="nav nav-tabs nav-tabs-bordered">
                 <li class="nav-item">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" style="color: #036628">Overview</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" style="color: #036628">Edit Profile</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" style="color: #036628">Change Password</button>
                 </li>
                 <li class="nav-item">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">AI Settings</button>
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" style="color: #036628">AI Settings</button>
                 </li>
               </ul>
     
@@ -471,21 +471,24 @@
                       <div class="col-md-8 col-lg-9">
                         <div class="input-group">
                           <!-- Dropdown for Occupation -->
-                          <select name="occupation" id="occupation" class="form-control" onchange="toggleCustomOccupationField()">
-                            <option value="Student" {% if user_data.get('Occupation', '').startswith('Student') %}selected{% endif %}>Student</option>
-                            <option value="Lecturer" {% if user_data.get('Occupation', '').startswith('Lecturer') %}selected{% endif %}>Lecturer</option>
-                            <option value="Staff" {% if user_data.get('Occupation', '').startswith('Staff') %}selected{% endif %}>Staff</option>
-                            <option value="Other" {% if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] %}selected{% endif %}>Other</option>
+                          <select name="occupation" id="occupation" class="form-control" style="width: 5px;" onchange="toggleCustomOccupationField()">
+                            <option value="Student" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Student' %}selected{% endif %}>Student</option>
+                            <option value="Lecturer" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Lecturer' %}selected{% endif %}>Lecturer</option>
+                            <option value="Staff" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Staff' %}selected{% endif %}>Staff</option>
+                            <option value="Other" {% if user_data.get('Occupation', '').split(' @ ')[0] not in ['Student', 'Lecturer', 'Staff'] %}selected{% endif %}>Other</option>
                           </select>
 
                           <!-- Custom Occupation Input -->
                           <input name="customOccupation" type="text" class="form-control d-none" id="customOccupation" placeholder="Enter your occupation"
-                                value="{{ user_data.get('Occupation', '') if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] else '' }}">
+                                value="{{ user_data.get('Occupation', '').split(' @ ')[0] if user_data.get('Occupation', '').split(' @ ')[0] not in ['Student', 'Lecturer', 'Staff'] else '' }}">
+
+                          <!-- Static '@' -->
+                          <span class="input-group-text" style="width: auto !important">@</span>
 
                           <!-- Location Input -->
                           <input name="location" type="text" class="form-control" id="location" list="locations"
-                                placeholder="Enter location (e.g., University of Malta)"
-                                value="{{ '@'.join(user_data.get('Occupation', '').split('@')[1:]) if '@' in user_data.get('Occupation', '') else '' }}">
+                                placeholder="Enter location"
+                                value="{{ user_data.get('Occupation', '').split(' @ ')[1] if ' @ ' in user_data.get('Occupation', '') else '' }}">
                           <datalist id="locations">
                             <option value="University of Malta">
                             <option value="Campus Hub">
@@ -503,8 +506,10 @@
                         // Show/hide custom occupation field
                         if (selectedOccupation === 'Other') {
                           customOccupationField.classList.remove('d-none');
+                          occupationSelect.classList.add('d-none'); // Hide dropdown
                         } else {
                           customOccupationField.classList.add('d-none');
+                          occupationSelect.classList.remove('d-none'); // Show dropdown
                           customOccupationField.value = ''; // Clear custom occupation field
                         }
                       }
@@ -514,7 +519,7 @@
                         toggleCustomOccupationField();
                       });
                     </script>
-                
+
                     <!-- Current Course -->
                     <div class="row mb-3">
                       <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
@@ -610,6 +615,13 @@
                       });
                     </script>
 
+                    <style>
+                      .input-group-text {
+                        width: 135px; /* Adjust this value to fit the longest prefix */
+                        text-align: right; /* Align text to the right for consistency */
+                      }
+                    </style>
+
                     <!-- Instagram -->
                     <div class="row mb-3">
                       <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Insta Profile</label>
@@ -660,38 +672,38 @@
 
                     <script>
                       document.querySelector('form').addEventListener('submit', function (e) {
-                      // Prevent the default form submission
-                      e.preventDefault();
+                        // Prevent the default form submission
+                        e.preventDefault();
 
-                      // Prepend the full URLs to user inputs before sending to the server
-                      const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
-                      const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
-                      const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
-                      const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
+                        // Prepend the full URLs to user inputs before sending to the server
+                        const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
+                        const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
+                        const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
+                        const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
 
-                      const formData = {
-                        instagram,
-                        facebook,
-                        twitter,
-                        threads,
-                      };
+                        const formData = {
+                          instagram,
+                          facebook,
+                          twitter,
+                          threads,
+                        };
 
-                      // Example POST request
-                      fetch('/save-social-links', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData),
-                      })
-                        .then((response) => response.json())
-                        .then((data) => {
-                          if (data.success) {
-                            alert('Social links updated successfully!');
-                          } else {
-                            alert('Failed to update social links.');
-                          }
+                        // Example POST request
+                        fetch('/save-social-links', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify(formData),
                         })
-                        .catch((error) => console.error('Error:', error));
-                    });
+                          .then((response) => response.json())
+                          .then((data) => {
+                            if (data.success) {
+                              alert('Social links updated successfully!');
+                            } else {
+                              alert('Failed to update social links.');
+                            }
+                          })
+                          .catch((error) => console.error('Error:', error));
+                      });
                     </script>
 
                     <!-- Save Changes Button -->
