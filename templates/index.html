@@ -26,11 +26,14 @@
 
           // Function to update the icons based on the theme
           const updateIcons = () => {
-              const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
-              const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
-              favicon.href = iconSrc;
-              appleIcon.href = iconSrc;
-          };
+          const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
+          const useDarkIcon = prefersDarkScheme || isNight;
+
+          const iconSrc = useDarkIcon ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+          favicon.href = iconSrc;
+          appleIcon.href = iconSrc;
+        };
 
           // Update the icon on initial load
           updateIcons();

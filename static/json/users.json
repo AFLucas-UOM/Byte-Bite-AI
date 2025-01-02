@@ -1,16 +1,44 @@
 [
     {
-        "Name": "Sean David Muscat",
+        "Full Name": "Sean David Muscat",
+        "profile_pic": "default.png",
+        "about": "",
+        "Occupation": "Student @ University of Malta",
+        "Current Course": "B.Sc. ICT (AI)",
+        "Nationality": "\ud83c\uddf2\ud83c\uddf9 Maltese",
+        "Mobile Number": "99895483",
+        "Email": "seanmuscat@outlook.com",
+        "Member Since": "07-10-2024",
         "Height": 1.6,
         "Weight": 75,
         "Target_weight": 70,
-        "Favourite_food": "Pizza"
+        "Favourite Food": "\ud83c\udf55 Pizza",
+        "Social Links": {
+            "Instagram": "https://instagram.com/seanmuscat_04",
+            "Facebook": "https://facebook.com/sean.muscat.758",
+            "Twitter": "https://x.com/ThatGameGuy1234",
+            "Threads": "https://www.threads.net/"
+        }
     },
     {
-        "Name": "Andrea Filiberto Lucas",
+        "Full Name": "Andrea Filiberto Lucas",
+        "profile_pic": "default.png",
+        "about": "",
+        "Occupation": "Student @ University of Malta",
+        "Current Course": "B.Sc. ICT (AI)",
+        "Nationality": "\ud83c\uddf2\ud83c\uddf9 Maltese",
+        "Mobile Number": "79992605",
+        "Email": "andrealucasmalta@gmail.com",
+        "Member Since": "02-10-2024",
         "Height": 1.2,
         "Weight": 85,
         "Target_weight": 100,
-        "Favourite_food": "Pasta"
+        "Favourite Food": "\ud83c\udf5d Pasta",
+        "Social Links": {
+            "Instagram": "https://instagram.com/aflucas26",
+            "Facebook": "https://www.facebook.com/andrea.lucas.35175/",
+            "Twitter": "https://x.com/AFLucas26",
+            "Threads": "https://www.threads.net/@aflucas26"
+        }
     }
 ]

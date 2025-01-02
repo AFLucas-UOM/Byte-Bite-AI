@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>My Profile - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+  <!-- JS for AR-VIEW -->
+  <!-- TensorFlow.js for model handling -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <!-- Teachable Machine Image library -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  <script src="{{ url_for('serve_assets2', filename='js/ar-main.js') }}"></script>
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#" class="logo d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
+      <h1 class="sitename" onclick="location.reload();">
+        <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+      </h1>
+    </a>      
+  </div><!-- End BBAI-Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        <!-- Profile Image Icon -->
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <!-- Correctly reference the image path -->
+          <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+          <!-- Placeholder span for the user's name -->
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em; padding-left: 0 !important;">Loading... </span>
+        </a><!-- End Profile Image Icon -->
+        
+        <script>
+          // Check if 'BBAIcurrentuser' exists in localStorage
+          const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+          if (currentUser) {
+            // Split the full name into an array and get the first part (first name)
+            const firstName = currentUser.split(' ')[0];
+            // Update the span text with the first name
+            document.getElementById('profileName').textContent = firstName;
+          } else {
+            // If no user is found, keep the default "Loading..."
+            document.getElementById('profileName').textContent = 'Walter Error';
+          }
+        </script>
+        
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/my-profile">
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/faqs">
+              <i class="ri-question-mark"></i>
+              <span>Need Help</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>         
+          </li><!-- End Profile Nav -->
+        </ul>
+      </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard" aria-label="Dashboard" aria-expanded="false">
+        <i class="rbi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="My-Profile">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/chatbot" aria-label="Chatbot" aria-expanded="false">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/AR-View" aria-label="AR-View" aria-expanded="false">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1 id="profileHeading"><b>'s Profile</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Pages</li>
+          <li class="breadcrumb-item active">My Profile</li>
+        </ol>
+      </nav>
+    </div> <!-- End Page Title -->
+    
+    <script>
+      // Check if 'BBAIcurrentuser' exists in localStorage
+      const currentUser2 = localStorage.getItem('BBAIcurrentuser');
+    
+      if (currentUser2) {
+        // Split the full name into an array and get the first part (first name)
+        const firstName = currentUser2.split(' ')[0];
+        // Update the <h1> element with the first name
+        document.getElementById('profileHeading').innerHTML = `<b>${firstName}'s Profile</b>`;
+      } else {
+        // If no user is found, keep a default message
+        document.getElementById('profileHeading').innerHTML = `<b>Walter Error's Profile</b>`;
+      }
+    </script>
+    
+
+    <section class="section profile">
+      <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-xl-4">
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <!-- Profile Picture -->
+              <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+              <h2 class="text-center">{{ user_data['Full Name'] }}</h2>
+              <h3>{{ user_data['Current Course'] }}</h3>
+      
+              <!-- Social Links -->
+              <div class="social-links mt-2">
+                {% if user_data['Social Links'].get('Instagram') and user_data['Social Links']['Instagram'] != 'https://instagram.com/' %}
+                  <a href="{{ user_data['Social Links']['Instagram'] }}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Facebook') and user_data['Social Links']['Facebook'] != 'https://facebook.com/' %}
+                  <a href="{{ user_data['Social Links']['Facebook'] }}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Twitter') and user_data['Social Links']['Twitter'] != 'https://x.com/' %}
+                  <a href="{{ user_data['Social Links']['Twitter'] }}" class="twitter" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Threads') and user_data['Social Links']['Threads'] != 'https://www.threads.net/' %}
+                  <a href="{{ user_data['Social Links']['Threads'] }}" class="threads" target="_blank"><i class="bi bi-threads"></i></a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>    
+    
+        <!-- Profile Main Content -->
+        <div class="col-xl-8">
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Tab Navigation -->
+              <ul class="nav nav-tabs nav-tabs-bordered">
+                <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">AI Settings</button>
+                </li>
+              </ul>
+    
+              <!-- Tab Content -->
+              <div class="tab-content pt-2">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                  <!-- About Section -->
+                  <h5 class="card-title">About</h5>
+                  {% if user_data['about'] %}
+                    <p class="small fst-italic">{{ user_data['about'] }}</p>
+                  {% else %}
+                    <p class="small fst-italic text-muted text-center">No information provided.</p>
+                  {% endif %}
+    
+                  <!-- Profile Details -->
+                  <h5 class="card-title">Profile Details</h5>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Full Name'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Occupation</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Current Course</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Current Course'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Nationality</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Nationality'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Mobile Number</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Mobile Number'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Email</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Email'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Member Since</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Member Since'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label">Favorite Food</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Favourite Food'] }}</div>
+                  </div>
+                </div>
+
+                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                  <!-- Profile Edit Form -->
+                  <form>
+                    <!-- Profile Image -->
+                    <div class="row mb-3">
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
+                      <div class="col-md-8 col-lg-9">
+                        <!-- Profile Image -->
+                        <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle">
+                        <div class="pt-2" style="padding-left: 26px;">
+                          <!-- Upload New Profile Image -->
+                          <label for="uploadProfileImage" class="btn btn-primary btn-sm" title="Upload new profile image">
+                            <i class="bi bi-upload" style="color: white;"></i>
+                          </label>
+                          <input type="file" id="uploadProfileImage" class="d-none" accept="image/*">                          
+                          
+                          <!-- Remove Profile Image -->
+                          <button type="button" id="removeProfileImage" class="btn btn-danger btn-sm" title="Remove my profile image">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                        
+                        <script>
+                          // Handle file input for profile image preview
+                          document.getElementById('uploadProfileImage').addEventListener('change', function(event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                              // Show preview before upload
+                              const reader = new FileReader();
+                              reader.onload = function(e) {
+                                document.getElementById('profilePreview').src = e.target.result;
+                              };
+                              reader.readAsDataURL(file);
+                    
+                              // Prepare and send the file to the backend
+                              const formData = new FormData();
+                              formData.append('profile_image', file);
+                    
+                              fetch('/upload-profile-image', {
+                                method: 'POST',
+                                body: formData,
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    alert('Profile image updated successfully!');
+                                  } else {
+                                    alert('Failed to upload the image.');
+                                    // Reset preview to the original image if upload fails
+                                    document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                  }
+                                })
+                                .catch(error => {
+                                  console.error('Error:', error);
+                                  document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                });
+                            }
+                          });
+                    
+                          // Handle profile image removal
+                          document.getElementById('removeProfileImage').addEventListener('click', function() {
+                            if (confirm('Are you sure you want to remove your profile image?')) {
+                              fetch('/remove-profile-image', { method: 'POST' })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    // Reset to default image
+                                    document.getElementById('profilePreview').src = 'static/img/PFPs/default.png';
+                                    alert('Profile image removed successfully!');
+                                  } else {
+                                    alert('Failed to remove the image.');
+                                  }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+                          });
+                        </script>
+                      </div>
+                    </div>
+                                    
+                    <!-- Full Name -->
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
+                              oninput="validateFullName(this)" required>
+                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                      </div>
+                    </div>
+
+                    <!-- About -->
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea name="about" class="form-control" id="about" style="height: 100px" oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
+                        <small id="aboutError" class="text-danger d-none">Content must not contain harmful / hurtful language.</small>
+                      </div>
+                    </div>
+
+                    <script>
+                      // Validate Full Name
+                      function validateFullName(input) {
+                        const nameRegex = /^[a-zA-Z\s]+$/;
+                        const errorElement = document.getElementById('fullNameError');
+                        
+                        if (!nameRegex.test(input.value.trim())) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+
+                      // Validate About Content
+                      function validateAbout(input) {
+                        const errorElement = document.getElementById('aboutError');
+                        const forbiddenWords = [
+                            // General Offensive Language
+                            "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
+                            "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
+                            "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
+                            "hate", "offensive", "discrimination", "xenophobia", "ableist", "retard",
+                            "cripple", "spaz", "fatphobic", "ugly", "loser", "dumbass", "scumbag",
+                            "trash", "garbage", "jerk", "creep", "pervert", "predator", "molester", "abuser",
+
+                            // Body Image & Eating Disorders
+                            "fat", "skinny", "thin", "obese", "anorexic", "bulimic", "starvation", "anorexia",
+                            "binge", "purge", "restrict", "underweight", "calorie deficit", "diet pill",
+                            "fasting", "body shaming", "self-harm", "body dysmorphia", "weight loss obsession",
+                            "thinspo", "fitspo", "pro-ana", "pro-mia", "food guilt", "guilty pleasure",
+                            "cheat meal", "calorie counting", "obsessive eating", "emotional eating",
+                            "comfort eating", "yo-yo dieting", "unhealthy weight loss", "crash diet",
+                            "extreme fasting", "detox diet", "cleanse", "juice fast", "appetite suppressant",
+                            "meal replacement", "body negativity", "self-loathing", "unrealistic goals",
+                            "ideal weight", "ideal body", "size zero", "weight stigma", "body comparison",
+                            "appearance anxiety", "eating disorder", "fasting challenge", "weight obsession",
+                            "carb fear", "sugar fear", "food avoidance", "unbalanced diet", "scale addiction",
+                            "unrealistic beauty standards", "body goals", "skinny challenge", "waist training",
+                            "dangerous habits", "extreme weight loss", "quick fixes", "fat-phobic",
+                            "muscle dysmorphia", "compulsive exercise", "over-exercising", "body perfection",
+                            "comparison trap", "weight-based judgment", "food shame", "clean eating obsession",
+                            "orthorexia", "carb-free", "low-fat obsession", "fad diets", "extreme restriction",
+                            "disordered eating", "eating anxiety", "fear foods", "good food vs bad food",
+                            "body dissatisfaction", "body perfectionism", "appearance idealization",
+                            "self-starvation", "food anxiety", "body anxiety", "self-esteem issues",
+                            "weight bullying", "appearance bullying", "unhealthy comparison",
+                            "social media pressure", "unhealthy coping", "weight control obsession",
+                            "body distortion", "perceived flaws", "self-hate", "dieting obsession",
+                            "food obsession", "ideal image", "diet culture", "toxic fitness", "exercise guilt",
+                            "weight-focused", "eating guilt", "carb shaming", "size shaming", "unhealthy diet",
+
+                            // Additional Sensitive Words
+                            "kill", "murder", "suicide", "abuse", "trauma", "trigger", "rape", "molest",
+                            "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
+                            "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
+                            "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
+                        ];
+                        
+                        const containsForbiddenWords = forbiddenWords.some(word =>
+                          input.value.toLowerCase().includes(word)
+                        );
+
+                        if (containsForbiddenWords) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+                    </script>
+         
+                    <!-- Occupation -->
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <!-- Dropdown for Occupation -->
+                          <select name="occupation" id="occupation" class="form-control" onchange="toggleCustomOccupationField()">
+                            <option value="Student" {% if user_data.get('Occupation', '').startswith('Student') %}selected{% endif %}>Student</option>
+                            <option value="Lecturer" {% if user_data.get('Occupation', '').startswith('Lecturer') %}selected{% endif %}>Lecturer</option>
+                            <option value="Staff" {% if user_data.get('Occupation', '').startswith('Staff') %}selected{% endif %}>Staff</option>
+                            <option value="Other" {% if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] %}selected{% endif %}>Other</option>
+                          </select>
+
+                          <!-- Custom Occupation Input -->
+                          <input name="customOccupation" type="text" class="form-control d-none" id="customOccupation" placeholder="Enter your occupation"
+                                value="{{ user_data.get('Occupation', '') if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] else '' }}">
+
+                          <!-- Location Input -->
+                          <input name="location" type="text" class="form-control" id="location" list="locations"
+                                placeholder="Enter location (e.g., University of Malta)"
+                                value="{{ '@'.join(user_data.get('Occupation', '').split('@')[1:]) if '@' in user_data.get('Occupation', '') else '' }}">
+                          <datalist id="locations">
+                            <option value="University of Malta">
+                            <option value="Campus Hub">
+                          </datalist>
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      function toggleCustomOccupationField() {
+                        const occupationSelect = document.getElementById('occupation');
+                        const customOccupationField = document.getElementById('customOccupation');
+                        const selectedOccupation = occupationSelect.value;
+
+                        // Show/hide custom occupation field
+                        if (selectedOccupation === 'Other') {
+                          customOccupationField.classList.remove('d-none');
+                        } else {
+                          customOccupationField.classList.add('d-none');
+                          customOccupationField.value = ''; // Clear custom occupation field
+                        }
+                      }
+
+                      // Initialize visibility of custom occupation field on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        toggleCustomOccupationField();
+                      });
+                    </script>
+                
+                    <!-- Current Course -->
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="{{ user_data.get('Current Course', '') }}">
+                      </div>
+                    </div>
+                
+                    <!-- Nationality -->
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Nationality</label>
+                      <div class="col-md-8 col-lg-9">
+                        <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
+                          <!-- Show user's nationality -->
+                          <option value="{{ user_data.get('Nationality', '') }}" selected>
+                            {{ user_data.get('Nationality', 'Select your nationality') }}
+                          </option>
+
+                          <!-- Dropdown of all other nationalities -->
+                          {% for nationality in nationalities %}
+                            {% if nationality != user_data.get('Nationality', '') %}
+                              <option value="{{ nationality }}">{{ nationality }}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text" id="CountryCode">
+                            {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
+                          </span>
+                          <input name="phone" type="text" class="form-control" id="MobileNumber" value="{{ user_data.get('Mobile Number', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Hidden JSON for Country Codes -->
+                    <div id="CountryCodesData" style="display: none;">
+                      {{ country_codes | tojson }}
+                    </div>
+
+                    <script>
+                      // Parse the country codes from the hidden JSON element
+                      const countryCodes = JSON.parse(document.getElementById('CountryCodesData').textContent);
+
+                      function updateCountryCode() {
+                        const nationalitySelect = document.getElementById('Country');
+                        const selectedNationality = nationalitySelect.value;
+                        const countryCodeElement = document.getElementById('CountryCode');
+
+                        // Update the country code prefix
+                        countryCodeElement.textContent = countryCodes[selectedNationality] || '+';
+                      }
+                    </script>
+
+                    <!-- Email -->
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input
+                          name="email"
+                          type="email"
+                          class="form-control"
+                          id="Email"
+                          value="{{ user_data.get('Email', '') }}"
+                          placeholder="example@domain.com"
+                          required
+                          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                          title="Please enter a valid email address (e.g., example@domain.com)"
+                        >
+                        <div id="emailFeedback" class="invalid-feedback">
+                          Please provide a valid email address.
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      // Client-side validation script
+                      const emailInput = document.getElementById('Email');
+                      emailInput.addEventListener('input', () => {
+                        if (emailInput.checkValidity()) {
+                          emailInput.classList.remove('is-invalid');
+                          emailInput.classList.add('is-valid');
+                        } else {
+                          emailInput.classList.remove('is-valid');
+                          emailInput.classList.add('is-invalid');
+                        }
+                      });
+                    </script>
+
+                    <!-- Instagram -->
+                    <div class="row mb-3">
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Insta Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">instagram.com/</span>
+                          <input name="instagram" type="text" class="form-control" id="Instagram" 
+                                value="{{ user_data['Social Links'].get('Instagram', '').replace('https://instagram.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="row mb-3">
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">FB Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">facebook.com/</span>
+                          <input name="facebook" type="text" class="form-control" id="Facebook" 
+                                value="{{ user_data['Social Links'].get('Facebook', '').replace('https://facebook.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Twitter -->
+                    <div class="row mb-3">
+                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">X Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">x.com/</span>
+                          <input name="twitter" type="text" class="form-control" id="Twitter" 
+                                value="{{ user_data['Social Links'].get('Twitter', '').replace('https://x.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Threads -->
+                    <div class="row mb-3">
+                      <label for="Threads" class="col-md-4 col-lg-3 col-form-label">Threads Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">threads.net/</span>
+                          <input name="threads" type="text" class="form-control" id="Threads" 
+                                value="{{ user_data['Social Links'].get('Threads', '').replace('https://www.threads.net/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      document.querySelector('form').addEventListener('submit', function (e) {
+                      // Prevent the default form submission
+                      e.preventDefault();
+
+                      // Prepend the full URLs to user inputs before sending to the server
+                      const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
+                      const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
+                      const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
+                      const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
+
+                      const formData = {
+                        instagram,
+                        facebook,
+                        twitter,
+                        threads,
+                      };
+
+                      // Example POST request
+                      fetch('/save-social-links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                            alert('Social links updated successfully!');
+                          } else {
+                            alert('Failed to update social links.');
+                          }
+                        })
+                        .catch((error) => console.error('Error:', error));
+                    });
+                    </script>
+
+                    <!-- Save Changes Button -->
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form>
+                </div>                
+
+                <div class="tab-pane fade pt-3" id="profile-settings">
+
+                  <!-- Settings Form -->
+                  <form>
+
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="changesMade" checked>
+                          <label class="form-check-label" for="changesMade">
+                            Changes made to your account
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="newProducts" checked>
+                          <label class="form-check-label" for="newProducts">
+                            Information on new products and services
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="proOffers">
+                          <label class="form-check-label" for="proOffers">
+                            Marketing and promo offers
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="securityNotify" checked disabled>
+                          <label class="form-check-label" for="securityNotify">
+                            Security alerts
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                  </form><!-- End settings Form -->
+
+                </div>
+
+                <div class="tab-pane fade pt-3" id="profile-change-password">
+                  <!-- Change Password Form -->
+                  <form>
+
+                    <div class="row mb-3">
+                      <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="password" type="password" class="form-control" id="currentPassword">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                      </div>
+                    </div>
+
+                    <div class="row mb-3">
+                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Confirm New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                      </div>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                  </form><!-- End Change Password Form -->
+
+                </div>
+
+              </div><!-- End Bordered Tabs -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+  
+<!-- ======= Footer ======= -->
+<footer style= "align-items: center;" id="footer" class="footer position-relative dark-background" role="contentinfo">
+  <div class="credits">
+    Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
+  </div>
+  <div class="credits">
+    Template from <a href="https://bootstrapmade.com/">Bootstrap</a>
+  </div>
+</footer>
+
+<style>
+  /* Style the footer to stay at the bottom */
+  html, body {
+      height: 100%; /* Ensure full page height */
+      display: flex;
+      flex-direction: column; /* Stack content vertically */
+      margin: 0;
+      padding: 0;
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    .header~main {
+      margin-left: 90px;
+    }
+
+    .header~main .hero {
+      margin-left: -160px;
+      width: 100vw;
+    }
+  }
+  .bold-link:hover {
+    text-decoration: underline;
+  }
+  </style>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
+</body>
+</html>
