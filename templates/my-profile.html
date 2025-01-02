@@ -199,7 +199,7 @@
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
               <!-- Profile Picture -->
               <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
-              <h2>{{ user_data['Full Name'] }}</h2>
+              <h2 class="text-center">{{ user_data['Full Name'] }}</h2>
               <h3>{{ user_data['Current Course'] }}</h3>
     
               <!-- Social Links -->
@@ -297,103 +297,242 @@
                 </div>
 
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-
                   <!-- Profile Edit Form -->
                   <form>
+                    <!-- Profile Image -->
                     <div class="row mb-3">
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
-                        <img src="static/img/PFPs/default.png" alt="Profile">
-                        <div class="pt-2">
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="bi bi-upload"></i></a>
-                          <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+                        <!-- Profile Image -->
+                        <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle">
+                        <div class="pt-2" style="padding-left: 26px;">
+                          <!-- Upload New Profile Image -->
+                          <label for="uploadProfileImage" class="btn btn-primary btn-sm" title="Upload new profile image">
+                            <i class="bi bi-upload" style="color: white;"></i>
+                          </label>
+                          <input type="file" id="uploadProfileImage" class="d-none" accept="image/*">                          
+                          
+                          <!-- Remove Profile Image -->
+                          <button type="button" id="removeProfileImage" class="btn btn-danger btn-sm" title="Remove my profile image">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                        
+                        <script>
+                          // Handle file input for profile image preview
+                          document.getElementById('uploadProfileImage').addEventListener('change', function(event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                              // Show preview before upload
+                              const reader = new FileReader();
+                              reader.onload = function(e) {
+                                document.getElementById('profilePreview').src = e.target.result;
+                              };
+                              reader.readAsDataURL(file);
+                    
+                              // Prepare and send the file to the backend
+                              const formData = new FormData();
+                              formData.append('profile_image', file);
+                    
+                              fetch('/upload-profile-image', {
+                                method: 'POST',
+                                body: formData,
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    alert('Profile image updated successfully!');
+                                  } else {
+                                    alert('Failed to upload the image.');
+                                    // Reset preview to the original image if upload fails
+                                    document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                  }
+                                })
+                                .catch(error => {
+                                  console.error('Error:', error);
+                                  document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                });
+                            }
+                          });
+                    
+                          // Handle profile image removal
+                          document.getElementById('removeProfileImage').addEventListener('click', function() {
+                            if (confirm('Are you sure you want to remove your profile image?')) {
+                              fetch('/remove-profile-image', { method: 'POST' })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    // Reset to default image
+                                    document.getElementById('profilePreview').src = 'static/img/PFPs/default.png';
+                                    alert('Profile image removed successfully!');
+                                  } else {
+                                    alert('Failed to remove the image.');
+                                  }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+                          });
+                        </script>
+                      </div>
+                    </div>
+                                    
+                    <!-- Full Name -->
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}">
+                      </div>
+                    </div>
+                
+                    <!-- About -->
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea name="about" class="form-control" id="about" style="height: 100px">{{ user_data.get('about', '') }}</textarea>
+                      </div>
+                    </div>
+                
+                    <!-- Occupation -->
+                    <div class="row mb-3">
+                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="company" type="text" class="form-control" id="company" value="{{ user_data.get('Occupation', '') }}">
+                      </div>
+                    </div>
+                
+                    <!-- Current Course -->
+                    <div class="row mb-3">
+                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="{{ user_data.get('Current Course', '') }}">
+                      </div>
+                    </div>
+                
+                    <!-- Nationality -->
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Nationality</label>
+                      <div class="col-md-8 col-lg-9">
+                        <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
+                          <!-- Show user's nationality -->
+                          <option value="{{ user_data.get('Nationality', '') }}" selected>
+                            {{ user_data.get('Nationality', 'Select your nationality') }}
+                          </option>
+
+                          <!-- Dropdown of all other nationalities -->
+                          {% for nationality in nationalities %}
+                            {% if nationality != user_data.get('Nationality', '') %}
+                              <option value="{{ nationality }}">{{ nationality }}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text" id="CountryCode">
+                            {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
+                          </span>
+                          <input name="phone" type="text" class="form-control" id="MobileNumber" value="{{ user_data.get('Mobile Number', '') }}">
                         </div>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="">
-                      </div>
+                    <!-- Hidden JSON for Country Codes -->
+                    <div id="CountryCodesData" style="display: none;">
+                      {{ country_codes | tojson }}
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
-                      <div class="col-md-8 col-lg-9">
-                        <textarea name="about" class="form-control" id="about" style="height: 100px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</textarea>
-                      </div>
-                    </div>
+                    <script>
+                      // Parse the country codes from the hidden JSON element
+                      const countryCodes = JSON.parse(document.getElementById('CountryCodesData').textContent);
 
-                    <div class="row mb-3">
-                      <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="company" type="text" class="form-control" id="company" value="Student/Teacher/Staff @ University of Malta">
-                      </div>
-                    </div>
+                      function updateCountryCode() {
+                        const nationalitySelect = document.getElementById('Country');
+                        const selectedNationality = nationalitySelect.value;
+                        const countryCodeElement = document.getElementById('CountryCode');
 
-                    <div class="row mb-3">
-                      <label for="Job" class="col-md-4 col-lg-3 col-form-label">Current Course</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="job" type="text" class="form-control" id="Job" value="">
-                      </div>
-                    </div>
+                        // Update the country code prefix
+                        countryCodeElement.textContent = countryCodes[selectedNationality] || '+';
+                      }
+                    </script>
 
-                    <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Nationality</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="country" type="text" class="form-control" id="Country" value="🇲🇹 Maltese">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Mobile Number</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="MobileNumber" value="">
-                      </div>
-                    </div>
-
+                    <!-- Email -->
                     <div class="row mb-3">
                       <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="">
+                        <input
+                          name="email"
+                          type="email"
+                          class="form-control"
+                          id="Email"
+                          value="{{ user_data.get('Email', '') }}"
+                          placeholder="example@domain.com"
+                          required
+                          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                          title="Please enter a valid email address (e.g., example@domain.com)"
+                        >
+                        <div id="emailFeedback" class="invalid-feedback">
+                          Please provide a valid email address.
+                        </div>
                       </div>
                     </div>
 
-                    <div class="row mb-3">
-                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Instagram Profile</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="instagram" type="text" class="form-control" id="Instagram" value="https://instagram.com/">
-                      </div>
-                    </div>
+                    <script>
+                      // Client-side validation script
+                      const emailInput = document.getElementById('Email');
+                      emailInput.addEventListener('input', () => {
+                        if (emailInput.checkValidity()) {
+                          emailInput.classList.remove('is-invalid');
+                          emailInput.classList.add('is-valid');
+                        } else {
+                          emailInput.classList.remove('is-valid');
+                          emailInput.classList.add('is-invalid');
+                        }
+                      });
+                    </script>
 
+                    <!-- Instagram -->
                     <div class="row mb-3">
-                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">Facebook Profile</label>
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Insta Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="facebook" type="text" class="form-control" id="Facebook" value="https://facebook.com/">
+                        <input name="instagram" type="text" class="form-control" id="Instagram" value="{{ user_data['Social Links'].get('Instagram', '') }}">
                       </div>
                     </div>
-                    
+                
+                    <!-- Facebook -->
+                    <div class="row mb-3">
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">FB Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="facebook" type="text" class="form-control" id="Facebook" value="{{ user_data['Social Links'].get('Facebook', '') }}">
+                      </div>
+                    </div>
+                
+                    <!-- Twitter -->
                     <div class="row mb-3">
                       <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">X Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="twitter" type="text" class="form-control" id="Twitter" value="https://x.com/">
+                        <input name="twitter" type="text" class="form-control" id="Twitter" value="{{ user_data['Social Links'].get('Twitter', '') }}">
                       </div>
                     </div>
-
+                
+                    <!-- Threads -->
                     <div class="row mb-3">
                       <label for="Threads" class="col-md-4 col-lg-3 col-form-label">Threads Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="threads" type="text" class="form-control" id="Twitter" value="https://www.threads.net/@">
+                        <input name="threads" type="text" class="form-control" id="Threads" value="{{ user_data['Social Links'].get('Threads', '') }}">
                       </div>
                     </div>
-
+                
+                    <!-- Save Changes Button -->
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
-                  </form><!-- End Profile Edit Form -->
-
-                </div>
+                  </form>
+                </div>                
 
                 <div class="tab-pane fade pt-3" id="profile-settings">
 

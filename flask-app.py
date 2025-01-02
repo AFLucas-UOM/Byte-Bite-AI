@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import time
 import json
 import logging
@@ -78,7 +79,7 @@ class LibraryInstaller:
         cls._libraries_loaded = True
 
 # ============================= Constants and Configuration ========================================
-USER_JSON_PATH = "static/json/credentials.json"
+CREDENTIALS_FILE = "static/json/credentials.json"
 USER_DATA_FILE = "static/json/users.json"
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
@@ -97,27 +98,27 @@ os.makedirs(LOG_FOLDER, exist_ok=True)
 def save_credentials_pretty(data: List[Dict[str, Any]]) -> None:
     """Save user credentials with pretty JSON formatting."""
     try:
-        with open(USER_JSON_PATH, 'w') as f:
+        with open(CREDENTIALS_FILE, 'w') as f:
             json.dump(data, f, indent=4)
     except Exception as e:
-        print(f"Error saving to {USER_JSON_PATH}: {e}")
+        print(f"Error saving to {CREDENTIALS_FILE}: {e}")
 
 def email_exists(email: str) -> bool:
     """Check if an email already exists in the credentials file."""
     try:
-        if os.path.exists(USER_JSON_PATH):
-            with open(USER_JSON_PATH, 'r') as f:
+        if os.path.exists(CREDENTIALS_FILE):
+            with open(CREDENTIALS_FILE, 'r') as f:
                 users = json.load(f)
                 return any(user['email'] == email for user in users)
     except Exception as e:
-        print(f"Error reading {USER_JSON_PATH}: {e}")
+        print(f"Error reading {CREDENTIALS_FILE}: {e}")
     return False
 
 def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
     """Authenticate a user by email and password."""
     try:
-        if os.path.exists(USER_JSON_PATH):
-            with open(USER_JSON_PATH, 'r') as f:
+        if os.path.exists(CREDENTIALS_FILE):
+            with open(CREDENTIALS_FILE, 'r') as f:
                 users = json.load(f)
                 return next(
                     (user for user in users
@@ -125,8 +126,28 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
                     None
                 )
     except Exception as e:
-        print(f"Error reading {USER_JSON_PATH}: {e}")
+        print(f"Error reading {CREDENTIALS_FILE}: {e}")
     return None
+
+def is_valid_email(email: str) -> bool:
+    """
+    Validates an email address format using a regex pattern and checks the domain.
+    """
+    email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    if not re.match(email_regex, email):
+        return False
+    
+    # Additional domain validation (optional)
+    domain = email.split('@')[-1]
+    if len(domain) > 253 or not re.match(r"^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", domain):
+        return False
+    
+    # Check for reserved or local domains
+    invalid_domains = ["localhost", "example.com", "test", "invalid"]
+    if domain in invalid_domains:
+        return False
+
+    return True
 
 def sanitize_input(input_data: str) -> str:
     """Clean user input with Bleach, allowing only specified tags and no attributes/protocols."""
@@ -141,11 +162,11 @@ def sanitize_input(input_data: str) -> str:
 def load_credentials() -> List[Dict[str, Any]]:
     """Load all user credentials from the JSON file."""
     try:
-        if os.path.exists(USER_JSON_PATH):
-            with open(USER_JSON_PATH, 'r') as f:
+        if os.path.exists(CREDENTIALS_FILE):
+            with open(CREDENTIALS_FILE, 'r') as f:
                 return json.load(f)
     except Exception as e:
-        print(f"Error loading {USER_JSON_PATH}: {e}")
+        print(f"Error loading {CREDENTIALS_FILE}: {e}")
     return []
 
 def get_current_user() -> Optional[Dict[str, Any]]:
@@ -277,6 +298,97 @@ def create_app() -> Flask:
 
     # ============================ Flask Routes ==================================
 
+    @app.route('/upload-profile-image', methods=['POST'])
+    @login_required
+    def upload_profile_image():
+        if 'profile_image' in request.files:
+            file = request.files['profile_image']
+            current_user = get_current_user()
+            
+            if current_user:
+                # Extract username and file format
+                username = current_user['name'].replace(" ", "").lower()
+                extension = file.filename.rsplit('.', 1)[-1]
+                filename = f"{username}.{extension}"
+                filepath = os.path.join('static/img/PFPs', filename)
+                
+                # Save file
+                file.save(filepath)
+                
+                # Update user's profile picture in both JSON files
+                update_user_profile(current_user['email'], {'profile_pic': filename})
+                return jsonify({'success': True, 'new_image_url': filepath})
+        
+        # If no file provided, return failure with default profile image
+        return jsonify({'success': False, 'new_image_url': 'static/img/PFPs/default.png'})
+
+    @app.route('/remove-profile-image', methods=['POST'])
+    @login_required
+    def remove_profile_image():
+        current_user = get_current_user()
+        if current_user:
+            # Reset profile picture to default in both JSON files
+            update_user_profile(current_user['email'], {'profile_pic': 'default.png'})
+            return jsonify({'success': True})
+        return jsonify({'success': False})
+
+
+    @app.route('/update-profile', methods=['POST'])
+    @login_required
+    def update_profile():
+        """
+        Endpoint to update profile details with thorough email validation.
+        """
+        data = request.form
+        email = data.get('email', '').strip()
+
+        if not is_valid_email(email):
+            return jsonify({"success": False, "message": "Invalid email address provided."}), 400
+
+        # Proceed with updating the profile
+        current_user = get_current_user()
+        if current_user:
+            try:
+                update_user_profile(current_user['email'], {'Email': email})
+                return jsonify({"success": True, "message": "Profile updated successfully."})
+            except Exception as e:
+                return jsonify({"success": False, "message": f"Error updating profile: {e}"}), 500
+        return jsonify({"success": False, "message": "User not authenticated."}), 403
+
+    def update_user_profile(email, updates):
+        """
+        Updates the user profile in both `user.json` and `credentials.json`.
+        """
+        # Update `user.json`
+        with open(USER_DATA_FILE, 'r') as f:
+            users = json.load(f)
+
+        user_found = False
+        for user in users:
+            if user['Email'] == email:
+                user.update(updates)
+                user_found = True
+                break
+
+        if user_found:
+            with open(USER_DATA_FILE, 'w') as f:
+                json.dump(users, f, indent=4)
+
+        # Update `credentials.json`
+        with open(CREDENTIALS_FILE, 'r') as f:
+            credentials = json.load(f)
+
+        credential_found = False
+        for credential in credentials:
+            if credential['email'] == email:
+                credential.update(updates)
+                credential_found = True
+                break
+
+        if credential_found:
+            with open(CREDENTIALS_FILE, 'w') as f:
+                json.dump(credentials, f, indent=4)
+
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
         return send_from_directory('assets', filename)
@@ -358,27 +470,33 @@ def create_app() -> Flask:
         current_user = get_current_user()
         
         if current_user:
-        # Load user data from JSON
+            # Load country codes from JSON
+            with open('static/json/COUNTRY_CODES.json', 'r') as f:
+                country_codes = json.load(f)
+
+            # Extract nationalities from country codes
+            nationalities = list(country_codes.keys())
+            
+            # Load user data
             with open(USER_DATA_FILE, 'r') as f:
                 users = json.load(f)
             
-            # Find the logged-in user's data based on their name
             user_data = next((user for user in users if user['Full Name'] == current_user['name']), None)
             
             if user_data:
                 profile_pic = user_data.get('profile_pic', DEFAULT_PFP)
                 
                 # Validate the profile picture path
-                if not profile_pic or not os.path.exists(profile_pic):
+                if not profile_pic or not os.path.exists(os.path.join('static/img/PFPs', profile_pic)):
                     profile_pic = DEFAULT_PFP
                 
-                # Pass all user data to the template
                 return render_template(
                     'my-profile.html',
                     user_data=user_data,
-                    profile_pic=profile_pic
+                    profile_pic=profile_pic,
+                    nationalities=nationalities,
+                    country_codes=country_codes  # Pass country codes to template
                 )
-        # Redirect to login if user not found
         return redirect(url_for('login'))
 
     @app.route('/in-dev')
