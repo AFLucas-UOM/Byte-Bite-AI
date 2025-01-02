@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import pandas as pd
 import time
 import json
 import logging
@@ -9,6 +10,7 @@ import importlib
 from datetime import datetime, timedelta
 from functools import wraps
 from typing import Dict, Any, List, Optional
+import chardet
 
 import bleach
 from flask import (
@@ -238,39 +240,47 @@ def setup_ollama_logger() -> logging.Logger:
 
     return ollama_logger
 
-def query_ollama(prompt: str, ollama_logger: logging.Logger, retries: int = 3, delay: int = 2) -> str:
-    """
-    Query the Ollama AI with a given prompt, retrying on failure.
-    Returns Ollama's response, or a failure message if all retries fail.
-    """
-    for attempt in range(retries):
-        try:
-            ollama_logger.info(f"Attempt {attempt + 1}: Sending prompt to Ollama.")
-            result = subprocess.run(
-                ['ollama', 'run', 'tinyllama:1.1b-chat'],
-                input=prompt,
-                capture_output=True, text=True, timeout=10
-            )
-            if result.returncode == 0 and result.stdout.strip():
-                ollama_logger.info("Ollama responded successfully.")
-                return result.stdout.strip()
-            else:
-                ollama_logger.warning(f"Attempt {attempt + 1} failed: {result.stderr}")
+# Function to detect encoding of the CSV file
+def detect_encoding(file_path):
+    with open(file_path, 'rb') as f:
+        result = chardet.detect(f.read())
+    return result['encoding']
 
-        except subprocess.TimeoutExpired:
-            ollama_logger.warning("Timeout occurred. Retrying...")
+# Function to query Ollama with the CSV and prompt
+def query_ollama_with_csv(prompt):
+    try:
+        # Automatically determine the absolute path of the CSV file
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Directory of the script
+        CSV_FILE_PATH = os.path.join(BASE_DIR, "static", "menu.csv")
 
-        except FileNotFoundError:
-            ollama_logger.error("Ollama executable not found.")
-            return "Ollama could not be found. Please check if it's installed correctly."
+        # Detect the encoding of the CSV file
+        encoding = detect_encoding(CSV_FILE_PATH)
+        print(f"Detected encoding: {encoding}")
 
-        except Exception as e:
-            ollama_logger.error(f"Unexpected error on attempt {attempt + 1}: {str(e)}")
+        # Read the CSV file using the detected encoding
+        df = pd.read_csv(CSV_FILE_PATH, encoding=encoding)
+        csv_data = df.to_string(index=False)  # Convert CSV data to a readable string
 
-        time.sleep(delay)
+        # Combine the CSV data and the user's prompt
+        combined_prompt = f"Here is the data from the CSV file:\n{csv_data}\n\n{prompt}"
+        print(f"Sending prompt to Ollama with CSV: {combined_prompt}")  # Debugging log
 
-    ollama_logger.error("All attempts to reach Ollama failed.")
-    return "I'm sorry, your question could not be answered right now! Please contact admin for assistance."
+        # Interact with the LLM
+        result = subprocess.run(
+            ['ollama', 'run', 'orca-mini:latest'],
+            input=combined_prompt,
+            capture_output=True, text=True, shell=True
+        )
+        response = result.stdout.strip()
+
+        if result.stderr:
+            print(f"Error output: {result.stderr}")
+        print(f"Ollama response: {response}")
+        
+        return response
+    except Exception as e:
+        print(f"Error querying Ollama with CSV: {str(e)}")
+        return f"Error querying Ollama: {str(e)}"
 
 # ============================= Flask App Factory ================================================
 def create_app() -> Flask:
@@ -600,7 +610,7 @@ def create_app() -> Flask:
     def chatbot_api():
         user_input = request.json.get("prompt", "")
         print(f"Received prompt from user: {user_input}")
-        response = query_ollama(user_input, ollama_logger)
+        response = query_ollama_with_csv(user_input)
         print(f"Sending response back to user: {response}")
         return jsonify({"response": response})
 
