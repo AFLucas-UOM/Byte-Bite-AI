@@ -499,6 +499,88 @@ def create_app() -> Flask:
                 )
         return redirect(url_for('login'))
 
+    @app.route('/save-social-links', methods=['POST'])
+    @login_required
+    def save_social_links():
+        current_user = get_current_user()
+        if current_user:
+            data = request.json
+            updates = {
+                "Social Links": {
+                    "Instagram": data.get("instagram", ""),
+                    "Facebook": data.get("facebook", ""),
+                    "Twitter": data.get("twitter", ""),
+                    "Threads": data.get("threads", ""),
+                }
+            }
+            update_user_profile(current_user['email'], updates)
+            return jsonify({"success": True})
+        return jsonify({"success": False}), 400
+
+    @app.route('/save-profile', methods=['POST'])
+    @login_required
+    def save_profile():
+        data = request.form
+
+        # Verify Full Name
+        full_name = data.get('fullName', '').strip()
+        if not full_name or not full_name.replace(" ", "").isalpha():
+            return jsonify({"success": False, "message": "Invalid full name. Only letters and spaces allowed."})
+
+        # Sanitize and Verify About Section
+        about = data.get('about', '').strip().lower()
+        forbidden_words =   [
+                            "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
+                            "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
+                            "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
+                            "hate", "offensive", "discrimination", "xenophobia", "ableist", "retard",
+                            "cripple", "spaz", "fatphobic", "ugly", "loser", "dumbass", "scumbag",
+                            "trash", "garbage", "jerk", "creep", "pervert", "predator", "molester", "abuser",
+
+                            "fat", "skinny", "thin", "obese", "anorexic", "bulimic", "starvation", "anorexia",
+                            "binge", "purge", "restrict", "underweight", "calorie deficit", "diet pill",
+                            "fasting", "body shaming", "self-harm", "body dysmorphia", "weight loss obsession",
+                            "thinspo", "fitspo", "pro-ana", "pro-mia", "food guilt", "guilty pleasure",
+                            "cheat meal", "calorie counting", "obsessive eating", "emotional eating",
+                            "comfort eating", "yo-yo dieting", "unhealthy weight loss", "crash diet",
+                            "extreme fasting", "detox diet", "cleanse", "juice fast", "appetite suppressant",
+                            "meal replacement", "body negativity", "self-loathing", "unrealistic goals",
+                            "ideal weight", "ideal body", "size zero", "weight stigma", "body comparison",
+                            "appearance anxiety", "eating disorder", "fasting challenge", "weight obsession",
+                            "carb fear", "sugar fear", "food avoidance", "unbalanced diet", "scale addiction",
+                            "unrealistic beauty standards", "body goals", "skinny challenge", "waist training",
+                            "dangerous habits", "extreme weight loss", "quick fixes", "fat-phobic",
+                            "muscle dysmorphia", "compulsive exercise", "over-exercising", "body perfection",
+                            "comparison trap", "weight-based judgment", "food shame", "clean eating obsession",
+                            "orthorexia", "carb-free", "low-fat obsession", "fad diets", "extreme restriction",
+                            "disordered eating", "eating anxiety", "fear foods", "good food vs bad food",
+                            "body dissatisfaction", "body perfectionism", "appearance idealization",
+                            "self-starvation", "food anxiety", "body anxiety", "self-esteem issues",
+                            "weight bullying", "appearance bullying", "unhealthy comparison",
+                            "social media pressure", "unhealthy coping", "weight control obsession",
+                            "body distortion", "perceived flaws", "self-hate", "dieting obsession",
+                            "food obsession", "ideal image", "diet culture", "toxic fitness", "exercise guilt",
+                            "weight-focused", "eating guilt", "carb shaming", "size shaming", "unhealthy diet",
+
+                            "kill", "murder", "suicide", "abuse", "trauma", "trigger", "rape", "molest",
+                            "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
+                            "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
+                            "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
+                        ];  
+        if any(word in about for word in forbidden_words):
+            return jsonify({"success": False, "message": "The 'About' section contains inappropriate content."})
+
+        # If all validations pass, update user profile
+        current_user = get_current_user()
+        if current_user:
+            update_user_profile(current_user['email'], {
+                "Full Name": full_name,
+                "about": sanitize_input(about)
+            })
+            return jsonify({"success": True, "message": "Profile updated successfully."})
+
+        return jsonify({"success": False, "message": "User not found."})
+
     @app.route('/in-dev')
     def in_dev():
         return render_template('in-dev.html')

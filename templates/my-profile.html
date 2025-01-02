@@ -201,25 +201,25 @@
               <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
               <h2 class="text-center">{{ user_data['Full Name'] }}</h2>
               <h3>{{ user_data['Current Course'] }}</h3>
-    
+      
               <!-- Social Links -->
               <div class="social-links mt-2">
-                {% if user_data['Social Links'].get('Instagram') %}
+                {% if user_data['Social Links'].get('Instagram') and user_data['Social Links']['Instagram'] != 'https://instagram.com/' %}
                   <a href="{{ user_data['Social Links']['Instagram'] }}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
                 {% endif %}
-                {% if user_data['Social Links'].get('Facebook') %}
+                {% if user_data['Social Links'].get('Facebook') and user_data['Social Links']['Facebook'] != 'https://facebook.com/' %}
                   <a href="{{ user_data['Social Links']['Facebook'] }}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
                 {% endif %}
-                {% if user_data['Social Links'].get('Twitter') %}
+                {% if user_data['Social Links'].get('Twitter') and user_data['Social Links']['Twitter'] != 'https://x.com/' %}
                   <a href="{{ user_data['Social Links']['Twitter'] }}" class="twitter" target="_blank"><i class="bi bi-twitter-x"></i></a>
                 {% endif %}
-                {% if user_data['Social Links'].get('Threads') %}
+                {% if user_data['Social Links'].get('Threads') and user_data['Social Links']['Threads'] != 'https://www.threads.net/' %}
                   <a href="{{ user_data['Social Links']['Threads'] }}" class="threads" target="_blank"><i class="bi bi-threads"></i></a>
                 {% endif %}
               </div>
             </div>
           </div>
-        </div>
+        </div>    
     
         <!-- Profile Main Content -->
         <div class="col-xl-8">
@@ -380,25 +380,140 @@
                     <div class="row mb-3">
                       <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}">
+                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
+                              oninput="validateFullName(this)" required>
+                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
                       </div>
                     </div>
-                
+
                     <!-- About -->
                     <div class="row mb-3">
                       <label for="about" class="col-md-4 col-lg-3 col-form-label">About</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="about" class="form-control" id="about" style="height: 100px">{{ user_data.get('about', '') }}</textarea>
+                        <textarea name="about" class="form-control" id="about" style="height: 100px" oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
+                        <small id="aboutError" class="text-danger d-none">Content must not contain harmful / hurtful language.</small>
                       </div>
                     </div>
-                
+
+                    <script>
+                      // Validate Full Name
+                      function validateFullName(input) {
+                        const nameRegex = /^[a-zA-Z\s]+$/;
+                        const errorElement = document.getElementById('fullNameError');
+                        
+                        if (!nameRegex.test(input.value.trim())) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+
+                      // Validate About Content
+                      function validateAbout(input) {
+                        const errorElement = document.getElementById('aboutError');
+                        const forbiddenWords = [
+                            // General Offensive Language
+                            "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
+                            "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
+                            "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
+                            "hate", "offensive", "discrimination", "xenophobia", "ableist", "retard",
+                            "cripple", "spaz", "fatphobic", "ugly", "loser", "dumbass", "scumbag",
+                            "trash", "garbage", "jerk", "creep", "pervert", "predator", "molester", "abuser",
+
+                            // Body Image & Eating Disorders
+                            "fat", "skinny", "thin", "obese", "anorexic", "bulimic", "starvation", "anorexia",
+                            "binge", "purge", "restrict", "underweight", "calorie deficit", "diet pill",
+                            "fasting", "body shaming", "self-harm", "body dysmorphia", "weight loss obsession",
+                            "thinspo", "fitspo", "pro-ana", "pro-mia", "food guilt", "guilty pleasure",
+                            "cheat meal", "calorie counting", "obsessive eating", "emotional eating",
+                            "comfort eating", "yo-yo dieting", "unhealthy weight loss", "crash diet",
+                            "extreme fasting", "detox diet", "cleanse", "juice fast", "appetite suppressant",
+                            "meal replacement", "body negativity", "self-loathing", "unrealistic goals",
+                            "ideal weight", "ideal body", "size zero", "weight stigma", "body comparison",
+                            "appearance anxiety", "eating disorder", "fasting challenge", "weight obsession",
+                            "carb fear", "sugar fear", "food avoidance", "unbalanced diet", "scale addiction",
+                            "unrealistic beauty standards", "body goals", "skinny challenge", "waist training",
+                            "dangerous habits", "extreme weight loss", "quick fixes", "fat-phobic",
+                            "muscle dysmorphia", "compulsive exercise", "over-exercising", "body perfection",
+                            "comparison trap", "weight-based judgment", "food shame", "clean eating obsession",
+                            "orthorexia", "carb-free", "low-fat obsession", "fad diets", "extreme restriction",
+                            "disordered eating", "eating anxiety", "fear foods", "good food vs bad food",
+                            "body dissatisfaction", "body perfectionism", "appearance idealization",
+                            "self-starvation", "food anxiety", "body anxiety", "self-esteem issues",
+                            "weight bullying", "appearance bullying", "unhealthy comparison",
+                            "social media pressure", "unhealthy coping", "weight control obsession",
+                            "body distortion", "perceived flaws", "self-hate", "dieting obsession",
+                            "food obsession", "ideal image", "diet culture", "toxic fitness", "exercise guilt",
+                            "weight-focused", "eating guilt", "carb shaming", "size shaming", "unhealthy diet",
+
+                            // Additional Sensitive Words
+                            "kill", "murder", "suicide", "abuse", "trauma", "trigger", "rape", "molest",
+                            "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
+                            "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
+                            "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
+                        ];
+                        
+                        const containsForbiddenWords = forbiddenWords.some(word =>
+                          input.value.toLowerCase().includes(word)
+                        );
+
+                        if (containsForbiddenWords) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+                    </script>
+         
                     <!-- Occupation -->
                     <div class="row mb-3">
                       <label for="company" class="col-md-4 col-lg-3 col-form-label">Occupation</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="company" type="text" class="form-control" id="company" value="{{ user_data.get('Occupation', '') }}">
+                        <div class="input-group">
+                          <!-- Dropdown for Occupation -->
+                          <select name="occupation" id="occupation" class="form-control" onchange="toggleCustomOccupationField()">
+                            <option value="Student" {% if user_data.get('Occupation', '').startswith('Student') %}selected{% endif %}>Student</option>
+                            <option value="Lecturer" {% if user_data.get('Occupation', '').startswith('Lecturer') %}selected{% endif %}>Lecturer</option>
+                            <option value="Staff" {% if user_data.get('Occupation', '').startswith('Staff') %}selected{% endif %}>Staff</option>
+                            <option value="Other" {% if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] %}selected{% endif %}>Other</option>
+                          </select>
+
+                          <!-- Custom Occupation Input -->
+                          <input name="customOccupation" type="text" class="form-control d-none" id="customOccupation" placeholder="Enter your occupation"
+                                value="{{ user_data.get('Occupation', '') if user_data.get('Occupation', '') not in ['Student', 'Lecturer', 'Staff'] else '' }}">
+
+                          <!-- Location Input -->
+                          <input name="location" type="text" class="form-control" id="location" list="locations"
+                                placeholder="Enter location (e.g., University of Malta)"
+                                value="{{ '@'.join(user_data.get('Occupation', '').split('@')[1:]) if '@' in user_data.get('Occupation', '') else '' }}">
+                          <datalist id="locations">
+                            <option value="University of Malta">
+                            <option value="Campus Hub">
+                          </datalist>
+                        </div>
                       </div>
                     </div>
+
+                    <script>
+                      function toggleCustomOccupationField() {
+                        const occupationSelect = document.getElementById('occupation');
+                        const customOccupationField = document.getElementById('customOccupation');
+                        const selectedOccupation = occupationSelect.value;
+
+                        // Show/hide custom occupation field
+                        if (selectedOccupation === 'Other') {
+                          customOccupationField.classList.remove('d-none');
+                        } else {
+                          customOccupationField.classList.add('d-none');
+                          customOccupationField.value = ''; // Clear custom occupation field
+                        }
+                      }
+
+                      // Initialize visibility of custom occupation field on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        toggleCustomOccupationField();
+                      });
+                    </script>
                 
                     <!-- Current Course -->
                     <div class="row mb-3">
@@ -499,34 +614,86 @@
                     <div class="row mb-3">
                       <label for="Instagram" class="col-md-4 col-lg-3 col-form-label">Insta Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="instagram" type="text" class="form-control" id="Instagram" value="{{ user_data['Social Links'].get('Instagram', '') }}">
+                        <div class="input-group">
+                          <span class="input-group-text">instagram.com/</span>
+                          <input name="instagram" type="text" class="form-control" id="Instagram" 
+                                value="{{ user_data['Social Links'].get('Instagram', '').replace('https://instagram.com/', '') }}">
+                        </div>
                       </div>
                     </div>
-                
+
                     <!-- Facebook -->
                     <div class="row mb-3">
                       <label for="Facebook" class="col-md-4 col-lg-3 col-form-label">FB Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="facebook" type="text" class="form-control" id="Facebook" value="{{ user_data['Social Links'].get('Facebook', '') }}">
+                        <div class="input-group">
+                          <span class="input-group-text">facebook.com/</span>
+                          <input name="facebook" type="text" class="form-control" id="Facebook" 
+                                value="{{ user_data['Social Links'].get('Facebook', '').replace('https://facebook.com/', '') }}">
+                        </div>
                       </div>
                     </div>
-                
+
                     <!-- Twitter -->
                     <div class="row mb-3">
                       <label for="Twitter" class="col-md-4 col-lg-3 col-form-label">X Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="twitter" type="text" class="form-control" id="Twitter" value="{{ user_data['Social Links'].get('Twitter', '') }}">
+                        <div class="input-group">
+                          <span class="input-group-text">x.com/</span>
+                          <input name="twitter" type="text" class="form-control" id="Twitter" 
+                                value="{{ user_data['Social Links'].get('Twitter', '').replace('https://x.com/', '') }}">
+                        </div>
                       </div>
                     </div>
-                
+
                     <!-- Threads -->
                     <div class="row mb-3">
                       <label for="Threads" class="col-md-4 col-lg-3 col-form-label">Threads Profile</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="threads" type="text" class="form-control" id="Threads" value="{{ user_data['Social Links'].get('Threads', '') }}">
+                        <div class="input-group">
+                          <span class="input-group-text">threads.net/</span>
+                          <input name="threads" type="text" class="form-control" id="Threads" 
+                                value="{{ user_data['Social Links'].get('Threads', '').replace('https://www.threads.net/', '') }}">
+                        </div>
                       </div>
                     </div>
-                
+
+                    <script>
+                      document.querySelector('form').addEventListener('submit', function (e) {
+                      // Prevent the default form submission
+                      e.preventDefault();
+
+                      // Prepend the full URLs to user inputs before sending to the server
+                      const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
+                      const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
+                      const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
+                      const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
+
+                      const formData = {
+                        instagram,
+                        facebook,
+                        twitter,
+                        threads,
+                      };
+
+                      // Example POST request
+                      fetch('/save-social-links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                            alert('Social links updated successfully!');
+                          } else {
+                            alert('Failed to update social links.');
+                          }
+                        })
+                        .catch((error) => console.error('Error:', error));
+                    });
+                    </script>
+
                     <!-- Save Changes Button -->
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary">Save Changes</button>
