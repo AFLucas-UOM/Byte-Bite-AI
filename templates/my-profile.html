@@ -33,12 +33,6 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
-  <!-- JS for AR-VIEW -->
-  <!-- TensorFlow.js for model handling -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-  <!-- Teachable Machine Image library -->
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
   <script src="{{ url_for('serve_assets2', filename='js/ar-main.js') }}"></script>
 </head>
 
@@ -138,7 +132,7 @@
     </li><!-- End ChatBot Page Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="/AR-View" aria-label="AR-View" aria-expanded="false">
+      <a class="nav-link collapsed" href="/ar-view" aria-label="AR-View" aria-expanded="false">
         <i class="ri-qr-code-line"></i>
         <span>AR-View</span>
       </a>
@@ -391,6 +385,19 @@
                           <button type="button" id="removeProfileImage" class="btn btn-danger btn-sm" title="Remove my profile image">
                             <i class="bi bi-trash"></i>
                           </button>
+                          <style>
+                            #removeProfileImage {
+                              background-color: #b73a3a !important; /* Background color */
+                              color: white !important; /* Ensure the icon remains visible */
+                              border: none; /* Remove border for a cleaner look */
+                              transition: background-color 0.3s ease; /* Smooth transition on hover */
+                            }
+                          
+                            #removeProfileImage:hover {
+                              background-color: #c13838e6 !important; /* Slightly darker shade for hover */
+                            }
+                          </style>
+                          
                         </div>
                         
                         <script>
@@ -824,10 +831,8 @@
                 </div>                
 
                 <div class="tab-pane fade pt-3" id="profile-settings">
-
                   <!-- Settings Form -->
                   <form>
-
                     <div class="row mb-3">
                       <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
                       <div class="col-md-8 col-lg-9">
