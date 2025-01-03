@@ -579,6 +579,27 @@
                       </div>
                     </div>
 
+                    <script>
+                      function updateOccupationField() {
+                        const occupationSelect = document.getElementById('occupation');
+                        const customOccupationInput = document.getElementById('customOccupation');
+
+                        if (occupationSelect.value === 'Other') {
+                          customOccupationInput.classList.remove('d-none');
+                          customOccupationInput.classList.add('d-inline');
+                        } else {
+                          customOccupationInput.classList.add('d-none');
+                          customOccupationInput.classList.remove('d-inline');
+                        }
+                      }
+
+                      // Ensure the correct visibility is set on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        updateOccupationField();
+                      });
+                    </script>
+
+
                     <!-- Current Course or Department -->
                     <div id="dependentField" class="row mb-3 d-none">
                       <label id="dependentLabel" for="Job" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important"></label>
@@ -638,10 +659,17 @@
                       <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Nationality</label>
                       <div class="col-md-8 col-lg-9">
                         <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
+                          <!-- Placeholder text if no nationality is found -->
+                          {% if not user_data.get('Nationality') %}
+                            <option value="" disabled selected>Select your nationality</option>
+                          {% endif %}
+
                           <!-- Show user's nationality -->
-                          <option value="{{ user_data.get('Nationality', '') }}" selected>
-                            {{ user_data.get('Nationality', 'Select your nationality') }}
-                          </option>
+                          {% if user_data.get('Nationality') %}
+                            <option value="{{ user_data.get('Nationality') }}" selected>
+                              {{ user_data.get('Nationality') }}
+                            </option>
+                          {% endif %}
 
                           <!-- Dropdown of all other nationalities -->
                           {% for nationality in nationalities %}
@@ -661,7 +689,13 @@
                           <span class="input-group-text" id="CountryCode" style="width: auto !important">
                             {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
                           </span>
-                          <input name="phone" type="text" class="form-control" id="MobileNumber" value="{{ user_data.get('Mobile Number', '') }}">
+                          <input 
+                            name="phone" 
+                            type="text" 
+                            class="form-control" 
+                            id="MobileNumber" 
+                            value="{{ user_data.get('Mobile Number', '') }}" 
+                            placeholder="{{ 'Enter your mobile number' if not user_data.get('Mobile Number') else '' }}">
                         </div>
                       </div>
                     </div>
@@ -836,74 +870,309 @@
                     <!-- Favourite Food -->
                     <h5 class="card-title" style="color: #036628 !important">Food Preferences</h5>
                     <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Favourite Food</label>
+                      <label for="favouriteFood" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important;">Favourite Food</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <div class="input-group">
+                          <!-- Dropdown for Favorite Food -->
+                          <select name="favouriteFood" id="favouriteFood" class="form-control" onchange="toggleCustomFoodField()" style="border-radius: 0.375rem;">
+                            <!-- Placeholder Option -->
+                            <option value="" disabled {% if not user_data.get('Favourite Food') %}selected{% endif %}>Select your favorite food</option>
+                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>Pasta</option>
+                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>Pizza</option>
+                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>Burgers</option>
+                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>Sushi</option>
+                            <option value="WarmBowls" {% if user_data.get('Favourite Food', '') == 'WarmBowls' %}selected{% endif %}>Warm Bowls</option>
+                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>Chicken</option>
+                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>Salads</option>
+                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>Wraps</option>
+                            <option value="Asian" {% if user_data.get('Favourite Food', '') == 'Asian' %}selected{% endif %}>Asian</option>
+                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>Smoothies</option>
+                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Asian', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
+                          </select>
+                    
+                          <!-- Custom Food Input -->
+                          <input 
+                            name="customFood" 
+                            type="text" 
+                            class="form-control d-none" 
+                            id="customFood" 
+                            placeholder="Enter your favorite food" 
+                            style="width: 70%;" 
+                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Asian', 'Smoothies'] else '' }}">
+                        </div>
                       </div>
                     </div>
+                    
+                    <script>
+                      function toggleCustomFoodField() {
+                        const favouriteFoodSelect = document.getElementById('favouriteFood');
+                        const customFoodField = document.getElementById('customFood');
+                        const selectedFood = favouriteFoodSelect.value;
+                    
+                        // Show/hide custom food field and adjust corner styling
+                        if (selectedFood === 'Other') {
+                          favouriteFoodSelect.style.borderRadius = "0.375rem 0 0 0.375rem";
+                          customFoodField.classList.remove('d-none');
+                          customFoodField.style.borderRadius = "0 0.375rem 0.375rem 0";
+                          customFoodField.focus();
+                        } else {
+                          favouriteFoodSelect.style.borderRadius = "0.375rem";
+                          customFoodField.classList.add('d-none');
+                          customFoodField.value = ''; // Clear custom input
+                        }
+                      }
+                    
+                      // Initialize visibility of custom food field on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        toggleCustomFoodField();
+                      });
+                    </script>
 
                     <!-- Favourite Restaurant -->
                     <div class="row mb-3">
-                      <label for="about" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Favourite Restaurant </label>
+                      <label for="favoriteRestaurant" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Favourite Restaurant
+                      </label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <select name="favoriteRestaurant" class="form-control" id="favoriteRestaurant" required>
+                          <option value="" disabled {{ 'selected' if not user_data.get('Favourite Restaurant', '') else '' }}>
+                            Select your favorite restaurant
+                          </option>
+                          <option value="Burger King" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
+                            Burger King
+                          </option>
+                          <option value="Pizza Hut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
+                            Pizza Hut
+                          </option>
+                          <option value="Cafe Cuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Cafe Cuba' else '' }}>
+                            Cafe Cuba
+                          </option>
+                          <option value="Ottoman" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Ottoman' else '' }}>
+                            Ottoman
+                          </option>
+                          <option value="Boost" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Boost' else '' }}>
+                            Boost
+                          </option>
+                          <option value="Amami" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Amami' else '' }}>
+                            Amami
+                          </option>
+                          <option value="J&#39;oli" {{ 'selected' if user_data.get('Favourite Restaurant', '') == "J'oli" else '' }}>
+                            J'oli                          
+                          </option>
+                          <option value="Starbucks" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Starbucks' else '' }}>
+                            Starbucks
+                          </option>
+                        </select>
+                        <small id="favoriteRestaurantError" class="text-danger d-none">Please select your favorite restaurant.</small>
                       </div>
                     </div>
+
+                    <script>
+                      document.getElementById('favoriteRestaurant').addEventListener('change', function () {
+                        const errorElement = document.getElementById('favoriteRestaurantError');
+                        if (this.value === '') {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      });
+                    </script>
 
                     <h5 class="card-title" style="color: #036628 !important">Personal Health Details</h5>
                     <!-- Current Weight -->
                     <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Current Weight</label>
+                      <label for="currentWeight" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Current Weight</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <div class="input-group">
+                          <input 
+                            name="currentWeight" 
+                            type="number" 
+                            class="form-control" 
+                            id="currentWeight" 
+                            value="{{ user_data.get('Weight', '') }}" 
+                            placeholder="Enter your current weight" 
+                            oninput="validateWeights()" 
+                            required>
+                          <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">kilograms&nbsp;<i>(kg)</i></span>
+                        </div>
+                        <small id="weightError" class="text-danger d-none">Please enter a valid weight between 20 and 300 kg.</small>
                       </div>
                     </div>
 
                     <!-- Target Weight -->
                     <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Target Weight</label>
+                      <label for="targetWeight" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Target Weight</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <div class="input-group">
+                          <input 
+                            name="targetWeight" 
+                            type="number" 
+                            class="form-control" 
+                            id="targetWeight" 
+                            value="{{ user_data.get('Target_weight', '') }}" 
+                            placeholder="Enter your target weight" 
+                            oninput="validateWeights()" 
+                            required>
+                          <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">kilograms&nbsp;<i>(kg)</i></span>
+                        </div>
+                        <!-- Error messages and recommendation -->
+                        <small id="targetWeightError" class="text-danger d-none">Please enter a valid target weight between 20 and 300 kg.</small>
+                        <small id="relationshipError" class="text-danger d-none"></small>
+                        <small id="recommendationMessage" class="d-none" style="color: #036628 !important;"></small>
                       </div>
                     </div>
+
+                    <script>
+                      function validateWeights() {
+                        const currentWeightInput = document.getElementById('currentWeight');
+                        const targetWeightInput = document.getElementById('targetWeight');
+                        const currentWeight = parseFloat(currentWeightInput.value);
+                        const targetWeight = parseFloat(targetWeightInput.value);
+
+                        const weightError = document.getElementById('weightError');
+                        const targetWeightError = document.getElementById('targetWeightError');
+                        const relationshipError = document.getElementById('relationshipError');
+                        const recommendationMessage = document.getElementById('recommendationMessage');
+
+                        // Reset visibility for recommendation and error messages
+                        recommendationMessage.classList.add('d-none');
+                        relationshipError.classList.add('d-none');
+                        targetWeightError.classList.add('d-none');
+
+                        // Basic validation
+                        const isCurrentWeightValid = !isNaN(currentWeight) && currentWeight >= 20 && currentWeight <= 300;
+                        const isTargetWeightValid = !isNaN(targetWeight) && targetWeight >= 20 && targetWeight <= 300;
+
+                        if (!isCurrentWeightValid) {
+                          // No need to proceed if current weight is invalid
+                          weightError.classList.remove('d-none');
+                          return;
+                        } else {
+                          weightError.classList.add('d-none');
+                        }
+
+                        if (!isTargetWeightValid) {
+                          // If the target weight is invalid, show the error message
+                          targetWeightError.classList.remove('d-none');
+                          return;
+                        }
+
+                        // Calculate recommended range
+                        const minRecommended = Math.max(20, currentWeight * 0.8); // 80% of current weight, minimum 20 kg
+                        const maxRecommended = Math.min(300, currentWeight * 1.2); // 120% of current weight, maximum 300 kg
+
+                        // Relationship validation
+                        if (currentWeight < 50 && targetWeight < currentWeight) {
+                          relationshipError.textContent = "For low weights, setting a lower target weight is not recommended.";
+                          relationshipError.classList.remove('d-none');
+                        } else if (targetWeight < minRecommended || targetWeight > maxRecommended) {
+                          relationshipError.textContent = `The target weight is outside the recommended range of ${minRecommended.toFixed(1)} kg - ${maxRecommended.toFixed(1)} kg.`;
+                          relationshipError.classList.remove('d-none');
+                        } else {
+                          // Display recommendation only if there are no relationship errors
+                          recommendationMessage.textContent = `Recommended target weight: ${minRecommended.toFixed(1)} kg - ${maxRecommended.toFixed(1)} kg.`;
+                          recommendationMessage.classList.remove('d-none');
+                        }
+                      }
+                    </script>
 
                     <!-- Height -->
                     <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Height</label>
+                      <label for="height" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Height</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <div class="input-group">
+                          <input 
+                            name="height" 
+                            type="number" 
+                            step="0.01" 
+                            class="form-control" 
+                            id="height" 
+                            value="{{ user_data.get('Height', '') }}" 
+                            placeholder="Enter your height" 
+                            oninput="validateHeight(this)" 
+                            required>
+                            <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">meters&nbsp;<i>(m)</i></span>
+                        </div>
+                        <small id="heightError" class="text-danger d-none">Please enter a valid height between 0.5 and 2.5 meters.</small>
                       </div>
                     </div>
 
+                    <script>
+                      function validateHeight(input) {
+                        const value = parseFloat(input.value);
+                        const errorElement = document.getElementById('heightError');
+
+                        // Validate height range (0.5 to 2.5 meters)
+                        if (isNaN(value) || value < 0.5 || value > 2.5) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+                    </script>
+
                     <!-- Static Current BMI -->
                     <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Current BMI</label>
+                      <label for="currentBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Current BMI</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <input 
+                          name="currentBMI" 
+                          type="text" 
+                          class="form-control" 
+                          id="currentBMI" 
+                          style="background-color: #F8F9FA;" 
+                          value="0.00" 
+                          readonly>
                       </div>
                     </div>
 
                     <!-- Static Target BMI -->
                     <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Target BMI</label>
+                      <label for="targetBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Target BMI</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
-                              oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <input 
+                          name="targetBMI" 
+                          type="text" 
+                          class="form-control" 
+                          id="targetBMI" 
+                          style="background-color: #F8F9FA;" 
+                          value="0.00" 
+                          readonly>
                       </div>
                     </div>
+
+                    <script>
+                      // BMI Calculation Function
+                      function calculateBMI(weight, height) {
+                        if (!weight || !height || height <= 0) return 0; // Ensure no division by zero
+                        return (weight / (height * height)).toFixed(2); // BMI formula
+                      }
+
+                      // Function to Update BMI Fields
+                      function updateBMIs() {
+                        const currentWeight = parseFloat(document.getElementById('currentWeight').value) || null;
+                        const targetWeight = parseFloat(document.getElementById('targetWeight').value) || null;
+                        const height = parseFloat(document.getElementById('height').value) || null;
+
+                        const currentBMIField = document.getElementById('currentBMI');
+                        const targetBMIField = document.getElementById('targetBMI');
+
+                        // Calculate and set BMI values
+                        currentBMIField.value = height ? calculateBMI(currentWeight, height) : "0.00";
+                        targetBMIField.value = height ? calculateBMI(targetWeight, height) : "0.00";
+                      }
+
+                      // Populate BMI on Page Load
+                      document.addEventListener("DOMContentLoaded", () => {
+                        updateBMIs(); // Initialize BMI values
+                      });
+
+                      // Attach Event Listeners for Dynamic Updates
+                      document.getElementById('currentWeight').addEventListener('input', updateBMIs);
+                      document.getElementById('targetWeight').addEventListener('input', updateBMIs);
+                      document.getElementById('height').addEventListener('input', updateBMIs);
+                    </script>
+
                     <!-- Save Changes Button -->
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -914,33 +1183,75 @@
                 <div class="tab-pane fade pt-3" id="profile-change-password">
                   <!-- Change Password Form -->
                   <form>
-
                     <div class="row mb-3">
                       <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="password" type="password" class="form-control" id="currentPassword">
+                        <div class="input-group">
+                          <!-- Icon part -->
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#currentPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <!-- Password input -->
+                          <input name="password" type="password" class="form-control border-start rounded-end" id="currentPassword">
+                        </div>
                       </div>
                     </div>
-
+                  
                     <div class="row mb-3">
                       <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="newpassword" type="password" class="form-control" id="newPassword">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#newPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <input name="newpassword" type="password" class="form-control border-start rounded-end" id="newPassword">
+                        </div>
                       </div>
                     </div>
-
+                  
                     <div class="row mb-3">
                       <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Confirm New Password</label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#renewPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <input name="renewpassword" type="password" class="form-control border-start rounded-end" id="renewPassword">
+                        </div>
                       </div>
                     </div>
-
+                  
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary">Change Password</button>
                     </div>
-                  </form><!-- End Change Password Form -->
-
+                  </form>
+                  
+                  <!-- Include Bootstrap icons -->
+                  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+                  
+                  <!-- Script to toggle password visibility -->
+                  <script>
+                    document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+                      toggle.addEventListener('click', function () {
+                        const target = document.querySelector(this.getAttribute('data-target'));
+                        if (target.type === 'password') {
+                          target.type = 'text';
+                          this.classList.remove('bi-eye-slash');
+                          this.classList.add('bi-eye');
+                        } else {
+                          target.type = 'password';
+                          this.classList.remove('bi-eye');
+                          this.classList.add('bi-eye-slash');
+                        }
+                      });
+                    });
+                  </script>                                   
                 </div>
 
               </div><!-- End Bordered Tabs -->
