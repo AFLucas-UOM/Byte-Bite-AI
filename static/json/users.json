@@ -10,15 +10,30 @@
         "Email": "seanmuscat@outlook.com",
         "Member Since": "07-10-2024",
         "Height": 1.6,
-        "Weight": 75,
+        "Weight": 15,
         "Target_weight": 70,
-        "Favourite Food": "Pizza",
+        "Favourite Food": "Burger",
         "Social Links": {
             "Instagram": "https://instagram.com/seanmuscat_04",
             "Facebook": "https://facebook.com/sean.muscat.758",
             "Twitter": "https://x.com/ThatGameGuy1234",
             "Threads": "https://www.threads.net/"
-        }
+        },
+        "Disliked Food": [
+            "Plant-Based Whopper",
+            "La Berenjena",
+            "Hamburger",
+            "Whopper",
+            "Double Cheese Bacon",
+            "Whopper Jr.",
+            "Big King"
+        ],
+        "Liked Food": [
+            "El Primero",
+            "Plant-Based Whopper",
+            "La Berenjena",
+            "El Pollo Supremo"
+        ]
     },
     {
         "Full Name": "Andrea Filiberto Lucas",

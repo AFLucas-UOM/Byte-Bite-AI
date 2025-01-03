@@ -331,7 +331,7 @@ def create_app() -> Flask:
         
         # If no file provided, return failure with default profile image
         return jsonify({'success': False, 'new_image_url': 'static/img/PFPs/default.png'})
-
+    
     @app.route('/remove-profile-image', methods=['POST'])
     @login_required
     def remove_profile_image():
@@ -398,6 +398,61 @@ def create_app() -> Flask:
         if credential_found:
             with open(CREDENTIALS_FILE, 'w') as f:
                 json.dump(credentials, f, indent=4)
+
+    @app.route('/update_user', methods=['POST'])
+    def update_user():
+        try:
+            # Get the updated user data from the request body
+            updated_data = request.json
+
+            # Check if the data contains a name (for example)
+            if "Full Name" not in updated_data:
+                return jsonify({"error": "User data must include 'Full Name'"}), 400
+
+            # Read the existing users.json file
+            if os.path.exists(USER_DATA_FILE):
+                with open(USER_DATA_FILE, 'r') as file:
+                    users_data = json.load(file)
+            else:
+                users_data = []
+
+            # Find and update the user data based on the "Full Name"
+            user_found = False
+            for user in users_data:
+                if user["Full Name"].lower() == updated_data["Full Name"].lower():
+                    user_found = True
+
+                    # Handle Liked Food (append to the existing list if present)
+                    if "Liked Food" in updated_data:
+                        if "Liked Food" not in user:
+                            user["Liked Food"] = []
+                        for food in updated_data["Liked Food"]:
+                            if food not in user["Liked Food"]:
+                                user["Liked Food"].append(food)
+
+                    # Handle Disliked Food (append to the existing list if present)
+                    if "Disliked Food" in updated_data:
+                        if "Disliked Food" not in user:
+                            user["Disliked Food"] = []
+                        for food in updated_data["Disliked Food"]:
+                            if food not in user["Disliked Food"]:
+                                user["Disliked Food"].append(food)
+
+                    break
+
+            if not user_found:
+                users_data.append(updated_data)  # Add new user if not found
+
+            # Write the updated data back to users.json
+            with open(USER_DATA_FILE, 'w') as file:
+                json.dump(users_data, file, indent=4)
+
+            return jsonify({"message": "User data updated successfully"}), 200
+
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+
 
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
