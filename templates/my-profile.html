@@ -472,8 +472,16 @@
                     <div class="row mb-3">
                       <label for="about" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">About</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="about" class="form-control" id="about" style="height: 100px" oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
-                        <small id="aboutError" class="text-danger d-none">Content must not contain harmful / hurtful language.</small>
+                        <textarea 
+                          name="about" 
+                          class="form-control" 
+                          id="about" 
+                          style="height: 60px" 
+                          maxlength="300" 
+                          oninput="validateAbout(this)" 
+                          required>{{ user_data.get('about', '') }}</textarea>
+                        <small id="aboutError" class="text-danger d-none">Content must not contain harmful or hurtful language.</small>
+                        <small id="characterCount" class="text-muted">0/300 characters</small>
                       </div>
                     </div>
 
@@ -493,6 +501,8 @@
                       // Validate About Content
                       function validateAbout(input) {
                         const errorElement = document.getElementById('aboutError');
+                        const characterCountElement = document.getElementById('characterCount');
+                        const maxCharacters = 300;
                         const forbiddenWords = [
                             // General Offensive Language
                             "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
@@ -535,6 +545,7 @@
                             "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
                         ];
                         
+                        // Check for forbidden words
                         const containsForbiddenWords = forbiddenWords.some(word =>
                           input.value.toLowerCase().includes(word)
                         );
@@ -544,9 +555,74 @@
                         } else {
                           errorElement.classList.add('d-none');
                         }
+
+                        // Update character count and provide feedback
+                        const currentLength = input.value.length;
+                        characterCountElement.textContent = `${currentLength}/${maxCharacters} characters`;
+
+                        if (currentLength > maxCharacters) {
+                          characterCountElement.classList.add('text-danger');
+                        } else {
+                          characterCountElement.classList.remove('text-danger');
+                        }
                       }
                     </script>
-         
+                    
+                    <!-- DOB -->
+                    <div class="row mb-3">
+                      <label for="dob" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Date of Birth</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input 
+                          name="dob" 
+                          type="text" 
+                          class="form-control" 
+                          id="dob" 
+                          value="{{ user_data.get('DOB', '') }}" 
+                          onfocus="(this.type='date')" 
+                          onblur="(this.type='text'); formatDOB(this)" 
+                          oninput="validateDOB(this)" 
+                          placeholder="dd/mm/yyyy"
+                          required>
+                        <small id="dobError" class="text-danger d-none">Invalid date. You must be at least 16 years old.</small>
+                      </div>
+                    </div>
+
+                    <script>
+                      function formatDOB(input) {
+                        if (!input.value) return;
+                        const [year, month, day] = input.value.split("-");
+                        if (year && month && day) {
+                          input.value = `${day}-${month}-${year}`; // Convert YYYY-MM-DD to DD-MM-YYYY
+                        }
+                      }
+
+                      function validateDOB(input) {
+                        const errorElement = document.getElementById('dobError');
+                        const dob = new Date(input.value.split("-").reverse().join("-")); // Convert DD-MM-YYYY to YYYY-MM-DD
+                        const today = new Date();
+                        const ageLimit = 16;
+
+                        // Calculate age
+                        const age = today.getFullYear() - dob.getFullYear();
+                        const ageMonthDiff = today.getMonth() - dob.getMonth();
+                        const ageDayDiff = today.getDate() - dob.getDate();
+                        const isAgeValid = age > ageLimit || (age === ageLimit && (ageMonthDiff > 0 || (ageMonthDiff === 0 && ageDayDiff >= 0)));
+
+                        // Validate date
+                        if (!input.value || dob > today || !isAgeValid) {
+                          errorElement.textContent = !input.value
+                            ? "Date of birth is required."
+                            : dob > today
+                            ? "Time travel detected! Your date of birth cannot be in the future."
+                            : "You must be at least 16 years old.";
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+                    </script>
+
+
                     <!-- Occupation -->
                     <div class="row mb-3">
                       <label for="occupation" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Occupation</label>
@@ -977,6 +1053,14 @@
                         }
                       });
                     </script>
+
+                    <!-- Food Preferences / Allergies -->
+                    <div class="row mb-3">
+                      <label for="foodPreferences" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Food Preferences</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea name="foodPreferences" class="form-control" id="foodPreferences" style="height: 100px">{{ user_data.get('Food Preferences', '') }}</textarea>
+                      </div>
+                    </div>
 
                     <h5 class="card-title" style="color: #036628 !important">Personal Health Details</h5>
                     <!-- Current Weight -->
