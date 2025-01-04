@@ -293,7 +293,12 @@
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Full Name</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Full Name'] }}</div>
                   </div>
-    
+                  
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Date of Birth</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['DOB'] }}</div>
+                  </div>
+
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Occupation</div>
                     <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
@@ -476,32 +481,19 @@
                           name="about" 
                           class="form-control" 
                           id="about" 
-                          style="height: 60px" 
+                          style="height: 65px" 
                           maxlength="300" 
-                          oninput="validateAbout(this)" 
-                          required>{{ user_data.get('about', '') }}</textarea>
+                          oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
                         <small id="aboutError" class="text-danger d-none">Content must not contain harmful or hurtful language.</small>
-                        <small id="characterCount" class="text-muted">0/300 characters</small>
+                        <small id="characterCount" class="text-muted"></small>
                       </div>
                     </div>
 
                     <script>
-                      // Validate Full Name
-                      function validateFullName(input) {
-                        const nameRegex = /^[a-zA-Z\s]+$/;
-                        const errorElement = document.getElementById('fullNameError');
-                        
-                        if (!nameRegex.test(input.value.trim())) {
-                          errorElement.classList.remove('d-none');
-                        } else {
-                          errorElement.classList.add('d-none');
-                        }
-                      }
-
-                      // Validate About Content
+                      // Function to validate "About" content
                       function validateAbout(input) {
-                        const errorElement = document.getElementById('aboutError');
-                        const characterCountElement = document.getElementById('characterCount');
+                        const errorElement = document.getElementById("aboutError");
+                        const characterCountElement = document.getElementById("characterCount");
                         const maxCharacters = 300;
                         const forbiddenWords = [
                             // General Offensive Language
@@ -544,28 +536,43 @@
                             "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
                             "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
                         ];
-                        
+
                         // Check for forbidden words
                         const containsForbiddenWords = forbiddenWords.some(word =>
                           input.value.toLowerCase().includes(word)
                         );
 
                         if (containsForbiddenWords) {
-                          errorElement.classList.remove('d-none');
+                          errorElement.classList.remove("d-none");
                         } else {
-                          errorElement.classList.add('d-none');
+                          errorElement.classList.add("d-none");
                         }
 
-                        // Update character count and provide feedback
+                        // Update character count
                         const currentLength = input.value.length;
                         characterCountElement.textContent = `${currentLength}/${maxCharacters} characters`;
 
+                        // Change character count color if exceeding limit
                         if (currentLength > maxCharacters) {
-                          characterCountElement.classList.add('text-danger');
+                          characterCountElement.classList.add("text-danger");
                         } else {
-                          characterCountElement.classList.remove('text-danger');
+                          characterCountElement.classList.remove("text-danger");
                         }
                       }
+
+                      // Initialize character count on page load
+                      document.addEventListener("DOMContentLoaded", () => {
+                        const aboutInput = document.getElementById("about");
+                        const characterCountElement = document.getElementById("characterCount");
+                        const maxCharacters = 300;
+
+                        // Set initial character count based on existing content
+                        const initialContent = aboutInput.value || "";
+                        characterCountElement.textContent = `${initialContent.length}/${maxCharacters} characters`;
+
+                        // Add event listener for dynamic updates
+                        aboutInput.addEventListener("input", validateAbout);
+                      });
                     </script>
                     
                     <!-- DOB -->
@@ -574,54 +581,58 @@
                       <div class="col-md-8 col-lg-9">
                         <input 
                           name="dob" 
-                          type="text" 
+                          type="date" 
                           class="form-control" 
-                          id="dob" 
-                          value="{{ user_data.get('DOB', '') }}" 
-                          onfocus="(this.type='date')" 
-                          onblur="(this.type='text'); formatDOB(this)" 
-                          oninput="validateDOB(this)" 
                           placeholder="dd/mm/yyyy"
+                          id="dob" 
                           required>
-                        <small id="dobError" class="text-danger d-none">Invalid date. You must be at least 16 years old.</small>
+                        <small id="dobError" class="text-danger d-none">Invalid date. Please check the requirements.</small>
                       </div>
                     </div>
 
                     <script>
-                      function formatDOB(input) {
-                        if (!input.value) return;
-                        const [year, month, day] = input.value.split("-");
-                        if (year && month && day) {
-                          input.value = `${day}-${month}-${year}`; // Convert YYYY-MM-DD to DD-MM-YYYY
+                      document.addEventListener("DOMContentLoaded", () => {
+                        const dobInput = document.getElementById("dob");
+                        const dobError = document.getElementById("dobError");
+
+                        // Load DOB from user.json (if available) and convert DD/MM/YYYY to YYYY-MM-DD
+                        const userDOB = "{{ user_data.get('DOB', '') }}";
+                        if (userDOB) {
+                          const [day, month, year] = userDOB.split("/"); // Split DD/MM/YYYY
+                          const formattedDOB = `${year}-${month}-${day}`; // Convert to YYYY-MM-DD
+                          dobInput.value = formattedDOB;
                         }
-                      }
 
-                      function validateDOB(input) {
-                        const errorElement = document.getElementById('dobError');
-                        const dob = new Date(input.value.split("-").reverse().join("-")); // Convert DD-MM-YYYY to YYYY-MM-DD
-                        const today = new Date();
-                        const ageLimit = 16;
+                        dobInput.addEventListener("change", () => {
+                          const dobValue = new Date(dobInput.value);
+                          const today = new Date();
 
-                        // Calculate age
-                        const age = today.getFullYear() - dob.getFullYear();
-                        const ageMonthDiff = today.getMonth() - dob.getMonth();
-                        const ageDayDiff = today.getDate() - dob.getDate();
-                        const isAgeValid = age > ageLimit || (age === ageLimit && (ageMonthDiff > 0 || (ageMonthDiff === 0 && ageDayDiff >= 0)));
+                          // Calculate age in years
+                          const age = today.getFullYear() - dobValue.getFullYear();
+                          const monthDifference = today.getMonth() - dobValue.getMonth();
+                          const dayDifference = today.getDate() - dobValue.getDate();
 
-                        // Validate date
-                        if (!input.value || dob > today || !isAgeValid) {
-                          errorElement.textContent = !input.value
-                            ? "Date of birth is required."
-                            : dob > today
-                            ? "Time travel detected! Your date of birth cannot be in the future."
-                            : "You must be at least 16 years old.";
-                          errorElement.classList.remove('d-none');
-                        } else {
-                          errorElement.classList.add('d-none');
-                        }
-                      }
+                          // Adjust age if the birthday hasn't occurred this year yet
+                          const adjustedAge = monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0) ? age : age - 1;
+
+                          if (dobValue > today) {
+                            // Future DOB
+                            dobError.textContent = "Are you a time traveler? DOB can't be in the future!";
+                            dobError.classList.remove("d-none");
+                            dobInput.classList.add("is-invalid");
+                          } else if (adjustedAge < 16) {
+                            // Age under 16
+                            dobError.textContent = "You need to be at least 16 years old to proceed. Come back when you've had more birthday cakes!";
+                            dobError.classList.remove("d-none");
+                            dobInput.classList.add("is-invalid");
+                          } else {
+                            // Valid DOB
+                            dobError.classList.add("d-none");
+                            dobInput.classList.remove("is-invalid");
+                          }
+                        });
+                      });
                     </script>
-
 
                     <!-- Occupation -->
                     <div class="row mb-3">
@@ -887,38 +898,35 @@
 
                     <script>
                       document.querySelector('form').addEventListener('submit', function (e) {
-                        // Prevent the default form submission
-                        e.preventDefault();
+                      e.preventDefault();
 
-                        // Prepend the full URLs to user inputs before sending to the server
-                        const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
-                        const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
-                        const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
-                        const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
+                      const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
+                      const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
+                      const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
+                      const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
 
-                        const formData = {
-                          instagram,
-                          facebook,
-                          twitter,
-                          threads,
-                        };
+                      const formData = {
+                        instagram,
+                        facebook,
+                        twitter,
+                        threads,
+                      };
 
-                        // Example POST request
-                        fetch('/save-social-links', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify(formData),
+                      fetch('/save-social-links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                            alert('Social links updated successfully!');
+                          } else {
+                            alert('Failed to update social links.');
+                          }
                         })
-                          .then((response) => response.json())
-                          .then((data) => {
-                            if (data.success) {
-                              alert('Social links updated successfully!');
-                            } else {
-                              alert('Failed to update social links.');
-                            }
-                          })
-                          .catch((error) => console.error('Error:', error));
-                      });
+                        .catch((error) => console.error('Error:', error));
+                    });
                     </script>
 
                     <!-- Save Changes Button -->
@@ -1010,7 +1018,7 @@
                         Favourite Restaurant
                       </label>
                       <div class="col-md-8 col-lg-9">
-                        <select name="favoriteRestaurant" class="form-control" id="favoriteRestaurant" required>
+                        <select name="favoriteRestaurant" class="form-control" id="favoriteRestaurant">
                           <option value="" disabled {{ 'selected' if not user_data.get('Favourite Restaurant', '') else '' }}>
                             Select your favorite restaurant
                           </option>
@@ -1054,13 +1062,54 @@
                       });
                     </script>
 
-                    <!-- Food Preferences / Allergies -->
+                    <!-- Dietary Requirements -->
                     <div class="row mb-3">
-                      <label for="foodPreferences" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Food Preferences</label>
+                      <label class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Dietary Requirements</label>
                       <div class="col-md-8 col-lg-9">
-                        <textarea name="foodPreferences" class="form-control" id="foodPreferences" style="height: 100px">{{ user_data.get('Food Preferences', '') }}</textarea>
+                        <!-- Vegetarian -->
+                        <div class="form-check mb-2">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="vegetarian" 
+                            name="vegetarian" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Vegetarian', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="vegetarian">
+                            Vegetarian
+                          </label>
+                        </div>
+                        
+                        <!-- Nut Allergy -->
+                        <div class="form-check mb-2">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="nutAllergy" 
+                            name="nutAllergy" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Nut Allergy', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="nutAllergy">
+                            Nut Allergy
+                          </label>
+                        </div>
+                        
+                        <!-- Gluten Allergy -->
+                        <div class="form-check">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="glutenAllergy" 
+                            name="glutenAllergy" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Gluten Allergy', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="glutenAllergy">
+                            Gluten Allergy
+                          </label>
+                        </div>
                       </div>
                     </div>
+
 
                     <h5 class="card-title" style="color: #036628 !important">Personal Health Details</h5>
                     <!-- Current Weight -->
@@ -1197,7 +1246,9 @@
 
                     <!-- Static Current BMI -->
                     <div class="row mb-3">
-                      <label for="currentBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Current BMI</label>
+                      <label for="currentBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Current BMI
+                      </label>
                       <div class="col-md-8 col-lg-9">
                         <input 
                           name="currentBMI" 
@@ -1206,13 +1257,16 @@
                           id="currentBMI" 
                           style="background-color: #F8F9FA;" 
                           value="0.00" 
-                          readonly>
+                          readonly 
+                          aria-live="polite">
                       </div>
                     </div>
 
                     <!-- Static Target BMI -->
                     <div class="row mb-3">
-                      <label for="targetBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Target BMI</label>
+                      <label for="targetBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Target BMI
+                      </label>
                       <div class="col-md-8 col-lg-9">
                         <input 
                           name="targetBMI" 
@@ -1221,29 +1275,51 @@
                           id="targetBMI" 
                           style="background-color: #F8F9FA;" 
                           value="0.00" 
-                          readonly>
+                          readonly 
+                          aria-live="polite">
                       </div>
+                    </div>
+
+                    <!-- Validation Message -->
+                    <div id="bmiWarning" class="text-danger" style="display: none;">
+                      Please enter valid, positive values for weight and height.
                     </div>
 
                     <script>
                       // BMI Calculation Function
                       function calculateBMI(weight, height) {
-                        if (!weight || !height || height <= 0) return 0; // Ensure no division by zero
+                        if (!weight || !height || height <= 0) return null; // Ensure valid inputs
                         return (weight / (height * height)).toFixed(2); // BMI formula
                       }
 
                       // Function to Update BMI Fields
                       function updateBMIs() {
-                        const currentWeight = parseFloat(document.getElementById('currentWeight').value) || null;
-                        const targetWeight = parseFloat(document.getElementById('targetWeight').value) || null;
-                        const height = parseFloat(document.getElementById('height').value) || null;
+                        // Retrieve Input Values
+                        const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+                        const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+                        const height = parseFloat(document.getElementById('height').value);
 
                         const currentBMIField = document.getElementById('currentBMI');
                         const targetBMIField = document.getElementById('targetBMI');
+                        const warningMessage = document.getElementById('bmiWarning');
 
-                        // Calculate and set BMI values
-                        currentBMIField.value = height ? calculateBMI(currentWeight, height) : "0.00";
-                        targetBMIField.value = height ? calculateBMI(targetWeight, height) : "0.00";
+                        // Validate Input Values
+                        if (
+                          (currentWeight && currentWeight <= 0) ||
+                          (targetWeight && targetWeight <= 0) ||
+                          (height && height <= 0)
+                        ) {
+                          warningMessage.style.display = "block"; // Show warning message
+                          currentBMIField.value = "0.00";
+                          targetBMIField.value = "0.00";
+                          return;
+                        } else {
+                          warningMessage.style.display = "none"; // Hide warning message
+                        }
+
+                        // Calculate and Update BMI Values
+                        currentBMIField.value = height ? calculateBMI(currentWeight, height) || "0.00" : "0.00";
+                        targetBMIField.value = height ? calculateBMI(targetWeight, height) || "0.00" : "0.00";
                       }
 
                       // Populate BMI on Page Load
@@ -1252,9 +1328,9 @@
                       });
 
                       // Attach Event Listeners for Dynamic Updates
-                      document.getElementById('currentWeight').addEventListener('input', updateBMIs);
-                      document.getElementById('targetWeight').addEventListener('input', updateBMIs);
-                      document.getElementById('height').addEventListener('input', updateBMIs);
+                      ['currentWeight', 'targetWeight', 'height'].forEach(id => {
+                        document.getElementById(id).addEventListener('input', updateBMIs);
+                      });
                     </script>
 
                     <!-- Save Changes Button -->

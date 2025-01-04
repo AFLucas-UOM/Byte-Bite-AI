@@ -3,13 +3,13 @@
         "Full Name": "Sean David Muscat",
         "profile_pic": "default.png",
         "about": "",
-        "DOB": "",
+        "DOB": "21/05/2004",
         "Occupation": "Student @ University of Malta",
         "Current Course": "B.Sc. ICT (AI)",
         "Nationality": "\ud83c\uddf2\ud83c\uddf9 Maltese",
         "Mobile Number": "99895483",
         "Email": "seanmuscat@outlook.com",
-        "Member Since": "07-10-2024",
+        "Member Since": "07/10/2024",
         "Vegetarian": 0,
         "Nut Allergy": 0,
         "Gluten Allergy": 0,
@@ -32,23 +32,33 @@
     {
         "Full Name": "Andrea Filiberto Lucas",
         "profile_pic": "default.png",
-        "about": "",
-        "DOB": "26-08-2004",
+        "about": "Hey, I’m Andrea Filiberto Lucas, a proud co-creator of this genius app you're using. That’s right—this brilliance didn’t build itself. 😛",
+        "DOB": "26/08/2004",
         "Occupation": "Student @ University of Malta",
         "Current Course": "B.Sc. ICT (AI)",
         "Nationality": "\ud83c\uddf2\ud83c\uddf9 Maltese",
         "Mobile Number": "79992605",
         "Email": "andrealucasmalta@gmail.com",
-        "Member Since": "02-10-2024",
-        "Height": "1.2",
+        "Member Since": "02/10/2024",
+        "Height": "1.64",
         "Weight": "65",
         "Target_weight": "60",
         "Favourite Food": "Pasta",
+        "Favourite Restaurant": "Starbucks",
+        "Vegetarian": 0,
+        "Nut Allergy": 0,
+        "Gluten Allergy": 0,
         "Social Links": {
             "Instagram": "https://instagram.com/aflucas26",
-            "Facebook": "https://www.facebook.com/andrea.lucas.35175/",
+            "Facebook": "https://facebook.com/andrea.lucas.35175",
             "Twitter": "https://x.com/AFLucas26",
             "Threads": "https://www.threads.net/@aflucas26"
-        }
+        },
+        "Disliked Food": [
+
+        ],
+        "Liked Food": [
+
+        ]
     }
 ]
