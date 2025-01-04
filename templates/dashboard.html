@@ -34,6 +34,13 @@
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
+  <!-- Bootstrap CSS (For Info Modal) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Bundle JS (includes Popper.js) (For Info Modal) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </head>
 
 <body>
@@ -185,9 +192,17 @@
                 </button>
                 <button id="thumbs-down" class="btn btn-light p-1" style="color: #b73a3a; margin-left: 0;" title="Dislike">
                   <i class="bi bi-hand-thumbs-down"></i>
-                </button>        
+                </button>
+                <!-- Information Button -->
+                <button 
+                  class="btn btn-light p-1 position-absolute top-0 end-0 m-2" 
+                  data-bs-toggle="modal" 
+                  data-bs-target="#infoModal" 
+                  title="How AI Recommends">
+                  <i class="bi bi-info-circle"></i>
+                </button>
               </h5>
-              
+
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                   <i class="bi-stars"></i>
@@ -202,10 +217,38 @@
               <div id="feedback-alert" class="alert custom-feedback-alert" role="alert" style="display: none;">
                 <span id="feedback-text">You liked the AI suggestion!</span>
               </div>
-
             </div>
           </div>
         </div><!-- End Current Recommendations Card -->
+
+        <!-- Modal -->
+        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h5 class="modal-title" id="infoModalLabel">How the AI Recommends Items</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <!-- Modal Body -->
+              <div class="modal-body">
+                <p>
+                  We have recommended this item based on several factors:
+                </p>
+                <ul>
+                  <li>The current time, ensuring the item is suitable for this moment. Snacks and lighter items will be recommended in the morning and evening.</li>
+                  <li>Your preferences and allergies, as determined by your past interactions and choices.</li>
+                  <li>Patterns from your recommendation history to refine our suggestions.</li>
+                </ul>
+              </div>
+              <!-- Modal Footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
         <script>
           async function loadRecommendation() {
@@ -294,6 +337,28 @@
                         !dislikedFood.includes(row.Name)
                     );
 
+                    // Apply additional filters based on user preferences
+                    if (user["Vegetarian"]) {
+                        console.log('User is vegetarian, filtering out non-vegetarian dishes.');
+                        filteredByFoodType = filteredByFoodType.filter(row =>
+                            row["Is Vegetarian?"] && row["Is Vegetarian?"].toLowerCase() === 'yes'
+                        );
+                    }
+
+                    if (user["Nut Allergy"]) {
+                        console.log('User has a nut allergy, filtering out dishes with nuts.');
+                        filteredByFoodType = filteredByFoodType.filter(row =>
+                            !(row["Has Nuts?"] && row["Has Nuts?"].toLowerCase() === 'yes')
+                        );
+                    }
+
+                    if (user["Gluten Allergy"]) {
+                        console.log('User has a gluten allergy, filtering out dishes with gluten.');
+                        filteredByFoodType = filteredByFoodType.filter(row =>
+                            !(row["Has Gluten?"] && row["Has Gluten?"].toLowerCase() === 'yes')
+                        );
+                    }
+
                     // Duplicate liked food in the filtered list
                     const likedFood = user["Liked Food"] || [];
                     likedFood.forEach(likedDish => {
@@ -307,7 +372,8 @@
                         }
                     });
 
-                    console.log('Filtered Dishes with Liked Food Duplicated:', filteredByFoodType); // Debug log
+                    console.log('Filtered Dishes with Additional Criteria:', filteredByFoodType); // Debug log
+
 
 
                     // Initialise recommendation pool
