@@ -10,6 +10,9 @@
         "Mobile Number": "99895483",
         "Email": "seanmuscat@outlook.com",
         "Member Since": "07-10-2024",
+        "Vegetarian": 0,
+        "Nut Allergy": 0,
+        "Gluten Allergy": 0,
         "Height": "1.6",
         "Weight": "85",
         "Target_weight": "70",
@@ -21,21 +24,8 @@
             "Twitter": "https://x.com/ThatGameGuy1234",
             "Threads": "https://www.threads.net/"
         },
-        "Disliked Food": [
-            "Plant-Based Whopper",
-            "La Berenjena",
-            "Hamburger",
-            "Whopper",
-            "Double Cheese Bacon",
-            "Whopper Jr.",
-            "Big King"
-        ],
-        "Liked Food": [
-            "El Primero",
-            "Plant-Based Whopper",
-            "La Berenjena",
-            "El Pollo Supremo"
-        ]
+        "Disliked Food": [],
+        "Liked Food": []
     },
     {
         "Full Name": "Andrea Filiberto Lucas",
