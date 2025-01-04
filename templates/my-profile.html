@@ -1005,7 +1005,7 @@
                             threads: "{{ user_data['Social Links'].get('Threads', '') }}"
                           }
                         };
-
+                    
                         // Collect new data from the form
                         const newData = {
                           fullName: document.getElementById('fullName').value.trim(),
@@ -1023,10 +1023,10 @@
                             threads: `https://www.threads.net/${document.getElementById('Threads').value.trim()}`
                           }
                         };
-
+                    
                         // Check for changes between original and new data
                         const hasChanges = JSON.stringify(originalData) !== JSON.stringify(newData);
-
+                    
                         if (hasChanges) {
                           // Send updated data to the backend
                           fetch('/save-profile', {
@@ -1038,16 +1038,17 @@
                             .then(data => {
                               if (data.success) {
                                 alert('Profile updated successfully!');
+                                location.reload(); // Refresh the page
                               } else {
-                                alert('Failed to update profile. Please try again.');
+                                alert('Failed to update profile!');
                               }
                             })
                             .catch(error => console.error('Error:', error));
                         } else {
-                          alert('No changes were made.');
+                          location.reload(); // Refresh the page even when no changes were made
                         }
                       });
-                    </script>
+                    </script>                    
 
                   </form>
                   <style>

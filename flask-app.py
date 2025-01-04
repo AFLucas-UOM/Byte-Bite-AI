@@ -672,35 +672,41 @@ def create_app() -> Flask:
         updated_profile = user_profile.copy()
 
         # Update fields only if they change
-        if full_name != user_profile.get("Full Name", ""):
+        name_changed = full_name != user_profile.get("Full Name", "")
+        if name_changed:
             updated_profile["Full Name"] = full_name
-        if about != user_profile.get("about", ""):
+
+        about_changed = about != user_profile.get("about", "")
+        if about_changed:
             updated_profile["about"] = sanitize_input(about)
+
         if dob and dob != user_profile.get("DOB", ""):
             dob_parts = dob.split("-")  # Convert YYYY-MM-DD to DD/MM/YYYY
             updated_profile["DOB"] = f"{dob_parts[2]}/{dob_parts[1]}/{dob_parts[0]}"
-        if data.get('occupation') == 'Other':
+
+        occupation = data.get('occupation', '').strip()
+        location = data.get('location', '').strip()
+        if occupation == "Other":
             custom_occupation = data.get('customOccupation', '').strip()
-            location = data.get('location', '').strip()
             if custom_occupation and location:
-                occupation = f"{custom_occupation} @ {location}"
-                if occupation != user_profile.get("Occupation", ""):
-                    updated_profile["Occupation"] = occupation
+                occupation_value = f"{custom_occupation} @ {location}"
+            else:
+                return jsonify({"success": False, "message": "Please provide both a custom occupation and location."}), 400
         else:
-            occupation = f"{data.get('occupation', '')} @ {data.get('location', '').strip()}"
-            if occupation != user_profile.get("Occupation", ""):
-                updated_profile["Occupation"] = occupation
+            occupation_value = f"{occupation} @ {location}" if occupation and location else user_profile.get("Occupation", "")
+
+        if occupation_value != user_profile.get("Occupation", ""):
+            updated_profile["Occupation"] = occupation_value
+
         if data.get('currentCourse', '') != user_profile.get("Current Course", ""):
             updated_profile["Current Course"] = data.get('currentCourse', '')
         if data.get('nationality', '') != user_profile.get("Nationality", ""):
             updated_profile["Nationality"] = data.get('nationality', '')
-            # Add country code based on nationality
-            with open('static/json/COUNTRY_CODES.json', 'r') as cc_file:
-                country_codes = json.load(cc_file)
-            updated_profile["Country Code"] = country_codes.get(data.get('nationality', ''), '+')
         if data.get('mobileNumber', '') != user_profile.get("Mobile Number", ""):
             updated_profile["Mobile Number"] = data.get('mobileNumber', '')
-        if email != user_profile.get("Email", ""):
+
+        email_changed = email != user_profile.get("Email", "")
+        if email_changed:
             updated_profile["Email"] = email
 
         # Update social links only if provided
@@ -712,6 +718,22 @@ def create_app() -> Flask:
             "Threads": social_links.get("threads", user_profile["Social Links"].get("Threads", ""))
         }
 
+        # Update `credentials.json` if name or email changes
+        if name_changed or email_changed:
+            with open(CREDENTIALS_FILE, 'r') as cred_file:
+                credentials = json.load(cred_file)
+
+            for cred in credentials:
+                if cred['email'] == current_user['email']:
+                    if name_changed:
+                        cred['name'] = full_name
+                    if email_changed:
+                        cred['email'] = email
+                    break
+
+            with open(CREDENTIALS_FILE, 'w') as cred_file:
+                json.dump(credentials, cred_file, indent=4)
+
         # Save the profile only if there are changes
         if updated_profile != user_profile:
             for i, user in enumerate(users):
@@ -721,7 +743,13 @@ def create_app() -> Flask:
             with open(USER_DATA_FILE, 'w') as file:
                 json.dump(users, file, indent=4)
 
-            return jsonify({"success": True, "message": "Profile updated successfully."})
+            # Update cookies if name or email changes
+            resp = jsonify({"success": True, "message": "Profile updated successfully."})
+            if name_changed:
+                resp.set_cookie('BBAIcurrentuser', full_name, max_age=30 * 24 * 60 * 60, httponly=False)
+            if email_changed:
+                resp.set_cookie('BBAIemail', email, max_age=30 * 24 * 60 * 60, httponly=False)
+            return resp
 
         return jsonify({"success": True, "message": "No changes were made to the profile."})
 
