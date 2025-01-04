@@ -330,7 +330,7 @@ function getRecommendationExplanation(user) {
     if (bmi) {
       if (bmi < 18.5) {
         explanations.push("Your <strong>BMI</strong> is on the underweight side. To update your weight, please go to My Profile -> AI Settings");
-      } else if (bmi > 24.9) {
+      } else if (bmi > 18.5) {
         explanations.push("Your <strong>BMI</strong> is on the overweight side. To update your weight, please go to My Profile -> AI Settings");
       }
     }
@@ -572,8 +572,8 @@ function getRecommendationExplanation(user) {
                     recommendationPool = parsedMenuData;
                 } else {
                     // Determine recommendation based on BMI
-                    if (bmi > 24.9) {
-                        console.log('BMI > 24.9, filtering for dishes under 3000 KJ');
+                    if (bmi > 18.5) {
+                        console.log('BMI > 18.5, filtering for dishes under 3000 KJ');
                         recommendationPool = filteredByFoodType.filter(row =>
                             row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
                         );
