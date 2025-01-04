@@ -679,13 +679,25 @@ def create_app() -> Flask:
         if dob and dob != user_profile.get("DOB", ""):
             dob_parts = dob.split("-")  # Convert YYYY-MM-DD to DD/MM/YYYY
             updated_profile["DOB"] = f"{dob_parts[2]}/{dob_parts[1]}/{dob_parts[0]}"
-        occupation = f"{data.get('occupation', '')} @ {data.get('location', '').strip()}"
-        if occupation != user_profile.get("Occupation", ""):
-            updated_profile["Occupation"] = occupation
+        if data.get('occupation') == 'Other':
+            custom_occupation = data.get('customOccupation', '').strip()
+            location = data.get('location', '').strip()
+            if custom_occupation and location:
+                occupation = f"{custom_occupation} @ {location}"
+                if occupation != user_profile.get("Occupation", ""):
+                    updated_profile["Occupation"] = occupation
+        else:
+            occupation = f"{data.get('occupation', '')} @ {data.get('location', '').strip()}"
+            if occupation != user_profile.get("Occupation", ""):
+                updated_profile["Occupation"] = occupation
         if data.get('currentCourse', '') != user_profile.get("Current Course", ""):
             updated_profile["Current Course"] = data.get('currentCourse', '')
         if data.get('nationality', '') != user_profile.get("Nationality", ""):
             updated_profile["Nationality"] = data.get('nationality', '')
+            # Add country code based on nationality
+            with open('static/json/COUNTRY_CODES.json', 'r') as cc_file:
+                country_codes = json.load(cc_file)
+            updated_profile["Country Code"] = country_codes.get(data.get('nationality', ''), '+')
         if data.get('mobileNumber', '') != user_profile.get("Mobile Number", ""):
             updated_profile["Mobile Number"] = data.get('mobileNumber', '')
         if email != user_profile.get("Email", ""):

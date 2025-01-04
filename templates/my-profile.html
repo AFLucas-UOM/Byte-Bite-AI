@@ -335,23 +335,34 @@
                       } else if (occupation.startsWith('Lecturer')) {
                         dynamicLabel.textContent = 'Department';
                         dynamicValue.textContent = "{{ user_data['Current Course'] }}";
-                      } else {
-                        dynamicLabel.textContent = 'Occupation Details';
-                        dynamicValue.textContent = "{{ user_data['Occupation'] }}";
                       }
                     }
                   
                     document.addEventListener('DOMContentLoaded', updateDynamicLabel);
                   </script>
                       
+                  <!-- Nationality -->
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Nationality</div>
-                    <div class="col-lg-9 col-md-8">{{ user_data['Nationality'] }}</div>
+                    <div class="col-lg-9 col-md-8" id="DisplayedNationality">
+                      {{ user_data.get('Nationality', 'Not specified') }}
+                    </div>
                   </div>
-    
+
+                  <!-- Mobile Number -->
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Mobile Number</div>
-                    <div class="col-lg-9 col-md-8">{{ user_data['Mobile Number'] }}</div>
+                    <div class="col-lg-9 col-md-8">
+                      <span id="DynamicCountryCode">
+                        {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
+                      </span>
+                      {{ user_data.get('Mobile Number', 'Not specified') }}
+                    </div>
+                  </div>
+
+                  <!-- Hidden JSON for Country Codes -->
+                  <div id="CountryCodesData" style="display: none;">
+                    {{ country_codes | tojson }}
                   </div>
     
                   <div class="row">
