@@ -753,6 +753,93 @@ def create_app() -> Flask:
 
         return jsonify({"success": True, "message": "No changes were made to the profile."})
 
+    @app.route('/save-settings', methods=['POST'])
+    @login_required
+    def save_settings():
+        data = request.json  # Expecting JSON data from the front-end
+
+        # Retrieve the current user
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
+
+        # Load the existing user profile from `user.json`
+        with open(USER_DATA_FILE, 'r') as file:
+            users = json.load(file)
+
+        user_profile = next((user for user in users if user['Email'] == current_user['email']), None)
+        if not user_profile:
+            return jsonify({"success": False, "message": "User profile not found."}), 404
+
+        # Prepare the updated profile
+        updated_profile = user_profile.copy()
+
+        # Update food preferences
+        favourite_food = data.get('favouriteFood', '').strip()
+        custom_food = data.get('customFood', '').strip()
+        if favourite_food == 'Other' and custom_food:
+            updated_profile['Favourite Food'] = custom_food
+        elif favourite_food and favourite_food != user_profile.get('Favourite Food', ''):
+            updated_profile['Favourite Food'] = favourite_food
+
+        # Update favorite restaurant
+        favourite_restaurant = data.get('favouriteRestaurant', '').strip()
+        if favourite_restaurant and favourite_restaurant != user_profile.get('Favourite Restaurant', ''):
+            updated_profile['Favourite Restaurant'] = favourite_restaurant
+
+        # Update dietary requirements
+        updated_profile['Vegetarian'] = int(data.get('vegetarian', 0))
+        updated_profile['Nut Allergy'] = int(data.get('nutAllergy', 0))
+        updated_profile['Gluten Allergy'] = int(data.get('glutenAllergy', 0))
+
+        # Update health details
+        current_weight = data.get('currentWeight')
+        target_weight = data.get('targetWeight')
+        height = data.get('height')
+
+        if current_weight:
+            try:
+                current_weight = float(current_weight)
+                if 20 <= current_weight <= 300:
+                    updated_profile['Weight'] = current_weight
+                else:
+                    return jsonify({"success": False, "message": "Invalid current weight. Must be between 20 and 300 kg."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid current weight format."}), 400
+
+        if target_weight:
+            try:
+                target_weight = float(target_weight)
+                if 20 <= target_weight <= 300:
+                    updated_profile['Target_weight'] = target_weight
+                else:
+                    return jsonify({"success": False, "message": "Invalid target weight. Must be between 20 and 300 kg."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid target weight format."}), 400
+
+        if height:
+            try:
+                height = float(height)
+                if 0.5 <= height <= 2.5:
+                    updated_profile['Height'] = height
+                else:
+                    return jsonify({"success": False, "message": "Invalid height. Must be between 0.5 and 2.5 meters."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid height format."}), 400
+
+        # Save the profile only if there are changes
+        if updated_profile != user_profile:
+            for i, user in enumerate(users):
+                if user['Email'] == current_user['email']:
+                    users[i] = updated_profile
+                    break
+            with open(USER_DATA_FILE, 'w') as file:
+                json.dump(users, file, indent=4)
+
+            return jsonify({"success": True, "message": "Settings updated successfully."})
+
+        return jsonify({"success": True, "message": "No changes were made to the settings."})
+
     @app.route('/in-dev')
     def in_dev():
         return render_template('in-dev.html')

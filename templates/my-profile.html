@@ -1452,8 +1452,63 @@
 
                     <!-- Save Changes Button -->
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                      <button id="Save Changes AI Setting" type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
+                    <script>
+                      document.getElementById("Save Changes AI Setting").addEventListener("click", function (event) {
+                        event.preventDefault(); // Prevent form submission
+                    
+                        // Gather form data
+                        const favouriteFood = document.getElementById("favouriteFood").value;
+                        const customFood = document.getElementById("customFood").value;
+                        const favouriteRestaurant = document.getElementById("favoriteRestaurant").value;
+                    
+                        const vegetarian = document.getElementById("vegetarian").checked ? 1 : 0;
+                        const nutAllergy = document.getElementById("nutAllergy").checked ? 1 : 0;
+                        const glutenAllergy = document.getElementById("glutenAllergy").checked ? 1 : 0;
+                    
+                        const currentWeight = document.getElementById("currentWeight").value;
+                        const targetWeight = document.getElementById("targetWeight").value;
+                        const height = document.getElementById("height").value;
+                    
+                        // Build the data object
+                        const settingsData = {
+                          favouriteFood: favouriteFood === "Other" ? "Other" : favouriteFood,
+                          customFood: favouriteFood === "Other" ? customFood : "",
+                          favouriteRestaurant,
+                          vegetarian,
+                          nutAllergy,
+                          glutenAllergy,
+                          currentWeight,
+                          targetWeight,
+                          height
+                        };
+                    
+                        // Send data to the backend using fetch
+                        fetch("/save-settings", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json"
+                          },
+                          body: JSON.stringify(settingsData)
+                        })
+                          .then((response) => response.json())
+                          .then((data) => {
+                            if (data.success) {
+                              alert(data.message); // Show success message
+                              location.reload(); // Refresh the page
+                            } else {
+                              alert(data.message); // Show error message
+                              location.reload(); // Refresh the page
+                            }
+                          })
+                          .catch((error) => {
+                            console.error("Error:", error);
+                            alert("An error occurred while saving settings. Please try again.");
+                            location.reload(); // Refresh the page
+                          });
+                      });
+                    </script>                                     
                   </form>  
                 </div>
 
