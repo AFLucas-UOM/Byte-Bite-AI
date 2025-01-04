@@ -696,7 +696,6 @@
                             <option value="Student" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Student' %}selected{% endif %}>Student</option>
                             <option value="Lecturer" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Lecturer' %}selected{% endif %}>Lecturer</option>
                             <option value="Staff" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Staff' %}selected{% endif %}>Staff</option>
-                            <option value="Other" {% if user_data.get('Occupation', '').split(' @ ')[0] not in ['Student', 'Lecturer', 'Staff'] %}selected{% endif %}>Other</option>
                           </select>
 
                           <!-- Custom Occupation Input -->
