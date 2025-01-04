@@ -25,8 +25,13 @@
             "Threads": "https://www.threads.net/"
         },
         "Disliked Food": [
+            "Classic Beef Burger",
+            "Potato Wedges",
+            "Portion Doner"
         ],
         "Liked Food": [
+            "Classic Beef Burger",
+            "Cuban Bun"
         ]
     },
     {
@@ -50,5 +55,33 @@
             "Twitter": "https://x.com/AFLucas26",
             "Threads": "https://www.threads.net/@aflucas26"
         }
+    },
+    {
+        "Full Name": "Leo Messi",
+        "profile_pic": "default.png",
+        "about": "",
+        "DOB": "",
+        "Occupation": "",
+        "Current Course": "",
+        "Nationality": "",
+        "Mobile Number": "",
+        "Email": "",
+        "Member Since": "02-10-2024",
+        "Height": "",
+        "Weight": "",
+        "Target_weight": "",
+        "Favourite Food": "",
+        "Favourite Restaurant": "",
+        "Vegetarian": 0,
+        "Nut Allergy": 0,
+        "Gluten Allergy": 0,
+        "Social Links": {
+            "Instagram": "https://instagram.com/",
+            "Facebook": "https://facebook.com/",
+            "Twitter": "https://x.com/",
+            "Threads": "https://www.threads.net/"
+        },
+        "Disliked Food": [],
+        "Liked Food": []
     }
 ]
