@@ -1034,7 +1034,15 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(newData)
                           })
-                            .then(response => response.json())
+                            .then(response => {
+                              // Check for the X-Update-LocalStorage header and update localStorage if present
+                              const localStorageUpdate = response.headers.get('X-Update-LocalStorage');
+                              if (localStorageUpdate) {
+                                const [key, value] = localStorageUpdate.split('=');
+                                localStorage.setItem(key, value);
+                              }
+                              return response.json();
+                            })
                             .then(data => {
                               if (data.success) {
                                 alert('Profile updated successfully!');
@@ -1043,7 +1051,10 @@
                                 alert('Failed to update profile!');
                               }
                             })
-                            .catch(error => console.error('Error:', error));
+                            .catch(error => {
+                              console.error('Error:', error);
+                              alert('An error occurred. Please try again.');
+                            });
                         } else {
                           location.reload(); // Refresh the page even when no changes were made
                         }

@@ -83,6 +83,7 @@ class LibraryInstaller:
 # ============================= Constants and Configuration ========================================
 CREDENTIALS_FILE = "static/json/credentials.json"
 USER_DATA_FILE = "static/json/users.json"
+ORDERS_FILE = "static/json/orders.json"
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
 AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
@@ -743,10 +744,40 @@ def create_app() -> Flask:
             with open(USER_DATA_FILE, 'w') as file:
                 json.dump(users, file, indent=4)
 
-            # Update cookies if name or email changes
+            # Update `credentials.json` if name or email changes
+            if name_changed or email_changed:
+                with open(CREDENTIALS_FILE, 'r') as cred_file:
+                    credentials = json.load(cred_file)
+
+                for cred in credentials:
+                    if cred['email'] == current_user['email']:
+                        if name_changed:
+                            cred['name'] = full_name
+                        if email_changed:
+                            cred['email'] = email
+                        break
+
+                with open(CREDENTIALS_FILE, 'w') as cred_file:
+                    json.dump(credentials, cred_file, indent=4)
+
+            # Update `orders.json` for matching `userName`
+            if name_changed:
+                with open(ORDERS_FILE, 'r') as orders_file:
+                    orders = json.load(orders_file)
+
+                for order in orders:
+                    if order.get("userName") == user_profile.get("Full Name", ""):
+                        order["userName"] = full_name
+
+                with open(ORDERS_FILE, 'w') as orders_file:
+                    json.dump(orders, orders_file, indent=4)
+
+            # Return response and update cookies
             resp = jsonify({"success": True, "message": "Profile updated successfully."})
             if name_changed:
+                # Set cookie and signal the front-end to update localStorage
                 resp.set_cookie('BBAIcurrentuser', full_name, max_age=30 * 24 * 60 * 60, httponly=False)
+                resp.headers['X-Update-LocalStorage'] = f"BBAIcurrentuser={full_name}"
             if email_changed:
                 resp.set_cookie('BBAIemail', email, max_age=30 * 24 * 60 * 60, httponly=False)
             return resp
