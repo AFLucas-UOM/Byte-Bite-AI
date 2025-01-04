@@ -24,8 +24,10 @@
             "Twitter": "https://x.com/ThatGameGuy1234",
             "Threads": "https://www.threads.net/"
         },
-        "Disliked Food": [],
-        "Liked Food": []
+        "Disliked Food": [
+        ],
+        "Liked Food": [
+        ]
     },
     {
         "Full Name": "Andrea Filiberto Lucas",
