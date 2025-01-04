@@ -219,7 +219,7 @@
           flex-direction: column;
           padding: 20px 0px;
           background-color: white;
-          height: calc(62vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
+          height: calc(53vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
           position: relative;
           overflow: hidden; /* Prevents the chatbox itself from growing */
           width: 110%;
@@ -812,7 +812,20 @@ You are a health assistant AI. Your primary role is to provide accurate, evidenc
   // Call requestMicrophonePermission to check permission when the page loads
   requestMicrophonePermission();
 </script>
-
+  <!-- Chatbot Section -->
+<section aria-labelledby="ar-view-title" style="z-index: 999999999 !important;">
+  <div id="info-area" style="display: none; margin-bottom: 0;">
+      <div class="info-group">
+          <h2>About BB-AI's Chatbot</h2>
+          <p>
+            <span class="highlight">AR-View</span> uses your webcam and BB-AI's vision model to recognize restaurant logos at Campus Hub. 
+            Once a logo is detected, it provides helpful details like the restaurant’s <span class="highlight">health scale</span> 
+            and the <span class="highlight">average kilojoules (KJ) per meal</span>.<br><br> 
+            Powered by <a href="https://teachablemachine.withgoogle.com/" target="_blank" class="bold-link"><b>&copy; Google Teachable Machine</b></a>.
+        </p>        
+      </div>
+  </div>    
+</section>
   </main><!-- End #main -->
   
   <!-- ======= Footer ======= -->
@@ -820,7 +833,6 @@ You are a health assistant AI. Your primary role is to provide accurate, evidenc
     <p style="margin: 0;">
       <a id="info-button" href="javascript:void(0)" onclick="toggleInfo()">Click here to find out more about this page</a>
     </p>
-  </footer>
   </footer>
   <footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
     <div class="credits">
@@ -864,5 +876,6 @@ You are a health assistant AI. Your primary role is to provide accurate, evidenc
   <script src="assets/js/main.js"></script>
   <script src="assets2/js/main.js"></script>
   <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
 </body>
 </html>
