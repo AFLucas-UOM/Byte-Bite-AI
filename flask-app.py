@@ -754,43 +754,104 @@ def create_app() -> Flask:
             return redirect(url_for('dashboard'))
         return render_template('login.html')
 
+    def initialize_user_data(name, email):
+        from datetime import datetime
+        return {
+            "Full Name": name,
+            "profile_pic": DEFAULT_PFP,
+            "about": "",
+            "DOB": "",
+            "Occupation": "",
+            "Current Course": "",
+            "Nationality": "",
+            "Mobile Number": "",
+            "Email": email,
+            "Member Since": datetime.now().strftime("%Y-%m-%d"),
+            "Height": "",
+            "Weight": "",
+            "Target_weight": "",
+            "Favourite Food": "",
+            "Favourite Restaurant": "",
+            "Vegetarian": 0,
+            "Nut Allergy": 0,
+            "Gluten Allergy": 0,
+            "Social Links": {
+                "Instagram": "https://instagram.com/",
+                "Facebook": "https://facebook.com/",
+                "Twitter": "https://x.com/",
+                "Threads": "https://www.threads.net/"
+            },
+            "Disliked Food": [],
+            "Liked Food": []
+        }
+
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():
         if request.method == 'POST':
             try:
+                # Parse incoming JSON data
                 data = request.get_json()
-                name = sanitize_input(data.get('name', ''))
-                email = sanitize_input(data.get('email', ''))
-                password = sanitize_input(data.get('password', ''))
-                confirm_password = sanitize_input(data.get('confirmPassword', ''))
+                print(f"Full payload received: {data}")  # Debugging log
 
+                # Extract and sanitize input
+                name = sanitize_input(data.get('name', '').strip())
+                email = sanitize_input(data.get('email', '').strip())
+                password = sanitize_input(data.get('password', '').strip())
+                confirm_password = sanitize_input(data.get('confirmPassword', '').strip())
+
+                print(f"Name: {name}, Email: {email}, Password: {password}, Confirm Password: {confirm_password}")  # Debugging
+
+                # Validate inputs
                 if not all([name, email, password, confirm_password]):
+                    print("Validation failed: Missing required fields.")
                     return jsonify({"success": False, "message": "Invalid input"}), 400
 
                 if email_exists(email):
+                    print("Validation failed: Email already exists.")
                     return jsonify({"success": False, "message": "An account with this email already exists."}), 400
 
                 if password != confirm_password:
+                    print("Validation failed: Passwords do not match.")
                     return jsonify({"success": False, "message": "Passwords do not match"}), 400
 
                 if len(password) < 8 or not any(char.isdigit() for char in password):
+                    print("Validation failed: Password does not meet complexity requirements.")
                     return jsonify({
                         "success": False,
                         "message": "Password must be at least 8 characters and include a number"
                     }), 400
 
+                # Hash password
                 hashed_password = generate_password_hash(password)
-                user_data = {
+
+                # Save user to credentials.json
+                user_credential = {
                     "name": name,
                     "email": email,
                     "password": hashed_password,
                     "profile_pic": DEFAULT_PFP
                 }
+                existing_credentials = load_credentials()
+                existing_credentials.append(user_credential)
+                save_credentials_pretty(existing_credentials)
 
-                existing_users = load_credentials()
-                existing_users.append(user_data)
-                save_credentials_pretty(existing_users)
+                # Save user to users.json
+                if 'userData' in data:
+                    user_data = data['userData']
+                else:
+                    user_data = initialize_user_data(name, email)
 
+                if not os.path.exists(USER_DATA_FILE):
+                    users = [user_data]
+                else:
+                    with open(USER_DATA_FILE, 'r') as file:
+                        users = json.load(file)
+                    users.append(user_data)
+
+                with open(USER_DATA_FILE, 'w') as file:
+                    json.dump(users, file, indent=4)
+
+                # Respond with success and set cookies
                 resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
                 resp.set_cookie(
                     'BBAIcurrentuser',
@@ -809,6 +870,7 @@ def create_app() -> Flask:
                 return resp
 
             except Exception as e:
+                print(f"Server error: {e}")  # Debugging log
                 return jsonify({"success": False, "message": f"Server error: {e}"}), 500
 
         return render_template('signup.html')
