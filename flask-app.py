@@ -83,6 +83,7 @@ class LibraryInstaller:
 # ============================= Constants and Configuration ========================================
 CREDENTIALS_FILE = "static/json/credentials.json"
 USER_DATA_FILE = "static/json/users.json"
+ORDERS_FILE = "static/json/orders.json"
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
 AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
@@ -585,16 +586,18 @@ def create_app() -> Flask:
     @app.route('/save-profile', methods=['POST'])
     @login_required
     def save_profile():
-        data = request.form
+        data = request.json  # Expecting JSON data from the front-end
 
-        # Verify Full Name
+        # Validation: Verify Full Name
         full_name = data.get('fullName', '').strip()
         if not full_name or not full_name.replace(" ", "").isalpha():
-            return jsonify({"success": False, "message": "Invalid full name. Only letters and spaces allowed."})
+            return jsonify({"success": False, "message": "Invalid full name. Only letters and spaces allowed."}), 400
 
-        # Sanitize and Verify About Section
-        about = data.get('about', '').strip().lower()
-        forbidden_words =   [
+        # Validation: Verify "About" Section
+        about = data.get('about', '').strip()
+        if len(about) > 300:
+            return jsonify({"success": False, "message": "The 'About' section exceeds the 300-character limit."}), 400
+        forbidden_words = [
                             "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
                             "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
                             "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
@@ -631,20 +634,289 @@ def create_app() -> Flask:
                             "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
                             "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
                             "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
-                        ];  
-        if any(word in about for word in forbidden_words):
-            return jsonify({"success": False, "message": "The 'About' section contains inappropriate content."})
+                        ]
+        if any(word.lower() in about.lower() for word in forbidden_words):
+            return jsonify({"success": False, "message": "The 'About' section contains inappropriate content."}), 400
 
-        # If all validations pass, update user profile
+        # Validation: Verify Date of Birth and Age
+        dob = data.get('dob', '').strip()
+        if dob:
+            from datetime import datetime
+            try:
+                dob_date = datetime.strptime(dob, "%Y-%m-%d")
+                age = (datetime.now() - dob_date).days // 365
+                if age < 16:
+                    return jsonify({"success": False, "message": "You must be at least 16 years old to proceed."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid date format for DOB."}), 400
+
+        # Validation: Verify Email
+        email = data.get('email', '').strip()
+        email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_regex, email):
+            return jsonify({"success": False, "message": "Invalid email address."}), 400
+
+        # Retrieve the current user
         current_user = get_current_user()
-        if current_user:
-            update_user_profile(current_user['email'], {
-                "Full Name": full_name,
-                "about": sanitize_input(about)
-            })
-            return jsonify({"success": True, "message": "Profile updated successfully."})
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
 
-        return jsonify({"success": False, "message": "User not found."})
+        # Load the existing user profile from `user.json`
+        with open(USER_DATA_FILE, 'r') as file:
+            users = json.load(file)
+
+        user_profile = next((user for user in users if user['Email'] == current_user['email']), None)
+        if not user_profile:
+            return jsonify({"success": False, "message": "User profile not found."}), 404
+
+        # Prepare the updated profile
+        updated_profile = user_profile.copy()
+
+        # Update fields only if they change
+        name_changed = full_name != user_profile.get("Full Name", "")
+        if name_changed:
+            updated_profile["Full Name"] = full_name
+
+        about_changed = about != user_profile.get("about", "")
+        if about_changed:
+            updated_profile["about"] = sanitize_input(about)
+
+        if dob and dob != user_profile.get("DOB", ""):
+            dob_parts = dob.split("-")  # Convert YYYY-MM-DD to DD/MM/YYYY
+            updated_profile["DOB"] = f"{dob_parts[2]}/{dob_parts[1]}/{dob_parts[0]}"
+
+        occupation = data.get('occupation', '').strip()
+        location = data.get('location', '').strip()
+        if occupation == "Other":
+            custom_occupation = data.get('customOccupation', '').strip()
+            if custom_occupation and location:
+                occupation_value = f"{custom_occupation} @ {location}"
+            else:
+                return jsonify({"success": False, "message": "Please provide both a custom occupation and location."}), 400
+        else:
+            occupation_value = f"{occupation} @ {location}" if occupation and location else user_profile.get("Occupation", "")
+
+        if occupation_value != user_profile.get("Occupation", ""):
+            updated_profile["Occupation"] = occupation_value
+
+        if data.get('currentCourse', '') != user_profile.get("Current Course", ""):
+            updated_profile["Current Course"] = data.get('currentCourse', '')
+        if data.get('nationality', '') != user_profile.get("Nationality", ""):
+            updated_profile["Nationality"] = data.get('nationality', '')
+        if data.get('mobileNumber', '') != user_profile.get("Mobile Number", ""):
+            updated_profile["Mobile Number"] = data.get('mobileNumber', '')
+
+        email_changed = email != user_profile.get("Email", "")
+        if email_changed:
+            updated_profile["Email"] = email
+
+        # Update social links only if provided
+        social_links = data.get('socialLinks', {})
+        updated_profile["Social Links"] = {
+            "Instagram": social_links.get("instagram", user_profile["Social Links"].get("Instagram", "")),
+            "Facebook": social_links.get("facebook", user_profile["Social Links"].get("Facebook", "")),
+            "Twitter": social_links.get("twitter", user_profile["Social Links"].get("Twitter", "")),
+            "Threads": social_links.get("threads", user_profile["Social Links"].get("Threads", ""))
+        }
+
+        # Update `credentials.json` if name or email changes
+        if name_changed or email_changed:
+            with open(CREDENTIALS_FILE, 'r') as cred_file:
+                credentials = json.load(cred_file)
+
+            for cred in credentials:
+                if cred['email'] == current_user['email']:
+                    if name_changed:
+                        cred['name'] = full_name
+                    if email_changed:
+                        cred['email'] = email
+                    break
+
+            with open(CREDENTIALS_FILE, 'w') as cred_file:
+                json.dump(credentials, cred_file, indent=4)
+
+        # Save the profile only if there are changes
+        if updated_profile != user_profile:
+            for i, user in enumerate(users):
+                if user['Email'] == current_user['email']:
+                    users[i] = updated_profile
+                    break
+            with open(USER_DATA_FILE, 'w') as file:
+                json.dump(users, file, indent=4)
+
+            # Update `credentials.json` if name or email changes
+            if name_changed or email_changed:
+                with open(CREDENTIALS_FILE, 'r') as cred_file:
+                    credentials = json.load(cred_file)
+
+                for cred in credentials:
+                    if cred['email'] == current_user['email']:
+                        if name_changed:
+                            cred['name'] = full_name
+                        if email_changed:
+                            cred['email'] = email
+                        break
+
+                with open(CREDENTIALS_FILE, 'w') as cred_file:
+                    json.dump(credentials, cred_file, indent=4)
+
+            # Update `orders.json` for matching `userName`
+            if name_changed:
+                with open(ORDERS_FILE, 'r') as orders_file:
+                    orders = json.load(orders_file)
+
+                for order in orders:
+                    if order.get("userName") == user_profile.get("Full Name", ""):
+                        order["userName"] = full_name
+
+                with open(ORDERS_FILE, 'w') as orders_file:
+                    json.dump(orders, orders_file, indent=4)
+
+            # Return response and update cookies
+            resp = jsonify({"success": True, "message": "Profile updated successfully."})
+            if name_changed:
+                # Set cookie and signal the front-end to update localStorage
+                resp.set_cookie('BBAIcurrentuser', full_name, max_age=30 * 24 * 60 * 60, httponly=False)
+                resp.headers['X-Update-LocalStorage'] = f"BBAIcurrentuser={full_name}"
+            if email_changed:
+                resp.set_cookie('BBAIemail', email, max_age=30 * 24 * 60 * 60, httponly=False)
+            return resp
+
+        return jsonify({"success": True, "message": "No changes were made to the profile."})
+
+    @app.route('/save-settings', methods=['POST'])
+    @login_required
+    def save_settings():
+        data = request.json  # Expecting JSON data from the front-end
+
+        # Retrieve the current user
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
+
+        # Load the existing user profile from `user.json`
+        with open(USER_DATA_FILE, 'r') as file:
+            users = json.load(file)
+
+        user_profile = next((user for user in users if user['Email'] == current_user['email']), None)
+        if not user_profile:
+            return jsonify({"success": False, "message": "User profile not found."}), 404
+
+        # Prepare the updated profile
+        updated_profile = user_profile.copy()
+
+        # Update food preferences
+        favourite_food = data.get('favouriteFood', '').strip()
+        custom_food = data.get('customFood', '').strip()
+        if favourite_food == 'Other' and custom_food:
+            updated_profile['Favourite Food'] = custom_food
+        elif favourite_food and favourite_food != user_profile.get('Favourite Food', ''):
+            updated_profile['Favourite Food'] = favourite_food
+
+        # Update favorite restaurant
+        favourite_restaurant = data.get('favouriteRestaurant', '').strip()
+        if favourite_restaurant and favourite_restaurant != user_profile.get('Favourite Restaurant', ''):
+            updated_profile['Favourite Restaurant'] = favourite_restaurant
+
+        # Update dietary requirements
+        updated_profile['Vegetarian'] = int(data.get('vegetarian', 0))
+        updated_profile['Nut Allergy'] = int(data.get('nutAllergy', 0))
+        updated_profile['Gluten Allergy'] = int(data.get('glutenAllergy', 0))
+
+        # Update health details
+        current_weight = data.get('currentWeight')
+        target_weight = data.get('targetWeight')
+        height = data.get('height')
+
+        if current_weight:
+            try:
+                current_weight = float(current_weight)
+                if 20 <= current_weight <= 300:
+                    updated_profile['Weight'] = current_weight
+                else:
+                    return jsonify({"success": False, "message": "Invalid current weight. Must be between 20 and 300 kg."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid current weight format."}), 400
+
+        if target_weight:
+            try:
+                target_weight = float(target_weight)
+                if 20 <= target_weight <= 300:
+                    updated_profile['Target_weight'] = target_weight
+                else:
+                    return jsonify({"success": False, "message": "Invalid target weight. Must be between 20 and 300 kg."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid target weight format."}), 400
+
+        if height:
+            try:
+                height = float(height)
+                if 0.5 <= height <= 2.5:
+                    updated_profile['Height'] = height
+                else:
+                    return jsonify({"success": False, "message": "Invalid height. Must be between 0.5 and 2.5 meters."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid height format."}), 400
+
+        # Save the profile only if there are changes
+        if updated_profile != user_profile:
+            for i, user in enumerate(users):
+                if user['Email'] == current_user['email']:
+                    users[i] = updated_profile
+                    break
+            with open(USER_DATA_FILE, 'w') as file:
+                json.dump(users, file, indent=4)
+
+            return jsonify({"success": True, "message": "Settings updated successfully."})
+
+        return jsonify({"success": True, "message": "No changes were made to the settings."})
+
+    @app.route('/change-password', methods=['POST'])
+    @login_required
+    def change_password():
+        data = request.json  # Expecting JSON data from the front-end
+
+        # Retrieve the current user
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
+
+        # Load credentials from `credentials.json`
+        with open(CREDENTIALS_FILE, 'r') as cred_file:
+            credentials = json.load(cred_file)
+
+        # Find the user's credentials
+        user_cred = next((cred for cred in credentials if cred['email'] == current_user['email']), None)
+        if not user_cred:
+            return jsonify({"success": False, "message": "User credentials not found."}), 404
+
+        # Validate current password
+        current_password = data.get('currentPassword', '').strip()
+        if not check_password_hash(user_cred['password'], current_password):
+            return jsonify({"success": False, "message": "Current password is incorrect."}), 400
+
+        # Validate new password and confirmation
+        new_password = data.get('newPassword', '').strip()
+        confirm_password = data.get('confirmPassword', '').strip()
+
+        if not new_password or not confirm_password:
+            return jsonify({"success": False, "message": "New password and confirmation are required."}), 400
+
+        if new_password != confirm_password:
+            return jsonify({"success": False, "message": "New password and confirmation do not match."}), 400
+
+        if len(new_password) < 8 or not any(char.isdigit() for char in new_password):
+            return jsonify({"success": False, "message": "Password must be at least 8 characters long and contain at least one number."}), 400
+
+        # Hash and update the new password
+        hashed_password = generate_password_hash(new_password)
+        user_cred['password'] = hashed_password
+
+        # Save updated credentials
+        with open(CREDENTIALS_FILE, 'w') as cred_file:
+            json.dump(credentials, cred_file, indent=4)
+
+        return jsonify({"success": True, "message": "Password changed successfully."})
 
     @app.route('/in-dev')
     def in_dev():
@@ -754,43 +1026,104 @@ def create_app() -> Flask:
             return redirect(url_for('dashboard'))
         return render_template('login.html')
 
+    def initialize_user_data(name, email):
+        from datetime import datetime
+        return {
+            "Full Name": name,
+            "profile_pic": DEFAULT_PFP,
+            "about": "",
+            "DOB": "",
+            "Occupation": "",
+            "Current Course": "",
+            "Nationality": "",
+            "Mobile Number": "",
+            "Email": email,
+            "Member Since": datetime.now().strftime("%Y-%m-%d"),
+            "Height": "",
+            "Weight": "",
+            "Target_weight": "",
+            "Favourite Food": "",
+            "Favourite Restaurant": "",
+            "Vegetarian": 0,
+            "Nut Allergy": 0,
+            "Gluten Allergy": 0,
+            "Social Links": {
+                "Instagram": "https://instagram.com/",
+                "Facebook": "https://facebook.com/",
+                "Twitter": "https://x.com/",
+                "Threads": "https://www.threads.net/"
+            },
+            "Disliked Food": [],
+            "Liked Food": []
+        }
+
     @app.route('/signup', methods=['GET', 'POST'])
     def signup():
         if request.method == 'POST':
             try:
+                # Parse incoming JSON data
                 data = request.get_json()
-                name = sanitize_input(data.get('name', ''))
-                email = sanitize_input(data.get('email', ''))
-                password = sanitize_input(data.get('password', ''))
-                confirm_password = sanitize_input(data.get('confirmPassword', ''))
+                print(f"Full payload received: {data}")  # Debugging log
 
+                # Extract and sanitize input
+                name = sanitize_input(data.get('name', '').strip())
+                email = sanitize_input(data.get('email', '').strip())
+                password = sanitize_input(data.get('password', '').strip())
+                confirm_password = sanitize_input(data.get('confirmPassword', '').strip())
+
+                print(f"Name: {name}, Email: {email}, Password: {password}, Confirm Password: {confirm_password}")  # Debugging
+
+                # Validate inputs
                 if not all([name, email, password, confirm_password]):
+                    print("Validation failed: Missing required fields.")
                     return jsonify({"success": False, "message": "Invalid input"}), 400
 
                 if email_exists(email):
+                    print("Validation failed: Email already exists.")
                     return jsonify({"success": False, "message": "An account with this email already exists."}), 400
 
                 if password != confirm_password:
+                    print("Validation failed: Passwords do not match.")
                     return jsonify({"success": False, "message": "Passwords do not match"}), 400
 
                 if len(password) < 8 or not any(char.isdigit() for char in password):
+                    print("Validation failed: Password does not meet complexity requirements.")
                     return jsonify({
                         "success": False,
                         "message": "Password must be at least 8 characters and include a number"
                     }), 400
 
+                # Hash password
                 hashed_password = generate_password_hash(password)
-                user_data = {
+
+                # Save user to credentials.json
+                user_credential = {
                     "name": name,
                     "email": email,
                     "password": hashed_password,
                     "profile_pic": DEFAULT_PFP
                 }
+                existing_credentials = load_credentials()
+                existing_credentials.append(user_credential)
+                save_credentials_pretty(existing_credentials)
 
-                existing_users = load_credentials()
-                existing_users.append(user_data)
-                save_credentials_pretty(existing_users)
+                # Save user to users.json
+                if 'userData' in data:
+                    user_data = data['userData']
+                else:
+                    user_data = initialize_user_data(name, email)
 
+                if not os.path.exists(USER_DATA_FILE):
+                    users = [user_data]
+                else:
+                    with open(USER_DATA_FILE, 'r') as file:
+                        users = json.load(file)
+                    users.append(user_data)
+
+                with open(USER_DATA_FILE, 'w') as file:
+                    json.dump(users, file, indent=4)
+
+                # Respond with success and set cookies
                 resp = make_response(jsonify({"success": True, "message": "Account created successfully!"}))
                 resp.set_cookie(
                     'BBAIcurrentuser',
@@ -809,6 +1142,7 @@ def create_app() -> Flask:
                 return resp
 
             except Exception as e:
+                print(f"Server error: {e}")  # Debugging log
                 return jsonify({"success": False, "message": f"Server error: {e}"}), 500
 
         return render_template('signup.html')

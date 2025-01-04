@@ -122,93 +122,148 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const favicon = document.getElementById("favicon");
-            const appleIcon = document.getElementById("apple-touch-icon");
-            const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
+        const favicon = document.getElementById("favicon");
+        const appleIcon = document.getElementById("apple-touch-icon");
+        const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
 
-            const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
-            favicon.href = iconSrc;
-            appleIcon.href = iconSrc;
-        });
+        const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+        favicon.href = iconSrc;
+        appleIcon.href = iconSrc;
+    });
 
-        const signupForm = document.getElementById('signup-form');
-        const message = document.getElementById('message');
-        const passwordField = document.getElementById('password');
-        const confirmPasswordField = document.getElementById('confirm-password');
+    const signupForm = document.getElementById('signup-form');
+    const message = document.getElementById('message');
+    const passwordField = document.getElementById('password');
+    const confirmPasswordField = document.getElementById('confirm-password');
 
-        const toggleVisibility = (field, icon) => {
-            const isPassword = field.type === 'password';
-            field.type = isPassword ? 'text' : 'password';
-            icon.classList.toggle('bi-eye-slash', !isPassword);
-            icon.classList.toggle('bi-eye', isPassword);
-            // Change color of the eye icon based on visibility state
-            icon.style.color = isPassword ? 'var(--accent-color)' : ''; 
-        };
+    // Toggle password visibility
+    const toggleVisibility = (field, icon) => {
+        const isPassword = field.type === 'password';
+        field.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('bi-eye-slash', !isPassword);
+        icon.classList.toggle('bi-eye', isPassword);
+        icon.style.color = isPassword ? 'var(--accent-color)' : '';
+    };
 
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const password = passwordField.value.trim();
-            const confirmPassword = confirmPasswordField.value.trim();
+    // Validate email format
+    const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-            if (!validateEmail(email)) return showMessage('Invalid email format.', 'error');
-            if (password.length < 8 || !/\d/.test(password)) {
-                return showMessage('Password must be at least 8 characters long & contain a number.', 'error');
+    // Display success or error messages
+    const showMessage = (text, type) => {
+        message.textContent = text;
+        message.className = type === 'error' ? 'error-message' : 'success-message';
+    };
+
+    // Validate form fields
+    const validateFields = (name, email, password, confirmPassword) => {
+        if (!name) {
+            showMessage('Name cannot be empty.', 'error');
+            return false;
+        }
+        if (!validateEmail(email)) {
+            showMessage('Invalid email format.', 'error');
+            return false;
+        }
+        if (password.length < 8 || !/\d/.test(password)) {
+            showMessage('Password must be at least 8 characters long & contain a number.', 'error');
+            return false;
+        }
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match.', 'error');
+            return false;
+        }
+        return true;
+    };
+
+    // Handle form submission
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = passwordField.value.trim();
+        const confirmPassword = confirmPasswordField.value.trim();
+
+        if (!validateFields(name, email, password, confirmPassword)) return;
+
+        try {
+            // Check if the email already exists
+            const emailCheck = await fetch('/check-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const { exists } = await emailCheck.json();
+            if (exists) {
+                showMessage('Email already exists.', 'error');
+                return;
             }
-            if (password !== confirmPassword) return showMessage('Passwords do not match.', 'error');
 
-            try {
-                const emailCheck = await fetch('/check-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                const { exists } = await emailCheck.json();
-                if (exists) return showMessage('Email already exists.', 'error');
+            // Prepare payload for signup
+            const dateOfSignUp = new Date().toLocaleDateString('en-GB'); // DD/MM/YYYY format
+            const userData = {
+                "Full Name": name,
+                "profile_pic": "default.png",
+                "about": "",
+                "DOB": "",
+                "Occupation": "",
+                "Current Course": "",
+                "Nationality": "",
+                "Mobile Number": "",
+                "Email": email,
+                "Member Since": dateOfSignUp,
+                "Height": "",
+                "Weight": "",
+                "Target_weight": "",
+                "Favourite Food": "",
+                "Favourite Restaurant": "",
+                "Vegetarian": 0,
+                "Nut Allergy": 0,
+                "Gluten Allergy": 0,
+                "Social Links": {
+                    "Instagram": "https://instagram.com/",
+                    "Facebook": "https://facebook.com/",
+                    "Twitter": "https://x.com/",
+                    "Threads": "https://www.threads.net/"
+                },
+                "Disliked Food": [],
+                "Liked Food": []
+            };
 
-                const response = await fetch('/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        password,
-                        confirmPassword // Include this explicitly in the payload
-                    })
-                });
+            // Save credentials and initialize users.json
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    confirmPassword,
+                    userData
+                })
+            });
 
-                const { success, message: serverMessage } = await response.json();
+            const { success, message: serverMessage } = await response.json();
 
-                if (success) {
-                    // Store the user's name in localStorage
-                    localStorage.setItem('BBAIcurrentuser', name);
-                    showMessage('Account created successfully! Redirecting...', 'success');
-                    setTimeout(() => window.location.href = "/dashboard", 2000);
-                } else {
-                    showMessage(serverMessage || 'Signup failed.', 'error');
-                }
-            } catch (error) {
-                showMessage('An error occurred. Please try again later.', 'error');
+            if (success) {
+                localStorage.setItem('BBAIcurrentuser', name); // Store user's name in localStorage
+                showMessage('Account created successfully! Redirecting...', 'success');
+                setTimeout(() => window.location.href = "/my-profile", 2000);
+            } else {
+                showMessage(serverMessage || 'Signup failed.', 'error');
             }
-        });
+        } catch (error) {
+            console.error('Error during signup:', error);
+            showMessage('An error occurred. Please try again later.', 'error');
+        }
+    });
 
-        const showMessage = (text, type) => {
-            message.textContent = text;
-            message.className = type === 'error' ? 'error-message' : 'success-message';
-        };
-
-        const validateEmail = (email) => {
-            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return regex.test(email);
-        };
-
-        document.getElementById('toggle-password').addEventListener('click', () => {
-            toggleVisibility(passwordField, document.getElementById('toggle-password'));
-        });
-        document.getElementById('toggle-confirm-password').addEventListener('click', () => {
-            toggleVisibility(confirmPasswordField, document.getElementById('toggle-confirm-password'));
-        });
+    // Add toggle functionality for password visibility
+    document.getElementById('toggle-password').addEventListener('click', () => {
+        toggleVisibility(passwordField, document.getElementById('toggle-password'));
+    });
+    document.getElementById('toggle-confirm-password').addEventListener('click', () => {
+        toggleVisibility(confirmPasswordField, document.getElementById('toggle-confirm-password'));
+    });
     </script>
       <!-- Template JS File -->
   <script src="assets/js/main.js"></script>

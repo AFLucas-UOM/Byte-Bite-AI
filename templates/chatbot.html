@@ -219,7 +219,7 @@
           flex-direction: column;
           padding: 20px 0px;
           background-color: white;
-          height: calc(62vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
+          height: calc(56vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
           position: relative;
           overflow: hidden; /* Prevents the chatbox itself from growing */
           width: 110%;
@@ -822,10 +822,28 @@ Additionally, if a user specifically requests something to eat, ignore all previ
   // Call requestMicrophonePermission to check permission when the page loads
   requestMicrophonePermission();
 </script>
-
+  <!-- Chatbot Section -->
+<section aria-labelledby="ar-view-title" style="z-index: 999999999 !important;">
+  <div id="info-area" style="display: none; margin-bottom: 0;">
+      <div class="info-group">
+        <h2>About BB-AI's Chatbot</h2>
+        <p>
+          The <span class="highlight">BB-AI's Chatbot</span> is your go-to assistant for quick answers on healthy eating, the BB-AI system, or Campus Hub outlets, offering personalized support whenever you need it.
+        </p>
+        <p>
+          Powered by <a href="https://ollama.com" target="_blank" class="bold-link"><b>&copy; Ollama</b></a> using the <a href="https://ollama.com/library/orca-mini" target="_blank" class="bold-link"><b>&copy; Orca-Mini</b></a> model.
+        </p>          
+      </div>
+  </div>    
+</section>
   </main><!-- End #main -->
   
   <!-- ======= Footer ======= -->
+  <footer style="position: relative; display: flex; justify-content: center; align-items: center; width: auto; bottom: -50px !important;" id="footer" role="contentinfo">
+    <p style="margin: 0;">
+      <a id="info-button" href="javascript:void(0)" onclick="toggleInfo()">Click here to find out more about this page</a>
+    </p>
+  </footer>
   <footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
     <div class="credits">
       Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
@@ -868,5 +886,6 @@ Additionally, if a user specifically requests something to eat, ignore all previ
   <script src="assets/js/main.js"></script>
   <script src="assets2/js/main.js"></script>
   <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
 </body>
 </html>
