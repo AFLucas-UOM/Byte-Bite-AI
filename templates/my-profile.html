@@ -465,13 +465,54 @@
                                     
                     <!-- Full Name -->
                     <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Full Name</label>
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Full Name
+                      </label>
                       <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="{{ user_data.get('Full Name', '') }}" 
+                        <input name="fullName" type="text" class="form-control" id="fullName" 
+                              value="{{ user_data.get('Full Name', '') }}" 
                               oninput="validateFullName(this)" required>
-                        <small id="fullNameError" class="text-danger d-none">Please enter a valid name without numbers or special characters.</small>
+                        <small id="fullNameError" class="text-danger d-none"></small>
                       </div>
                     </div>
+
+                    <script>
+                      function validateFullName(input) {
+                        const fullNameError = document.getElementById("fullNameError");
+
+                        // Regular expression to allow only letters, spaces, hyphens, and apostrophes
+                        const validNamePattern = /^[A-Za-z]+([A-Za-z\s'-]*)[A-Za-z]+$/;
+
+                        // Trim input to prevent unnecessary leading or trailing spaces
+                        const trimmedValue = input.value.trim();
+
+                        if (trimmedValue === "") {
+                          // Check for empty input
+                          fullNameError.textContent = "Name cannot be empty.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else if (!validNamePattern.test(trimmedValue)) {
+                          // Check for invalid characters
+                          fullNameError.textContent =
+                            "Name must not contain any special characters or numbers.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else if (/\s{2,}/.test(trimmedValue)) {
+                          // Check for multiple consecutive spaces
+                          fullNameError.textContent = "Name cannot have multiple consecutive spaces.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else {
+                          // If valid
+                          fullNameError.classList.add("d-none");
+                          input.classList.remove("is-invalid");
+                          input.classList.add("is-valid");
+                        }
+                      }
+                    </script>
 
                     <!-- About -->
                     <div class="row mb-3">
@@ -931,8 +972,72 @@
 
                     <!-- Save Changes Button -->
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                      <button type="button" class="btn btn-primary" id="saveChangesButton">Save Changes</button>
                     </div>
+
+                    <script>
+                      document.getElementById('saveChangesButton').addEventListener('click', function () {
+                        // Collect original data from `user_data`
+                        const originalData = {
+                          fullName: "{{ user_data.get('Full Name', '') }}",
+                          about: "{{ user_data.get('about', '') }}",
+                          dob: "{{ user_data.get('DOB', '') }}",
+                          occupation: "{{ user_data.get('Occupation', '') }}",
+                          currentCourse: "{{ user_data.get('Current Course', '') }}",
+                          nationality: "{{ user_data.get('Nationality', '') }}",
+                          mobileNumber: "{{ user_data.get('Mobile Number', '') }}",
+                          email: "{{ user_data.get('Email', '') }}",
+                          socialLinks: {
+                            instagram: "{{ user_data['Social Links'].get('Instagram', '') }}",
+                            facebook: "{{ user_data['Social Links'].get('Facebook', '') }}",
+                            twitter: "{{ user_data['Social Links'].get('Twitter', '') }}",
+                            threads: "{{ user_data['Social Links'].get('Threads', '') }}"
+                          }
+                        };
+
+                        // Collect new data from the form
+                        const newData = {
+                          fullName: document.getElementById('fullName').value.trim(),
+                          about: document.getElementById('about').value.trim(),
+                          dob: document.getElementById('dob').value.trim(),
+                          occupation: `${document.getElementById('occupation').value}${document.getElementById('customOccupation').value ? ' @ ' + document.getElementById('location').value : ''}`,
+                          currentCourse: document.getElementById('Job').value.trim(),
+                          nationality: document.getElementById('Country').value.trim(),
+                          mobileNumber: document.getElementById('MobileNumber').value.trim(),
+                          email: document.getElementById('Email').value.trim(),
+                          socialLinks: {
+                            instagram: `https://instagram.com/${document.getElementById('Instagram').value.trim()}`,
+                            facebook: `https://facebook.com/${document.getElementById('Facebook').value.trim()}`,
+                            twitter: `https://x.com/${document.getElementById('Twitter').value.trim()}`,
+                            threads: `https://www.threads.net/${document.getElementById('Threads').value.trim()}`
+                          }
+                        };
+
+                        // Check for changes between original and new data
+                        const hasChanges = JSON.stringify(originalData) !== JSON.stringify(newData);
+
+                        if (hasChanges) {
+                          // Send updated data to the backend
+                          fetch('/save-profile', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newData)
+                          })
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data.success) {
+                                alert('Profile updated successfully!');
+                              } else {
+                                alert('Failed to update profile. Please try again.');
+                              }
+                            })
+                            .catch(error => console.error('Error:', error));
+                        } else {
+                          alert('No changes were made.');
+                        }
+                      });
+                    </script>
+
                   </form>
                   <style>
                     .btn-primary {

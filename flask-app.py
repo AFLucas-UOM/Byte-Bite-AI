@@ -585,16 +585,18 @@ def create_app() -> Flask:
     @app.route('/save-profile', methods=['POST'])
     @login_required
     def save_profile():
-        data = request.form
+        data = request.json  # Expecting JSON data from the front-end
 
-        # Verify Full Name
+        # Validation: Verify Full Name
         full_name = data.get('fullName', '').strip()
         if not full_name or not full_name.replace(" ", "").isalpha():
-            return jsonify({"success": False, "message": "Invalid full name. Only letters and spaces allowed."})
+            return jsonify({"success": False, "message": "Invalid full name. Only letters and spaces allowed."}), 400
 
-        # Sanitize and Verify About Section
-        about = data.get('about', '').strip().lower()
-        forbidden_words =   [
+        # Validation: Verify "About" Section
+        about = data.get('about', '').strip()
+        if len(about) > 300:
+            return jsonify({"success": False, "message": "The 'About' section exceeds the 300-character limit."}), 400
+        forbidden_words = [
                             "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
                             "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
                             "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
@@ -631,20 +633,85 @@ def create_app() -> Flask:
                             "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
                             "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
                             "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
-                        ];  
-        if any(word in about for word in forbidden_words):
-            return jsonify({"success": False, "message": "The 'About' section contains inappropriate content."})
+                        ]
+        if any(word.lower() in about.lower() for word in forbidden_words):
+            return jsonify({"success": False, "message": "The 'About' section contains inappropriate content."}), 400
 
-        # If all validations pass, update user profile
+        # Validation: Verify Date of Birth and Age
+        dob = data.get('dob', '').strip()
+        if dob:
+            from datetime import datetime
+            try:
+                dob_date = datetime.strptime(dob, "%Y-%m-%d")
+                age = (datetime.now() - dob_date).days // 365
+                if age < 16:
+                    return jsonify({"success": False, "message": "You must be at least 16 years old to proceed."}), 400
+            except ValueError:
+                return jsonify({"success": False, "message": "Invalid date format for DOB."}), 400
+
+        # Validation: Verify Email
+        email = data.get('email', '').strip()
+        email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_regex, email):
+            return jsonify({"success": False, "message": "Invalid email address."}), 400
+
+        # Retrieve the current user
         current_user = get_current_user()
-        if current_user:
-            update_user_profile(current_user['email'], {
-                "Full Name": full_name,
-                "about": sanitize_input(about)
-            })
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
+
+        # Load the existing user profile from `user.json`
+        with open(USER_DATA_FILE, 'r') as file:
+            users = json.load(file)
+
+        user_profile = next((user for user in users if user['Email'] == current_user['email']), None)
+        if not user_profile:
+            return jsonify({"success": False, "message": "User profile not found."}), 404
+
+        # Prepare the updated profile
+        updated_profile = user_profile.copy()
+
+        # Update fields only if they change
+        if full_name != user_profile.get("Full Name", ""):
+            updated_profile["Full Name"] = full_name
+        if about != user_profile.get("about", ""):
+            updated_profile["about"] = sanitize_input(about)
+        if dob and dob != user_profile.get("DOB", ""):
+            dob_parts = dob.split("-")  # Convert YYYY-MM-DD to DD/MM/YYYY
+            updated_profile["DOB"] = f"{dob_parts[2]}/{dob_parts[1]}/{dob_parts[0]}"
+        occupation = f"{data.get('occupation', '')} @ {data.get('location', '').strip()}"
+        if occupation != user_profile.get("Occupation", ""):
+            updated_profile["Occupation"] = occupation
+        if data.get('currentCourse', '') != user_profile.get("Current Course", ""):
+            updated_profile["Current Course"] = data.get('currentCourse', '')
+        if data.get('nationality', '') != user_profile.get("Nationality", ""):
+            updated_profile["Nationality"] = data.get('nationality', '')
+        if data.get('mobileNumber', '') != user_profile.get("Mobile Number", ""):
+            updated_profile["Mobile Number"] = data.get('mobileNumber', '')
+        if email != user_profile.get("Email", ""):
+            updated_profile["Email"] = email
+
+        # Update social links only if provided
+        social_links = data.get('socialLinks', {})
+        updated_profile["Social Links"] = {
+            "Instagram": social_links.get("instagram", user_profile["Social Links"].get("Instagram", "")),
+            "Facebook": social_links.get("facebook", user_profile["Social Links"].get("Facebook", "")),
+            "Twitter": social_links.get("twitter", user_profile["Social Links"].get("Twitter", "")),
+            "Threads": social_links.get("threads", user_profile["Social Links"].get("Threads", ""))
+        }
+
+        # Save the profile only if there are changes
+        if updated_profile != user_profile:
+            for i, user in enumerate(users):
+                if user['Email'] == current_user['email']:
+                    users[i] = updated_profile
+                    break
+            with open(USER_DATA_FILE, 'w') as file:
+                json.dump(users, file, indent=4)
+
             return jsonify({"success": True, "message": "Profile updated successfully."})
 
-        return jsonify({"success": False, "message": "User not found."})
+        return jsonify({"success": True, "message": "No changes were made to the profile."})
 
     @app.route('/in-dev')
     def in_dev():
