@@ -840,6 +840,53 @@ def create_app() -> Flask:
 
         return jsonify({"success": True, "message": "No changes were made to the settings."})
 
+    @app.route('/change-password', methods=['POST'])
+    @login_required
+    def change_password():
+        data = request.json  # Expecting JSON data from the front-end
+
+        # Retrieve the current user
+        current_user = get_current_user()
+        if not current_user:
+            return jsonify({"success": False, "message": "User not found."}), 403
+
+        # Load credentials from `credentials.json`
+        with open(CREDENTIALS_FILE, 'r') as cred_file:
+            credentials = json.load(cred_file)
+
+        # Find the user's credentials
+        user_cred = next((cred for cred in credentials if cred['email'] == current_user['email']), None)
+        if not user_cred:
+            return jsonify({"success": False, "message": "User credentials not found."}), 404
+
+        # Validate current password
+        current_password = data.get('currentPassword', '').strip()
+        if not check_password_hash(user_cred['password'], current_password):
+            return jsonify({"success": False, "message": "Current password is incorrect."}), 400
+
+        # Validate new password and confirmation
+        new_password = data.get('newPassword', '').strip()
+        confirm_password = data.get('confirmPassword', '').strip()
+
+        if not new_password or not confirm_password:
+            return jsonify({"success": False, "message": "New password and confirmation are required."}), 400
+
+        if new_password != confirm_password:
+            return jsonify({"success": False, "message": "New password and confirmation do not match."}), 400
+
+        if len(new_password) < 8 or not any(char.isdigit() for char in new_password):
+            return jsonify({"success": False, "message": "Password must be at least 8 characters long and contain at least one number."}), 400
+
+        # Hash and update the new password
+        hashed_password = generate_password_hash(new_password)
+        user_cred['password'] = hashed_password
+
+        # Save updated credentials
+        with open(CREDENTIALS_FILE, 'w') as cred_file:
+            json.dump(credentials, cred_file, indent=4)
+
+        return jsonify({"success": True, "message": "Password changed successfully."})
+
     @app.route('/in-dev')
     def in_dev():
         return render_template('in-dev.html')
