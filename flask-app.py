@@ -365,6 +365,52 @@ def create_app() -> Flask:
             except Exception as e:
                 return jsonify({"success": False, "message": f"Error updating profile: {e}"}), 500
         return jsonify({"success": False, "message": "User not authenticated."}), 403
+    
+    @app.route('/update_orders', methods=['POST'])
+    def update_orders():
+        try:
+            # Get the updated orders data from the request
+            order_data = request.get_json()
+
+            # Path to the orders.json file
+            orders_file = './static/json/orders.json'
+
+            # Retrieve the current user's name from the request
+            current_user_name = order_data.get('currentUserName')  # From the client-side request
+
+            # Retrieve the recommendation data (dish, restaurant, price)
+            dish_name = order_data.get('dishName')
+            restaurant_name = order_data.get('restaurantName')
+            price = order_data.get('price')
+
+            # Get today's date in the format "dd/mm/yyyy"
+            today_date = datetime.today().strftime('%d/%m/%Y')
+
+            # Construct the order object
+            new_order = {
+                "Date": today_date,
+                "Name of dish": dish_name,
+                "Restaurant": restaurant_name,
+                "Price": price,
+                "userName": current_user_name
+            }
+
+            # Read the existing orders data
+            with open(orders_file, 'r') as file:
+                orders_data = json.load(file)
+
+            # Add the new order to the orders list
+            orders_data.append(new_order)
+
+            # Save the updated orders data back to the JSON file
+            with open(orders_file, 'w') as file:
+                json.dump(orders_data, file, indent=4)
+
+            return jsonify({"status": "success"}), 200
+        except Exception as e:
+            print(f"Error: {e}")
+            return jsonify({"status": "error", "message": str(e)}), 500
+
 
     def update_user_profile(email, updates):
         """
