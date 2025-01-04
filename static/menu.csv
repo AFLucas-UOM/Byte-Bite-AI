@@ -1,26 +1,26 @@
 Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Is Vegetarian?,Has Gluten?,Has Nuts?
 Hamburger,BurgerKing,Burger,€1.85,"1,050.00",112.00,No,Yes,No
-Chicken Supreme,BurgerKing,Burger,€6.70,"2,480.00",217.00,No,Yes,No
-Double Steakhouse ,BurgerKing,Burger,€10.60,"4,380.00",380.00,No,Yes,No
-Whopper,BurgerKing,Burger,€6.85,"2,565.00",291.00,No,Yes,No
-Whopper Cheese,BurgerKing,Burger,€7.50,"2,889.00",312.00,No,Yes,No
-Big King,BurgerKing,Burger,€5.30,"1,286.00",213.00,No,Yes,No
-Double Cheese Bacon,BurgerKing,Burger,€5.95,"1,932.00",207.00,No,Yes,No
-Whopper Jr.,BurgerKing,Burger,€4.60,"1,367.00",157.00,No,Yes,No
-Whopper Jr. Cheese,BurgerKing,Burger,€5.25,"1,527.00",168.00,No,Yes,No
+Chicken Supreme Burger,BurgerKing,Burger,€6.70,"2,480.00",217.00,No,Yes,No
+Double Steakhouse Burger,BurgerKing,Burger,€10.60,"4,380.00",380.00,No,Yes,No
+Whopper Burger,BurgerKing,Burger,€6.85,"2,565.00",291.00,No,Yes,No
+Whopper Cheese Burger,BurgerKing,Burger,€7.50,"2,889.00",312.00,No,Yes,No
+Big King Burger,BurgerKing,Burger,€5.30,"1,286.00",213.00,No,Yes,No
+Double Cheese Bacon Burger,BurgerKing,Burger,€5.95,"1,932.00",207.00,No,Yes,No
+Whopper Jr. Burger,BurgerKing,Burger,€4.60,"1,367.00",157.00,No,Yes,No
+Whopper Jr. Cheese Burger,BurgerKing,Burger,€5.25,"1,527.00",168.00,No,Yes,No
 Cheeseburger,BurgerKing,Burger,€2.35,"1,210.00",123.00,No,Yes,No
 BBQ Beef Wrap,BurgerKing,Wrap,€6.85,"2,434.00",231.00,No,Yes,No
-Gooey Cheddar King,BurgerKing,Burger,€13.10,"4,520.00",398.00,No,Yes,No
-Chicken Supreme Cheese,BurgerKing,Burger,€7.35,"2,803.00",240.00,No,Yes,No
-Crispy Chicken,BurgerKing,Burger,€5.65,"1,814.00",158.00,No,Yes,No
-Crispy Chicken Cheese,BurgerKing,Burger,€6.30,"1,974.00",170.00,No,Yes,No
+Gooey Cheddar King Burger,BurgerKing,Burger,€13.10,"4,520.00",398.00,No,Yes,No
+Chicken Supreme Cheese Burger,BurgerKing,Burger,€7.35,"2,803.00",240.00,No,Yes,No
+Crispy Chicken Burger,BurgerKing,Burger,€5.65,"1,814.00",158.00,No,Yes,No
+Crispy Chicken Cheese Burger,BurgerKing,Burger,€6.30,"1,974.00",170.00,No,Yes,No
 Crispy Chicken Wrap,BurgerKing,Wrap,€6.10,"2,208.00",215.00,No,Yes,No
-Chicken Cheddar King,BurgerKing,Burger,€10.50,"3,510.00",326.00,No,Yes,No
-King Fish,BurgerKing,Burger,€5.50,"2,032.00",179.00,No,Yes,No
-King Fish Cheese,BurgerKing,Burger,€6.15,"2,191.00",191.00,No,Yes,No
+Chicken Cheddar King Burger,BurgerKing,Burger,€10.50,"3,510.00",326.00,No,Yes,No
+King Fish Burger,BurgerKing,Burger,€5.50,"2,032.00",179.00,No,Yes,No
+King Fish Cheese Burger,BurgerKing,Burger,€6.15,"2,191.00",191.00,No,Yes,No
 Crunchy Chicken Salad,BurgerKing,Salad,€7.60,"1,063.00",318.00,No,No,No
 Garden Salad,BurgerKing,Salad,€5.75,225.00,240.00,Yes,No,No
-Plant-Based Whopper,BurgerKing,Burger,€6.85,"2,451.00",293.00,Yes,No,No
+Plant-Based Whopper Burger,BurgerKing,Burger,€6.85,"2,451.00",293.00,Yes,No,No
 Chicken Fries,BurgerKing,Snack,€3.95,726.00,72.00,No,Yes,No
 Fries,BurgerKing,Snack,€3.30,"1,331.00",116.00,No,Yes,No
 Chicken Nuggets,BurgerKing,Snack,€4.90,"1,035.00",102.00,No,Yes,No
@@ -43,7 +43,7 @@ Jalapeno Cream Cheese Poppers,PizzaHut,Snack,€5.60,"1,300.00",120.00,Yes,Yes,N
 Vegetable Lasagna,PizzaHut,Pasta,€10.00,"1,020.00",300.00,Yes,Yes,No
 Pizza Margherita,PizzaHut,Pizza,€8.50,"5,400.00",750.00,Yes,Yes,No
 Pizza BBQ Chicken,PizzaHut,Pizza,€13.00,"6,200.00",850.00,No,Yes,No
-Gluten Free Hawaiian,PizzaHut,Pizza,€10.10,"5,440.00",760.00,Yes,No,No
+Gluten Free Hawaiian Pizza,PizzaHut,Pizza,€10.10,"5,440.00",760.00,Yes,No,No
 Al Funghi,PizzaHut,Pizza,€9.75,"5,300.00",750.00,Yes,Yes,No
 Pepperoni Lovers,PizzaHut,Pizza,€9.75,"6,400.00",800.00,No,Yes,No
 Farmhouse,PizzaHut,Pizza,€9.75,"5,800.00",770.00,No,Yes,No
@@ -52,13 +52,13 @@ Garden Lovers,PizzaHut,Pizza,€9.75,"5,100.00",740.00,Yes,Yes,No
 Hot n'Zesty,PizzaHut,Pizza,€9.75,"6,200.00",780.00,No,Yes,No
 Capricciosa,PizzaHut,Pizza,€11.00,"5,900.00",770.00,No,Yes,No
 Deep Blue,PizzaHut,Pizza,€11.00,"6,000.00",760.00,No,Yes,No
-Supreme,PizzaHut,Pizza,€13.00,"6,300.00",800.00,No,Yes,No
+Supreme Pizza,PizzaHut,Pizza,€13.00,"6,300.00",800.00,No,Yes,No
 Chicken Supreme,PizzaHut,Pizza,€13.00,"6,100.00",780.00,No,Yes,No
 Meat Lovers,PizzaHut,Pizza,€13.00,"6,800.00",810.00,No,Yes,No
 Super Supreme,PizzaHut,Pizza,€13.90,"7,000.00",820.00,No,Yes,No
 Bajd u Bacon,PizzaHut,Pizza,€9.75,"5,700.00",770.00,No,Yes,No
 BBQ Lovers,PizzaHut,Pizza,€13.00,"6,500.00",800.00,No,Yes,No
-Havana,CafeCuba,Burger,€17.95,"4,180.00",400.00,No,Yes,No
+Havana Burger,CafeCuba,Burger,€17.95,"4,180.00",400.00,No,Yes,No
 Vegetarian Wrap,CafeCuba,Wrap,€8.75,"1,500.00",260.00,Yes,Yes,No
 Chicken and Cucumber Wrap,CafeCuba,Wrap,€8.95,"1,505.00",283.00,No,Yes,No
 Chicken Fajita Wrap,CafeCuba,Wrap,€8.95,"1,600.00",300.00,No,Yes,No
@@ -88,13 +88,13 @@ Ravioli Porchini,CafeCuba,Pasta,€14.75,"2,100.00",350.00,Yes,Yes,No
 Rigatoni Beef Ragu,CafeCuba,Pasta,€15.75,"2,400.00",400.00,No,Yes,No
 Spaghetti All' Amatriciana,CafeCuba,Pasta,€13.95,"2,200.00",350.00,No,Yes,No
 Risotto Nduja,CafeCuba,Pasta,€15.75,"2,300.00",350.00,No,No,No
-La Berenjena,CafeCuba,Burger,€9.95,"2,300.00",320.00,Yes,Yes,No
-Barbacao,CafeCuba,Burger,€9.95,"3,000.00",400.00,No,Yes,No
-El Primero,CafeCuba,Burger,€9.95,"2,200.00",300.00,No,Yes,No
-Cuba,CafeCuba,Burger,€16.50,"3,200.00",420.00,No,Yes,No
-El Toro,CafeCuba,Burger,€16.50,"3,400.00",430.00,No,Yes,No
-El Pollo Supremo,CafeCuba,Burger,€15.95,"2,800.00",380.00,No,Yes,No
-Trinidad,CafeCuba,Burger,€17.95,"3,800.00",480.00,No,Yes,No
+La Berenjena Burger,CafeCuba,Burger,€9.95,"2,300.00",320.00,Yes,Yes,No
+Barbacao Burger,CafeCuba,Burger,€9.95,"3,000.00",400.00,No,Yes,No
+El Primero Burger,CafeCuba,Burger,€9.95,"2,200.00",300.00,No,Yes,No
+Cuba Burger,CafeCuba,Burger,€16.50,"3,200.00",420.00,No,Yes,No
+El Toro Burger,CafeCuba,Burger,€16.50,"3,400.00",430.00,No,Yes,No
+El Pollo Supremo Burger,CafeCuba,Burger,€15.95,"2,800.00",380.00,No,Yes,No
+Trinidad Burger,CafeCuba,Burger,€17.95,"3,800.00",480.00,No,Yes,No
 BBQ Pork Ribs,CafeCuba,Pork,€25.95,"5,200.00",600.00,No,Yes,No
 Pollo A La Plancha,CafeCuba,Chicken,€19.60,"3,900.00",500.00,No,No,No
 Beef Tagliata,CafeCuba,Beef,€27.50,"4,200.00",550.00,No,Yes,No
@@ -110,21 +110,21 @@ Panuzzo Biz Zejt,CafeCuba,Bread,€12.85,"2,700.00",380.00,No,Yes,No
 Focaccia Erasmo,CafeCuba,Pizza,€10.30,"4,200.00",320.00,Yes,Yes,No
 Focaccia Rosmarino,CafeCuba,Pizza,€8.95,"2,800.00",280.00,No,Yes,No
 Focaccia Caprese,CafeCuba,Pizza,€12.95,"3,600.00",300.00,Yes,Yes,No
-Margherita,CafeCuba,Pizza,€9.75,"3,500.00",300.00,Yes,Yes,No
-La Bufala,CafeCuba,Pizza,€13.95,"3,800.00",320.00,Yes,Yes,No
-Contadina,CafeCuba,Pizza,€13.95,"4,100.00",350.00,No,Yes,No
-La Pescatrice,CafeCuba,Pizza,€13.75,"4,000.00",330.00,No,Yes,No
-El Diablo,CafeCuba,Pizza,€13.75,"4,300.00",330.00,No,Yes,No
-Mortadelle E Pistacchio,CafeCuba,Pizza,€14.95,"4,500.00",340.00,No,Yes,Yes
-San Daniele,CafeCuba,Pizza,€14.35,"4,800.00",350.00,No,Yes,No
-La Rustica,CafeCuba,Pizza,€13.45,"4,200.00",340.00,No,Yes,No
-Capricciosa,CafeCuba,Pizza,€13.25,"4,300.00",350.00,No,Yes,No
-Annati,CafeCuba,Pizza,€13.95,"4,400.00",360.00,No,Yes,No
+Pizza Margherita,CafeCuba,Pizza,€9.75,"3,500.00",300.00,Yes,Yes,No
+Pizza La Bufala,CafeCuba,Pizza,€13.95,"3,800.00",320.00,Yes,Yes,No
+Pizza Contadina,CafeCuba,Pizza,€13.95,"4,100.00",350.00,No,Yes,No
+Pizza La Pescatrice,CafeCuba,Pizza,€13.75,"4,000.00",330.00,No,Yes,No
+Pizza El Diablo,CafeCuba,Pizza,€13.75,"4,300.00",330.00,No,Yes,No
+Pizza Mortadelle E Pistacchio,CafeCuba,Pizza,€14.95,"4,500.00",340.00,No,Yes,Yes
+Pizza San Daniele,CafeCuba,Pizza,€14.35,"4,800.00",350.00,No,Yes,No
+Pizza La Rustica,CafeCuba,Pizza,€13.45,"4,200.00",340.00,No,Yes,No
+Pizza Capricciosa,CafeCuba,Pizza,€13.25,"4,300.00",350.00,No,Yes,No
+Pizza Annati,CafeCuba,Pizza,€13.95,"4,400.00",360.00,No,Yes,No
 Pizza Pollo E Nachos,CafeCuba,Pizza,€12.95,"4,600.00",370.00,No,Yes,No
 Pizza Bianca Al Funghi,CafeCuba,Pizza,€13.75,"4,300.00",350.00,Yes,Yes,No
-La Nduja,CafeCuba,Pizza,€14.50,"4,700.00",360.00,No,Yes,No
-Speck E Patata,CafeCuba,Pizza,€13.50,"4,500.00",350.00,No,Yes,No
-Calzone Classico,CafeCuba,Pizza,€13.65,"4,800.00",,No,Yes,No
+Pizza La Nduja,CafeCuba,Pizza,€14.50,"4,700.00",360.00,No,Yes,No
+Pizza Speck E Patata,CafeCuba,Pizza,€13.50,"4,500.00",350.00,No,Yes,No
+Pizza Calzone Classico,CafeCuba,Pizza,€13.65,"4,800.00",,No,Yes,No
 Chick Overboard Salad,Boost,Salad,€8.50,"1,975.00",92.00,,Yes,No
 Tofu-Lish For You Wrap,Boost,Wrap,€7.75,"2,184.00",130.00,,Yes,No
 Egg-Cellent Bacon Delight,Boost,Bread,€7.05,"2,997.00",154.00,,No,No
