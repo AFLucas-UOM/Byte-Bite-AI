@@ -24,8 +24,15 @@
             "Twitter": "https://x.com/ThatGameGuy1234",
             "Threads": "https://www.threads.net/"
         },
-        "Disliked Food": [],
-        "Liked Food": []
+        "Disliked Food": [
+            "Classic Beef Burger",
+            "Potato Wedges",
+            "Portion Doner"
+        ],
+        "Liked Food": [
+            "Classic Beef Burger",
+            "Cuban Bun"
+        ]
     },
     {
         "Full Name": "Andrea Filiberto Lucas",

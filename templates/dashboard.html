@@ -217,24 +217,21 @@
           <div class="custom-modal-content">
             <!-- Modal Header -->
             <div class="custom-modal-header">
-              <h5>How the AI Recommends Items</h5>
+              <h5>Why Does BB-AI Recommend this item?</h5>
               <button id="close-modal" class="close-modal-btn">&times;</button>
             </div>
             <!-- Modal Body -->
             <div class="custom-modal-body">
-              <p>
-                We have recommended this item based on several factors:
-              </p>
-              <ul>
-                <li>The current time, ensuring the item is suitable for this moment. Snacks and lighter items will be recommended in the morning and evening.</li>
-                <li>Your preferences and allergies, as determined by your past interactions and choices.</li>
-                <li>Patterns from your recommendation history to refine our suggestions.</li>
-              </ul>
+              <p>Your personalised recommendation is based on the following details:</p>
+              <!-- This will be replaced dynamically by JavaScript -->
+              <p id="recommendation-explanation">Loading recommendation...</p>
             </div>
           </div>
         </div>
 
-        <!-- Styles for Modal -->
+
+
+        <!-- Modal Styling -->
         <style>
           .custom-modal {
             display: none;
@@ -248,7 +245,7 @@
             align-items: center;
             justify-content: center;
           }
-
+        
           .custom-modal-content {
             background: white;
             border-radius: 8px;
@@ -257,7 +254,7 @@
             max-width: 90%;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
-
+        
           .custom-modal-header {
             display: flex;
             justify-content: space-between;
@@ -266,181 +263,314 @@
             padding-bottom: 10px;
             margin-bottom: 20px;
           }
-
+        
           .custom-modal-header h5 {
             margin: 0;
           }
-
+        
           .close-modal-btn {
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
             color: #333;
+            transition: color 0.3s ease, background-color 0.3s ease; /* Transitioning both color and background */
           }
-
+        
+          /* Change background to white and the X to red on hover */
+          .close-modal-btn:hover {
+            background-color: white; /* Background becomes white */
+            color: red; /* X turns red */
+            border-radius: 50%; /* Optional: Makes the button circular */
+          }
+        
           .custom-modal-body {
             font-size: 1rem;
             line-height: 1.5;
           }
         </style>
 
-        <!-- Script for Modal -->
-        <script>
-          // Get modal elements
-          const modal = document.getElementById('custom-modal');
-          const openModalButton = document.getElementById('info-button');
-          const closeModalButton = document.getElementById('close-modal');
+<script>
+  // Get modal elements
+  const modal = document.getElementById('custom-modal');
+  const openModalButton = document.getElementById('info-button');
+  const closeModalButton = document.getElementById('close-modal');
 
-          // Open modal when info button is clicked
-          openModalButton.addEventListener('click', () => {
-            modal.style.display = 'flex';
-          });
+  // Function to calculate BMI based on weight and height
+  function calculateBMI(weight, height) {
+    if (weight && height) {
+      const heightInMeters = height; // Convert cm to meters
+      return weight / (heightInMeters * heightInMeters);
+    }
+    return null; // Return null if no weight or height is provided
+  }
 
-          // Close modal when close button is clicked
-          closeModalButton.addEventListener('click', () => {
-            modal.style.display = 'none';
-          });
+  // Function to get a recommendation explanation based on user data
+function getRecommendationExplanation(user) {
+  const explanations = [];
+  const currentTime = new Date().getHours(); // Get the current hour of the day
+  // Check if Favourite Food exists, is not undefined or empty
+  if (user["Favourite Food"] && user["Favourite Food"].trim() !== "") {
 
-          // Close modal when clicking outside the modal content
-          window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-              modal.style.display = 'none';
-            }
-          });
-        </script>
+    // If the current time is outside 9 AM–6 PM, only show time-based recommendations
+    if (currentTime < 9 || currentTime > 18) {
+      if (currentTime < 9) {
+        explanations.push("At this time, we recommend having a <strong>Morning Snack</strong>.");
+      } else {
+        explanations.push("At this time, we recommend having a <strong>Evening Snack</strong>.");
+      }
+      return explanations.join(" "); // Return only time-based explanations
+    }
+    // If within 9 AM–6 PM, proceed with other types of recommendations
+    if (user["Favourite Food"] && user["Favourite Food"].trim() !== "") {
+      explanations.push(`Your favourite food, which is <strong>${user["Favourite Food"]}</strong>. To update your favourite food, please go to My Profile -> AI Settings`);
+    }
+    // 3. Based on BMI
+    const bmi = calculateBMI(user["Weight"], user["Height"]);
+    if (bmi) {
+      if (bmi < 18.5) {
+        explanations.push("Your <strong>BMI</strong> is on the underweight side. To update your weight, please go to My Profile -> AI Settings");
+      } else if (bmi > 24.9) {
+        explanations.push("Your <strong>BMI</strong> is on the overweight side. To update your weight, please go to My Profile -> AI Settings");
+      }
+    }
+
+    // 4. Based on liked food
+    if (user["Liked Food"] && user["Liked Food"].length > 0) {
+      const likedFoodList = user["Liked Food"].join(", ");
+      explanations.push(`Your previously liked food: <strong>${likedFoodList}</strong>.`);
+    }
+
+    // 5. Based on disliked food
+    if (user["Disliked Food"] && user["Disliked Food"].length > 0) {
+      const dislikedFoodList = user["Disliked Food"].join(", ");
+      explanations.push(`Your previously disliked food: <strong>${dislikedFoodList}</strong>.`);
+    }
+
+    // Randomly select one explanation from the list
+    const randomExplanation = explanations[Math.floor(Math.random() * explanations.length)];
+
+    return randomExplanation;
+  } else {
+    // If Favourite Food is missing or empty, proceed with time-based recommendations
+    
+
+    if (currentTime < 9) {
+      explanations.push("At this time, we recommend having a <strong>Morning Snack</strong>. ");
+    } else if (currentTime > 18) {
+      explanations.push("At this time, we recommend having a <strong>Evening Snack</strong>.");
+    } else {
+      explanations.push("At this time, we recommend having a <strong>Full Meal</strong>.");
+    }
+    // Return the explanation
+    return explanations.join(" ");
+    
+  }
+  
+}
+
+
+  // Fetch user data and generate explanation
+  fetch('/static/json/users.json')
+    .then(response => response.json())
+    .then(userData => {
+      const userName = localStorage.getItem('BBAIcurrentuser'); // Get the current user from localStorage
+
+      // Find the user in the data based on 'Full Name'
+      const user = userData.find(u => u["Full Name"] === userName);
+
+      if (user) {
+        // Get random recommendation explanation
+        const recommendationExplanation = getRecommendationExplanation(user);
+
+        // Populate modal with the explanation
+        const modalBody = document.querySelector('.custom-modal-body');
+        modalBody.innerHTML = `
+          <p>Personalised Recommendation based on:</p>
+          <p>${recommendationExplanation}</p>
+        `;
+      } else {
+        console.error("User not found in users.json");
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching user data:", error);
+    });
+
+  // Open modal when info button is clicked
+  openModalButton.addEventListener('click', () => {
+    modal.style.display = 'flex';
+  });
+
+  // Close modal when close button is clicked
+  closeModalButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // Close modal when clicking outside the modal content
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+</script>
 
 
 
-        <script>
-          async function loadRecommendation() {
-          // Fetch the raw user data from localStorage
-          const rawUsersData = localStorage.getItem('BBAIcurrentuser');
-          let currentUserName = null;
 
-          // Check if rawUsersData exists and handle accordingly
-          if (rawUsersData) {
-              try {
-                  // Check if the data is JSON or plain string
-                  if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
-                      const parsedData = JSON.parse(rawUsersData);
-                      if (typeof parsedData === 'object' && 'name' in parsedData) {
-                          currentUserName = parsedData.name.trim();
-                      } else {
-                          console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
-                          currentUserName = rawUsersData.trim();
-                      }
+
+        
+
+
+<script>
+  async function loadRecommendation() {
+      // Fetch the raw user data from localStorage
+      const rawUsersData = localStorage.getItem('BBAIcurrentuser');
+      let currentUserName = null;
+
+      // Check if rawUsersData exists and handle accordingly
+      if (rawUsersData) {
+          try {
+              // Check if the data is JSON or plain string
+              if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
+                  const parsedData = JSON.parse(rawUsersData);
+                  if (typeof parsedData === 'object' && 'name' in parsedData) {
+                      currentUserName = parsedData.name.trim();
                   } else {
-                      // It's a plain string
+                      console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
                       currentUserName = rawUsersData.trim();
                   }
-              } catch (error) {
-                  console.error('Error parsing localStorage value:', error);
-                  return;
+              } else {
+                  // It's a plain string
+                  currentUserName = rawUsersData.trim();
               }
-          } else {
-              console.error('No user data found in localStorage');
+          } catch (error) {
+              console.error('Error parsing localStorage value:', error);
+              return;
+          }
+      } else {
+          console.error('No user data found in localStorage');
+          return;
+      }
+
+      fetch('/static/json/users.json')
+      .then(response => response.json())
+      .then(userData => {
+          // Find user based on Full Name
+          const user = userData.find(u => 
+              u["Full Name"].toLowerCase().trim() === currentUserName.toLowerCase()
+          );
+
+          if (!user) {
+              console.error("User not found in users.json.");
               return;
           }
 
-          fetch('/static/json/users.json')
-          .then(response => response.json())
-          .then(userData => {
-              // Find user based on Full Name
-              const user = userData.find(u => 
-                  u["Full Name"].toLowerCase().trim() === currentUserName.toLowerCase()
-              );
+          // Retrieve user's favourite food, weight, height, and disliked food
+          const userFavoriteFood = user["Favourite Food"];
+          let userWeight = parseFloat(user.Weight); // Weight in kilograms
+          let userHeight = parseFloat(user.Height); // Height in meters
+          const dislikedFood = user["Disliked Food"] || []; // User's disliked food list
 
-              if (!user) {
-                  console.error("User not found in users.json.");
-                  return;
-              }
+          // Check if weight and height are missing or invalid
+          if (isNaN(userWeight) || isNaN(userHeight) || userWeight === "" || userHeight === "") {
+              // Set missing or invalid values to 1
+              console.warn("Missing or invalid weight or height. Setting to 1.");
+              userWeight = 1;
+              userHeight = 1;
+          }
 
-              // Retrieve user's favourite food, weight, height, and disliked food
-              const userFavoriteFood = user["Favourite Food"];
-              const userWeight = parseFloat(user.Weight); // Weight in kilograms
-              const userHeight = parseFloat(user.Height); // Height converted to meters
-              const dislikedFood = user["Disliked Food"] || []; // User's disliked food list
+          // Calculate BMI
+          const bmi = userWeight / (userHeight ** 2);
+          console.log(`Calculated BMI for ${currentUserName}: ${bmi.toFixed(2)}`); // Debug log
+          fetch('/static/menu.csv')
+            .then(response => response.text())
+            .then(csvData => {
+                // Parse the CSV file
+                const parsedMenuData = Papa.parse(csvData, {
+                    header: true,
+                    skipEmptyLines: true
+                }).data;
 
-              if (!userWeight || !userHeight) {
-                  console.error("Missing or invalid weight or height for BMI calculation.");
-                  return;
-              }
+                console.log('Parsed Menu Data:', parsedMenuData); // Debug log
 
-              // Calculate BMI
-              const bmi = userWeight / (userHeight ** 2);
-              console.log(`Calculated BMI for ${currentUserName}: ${bmi.toFixed(2)}`); // Debug log
-              fetch('/static/menu.csv')
-                .then(response => response.text())
-                .then(csvData => {
-                    // Parse the CSV file
-                    const parsedMenuData = Papa.parse(csvData, {
-                        header: true,
-                        skipEmptyLines: true
-                    }).data;
+                // Clean and prepare data
+                parsedMenuData.forEach(row => {
+                    if (row["Calories (KJ)"]) {
+                        row["Calories (KJ)"] = parseFloat(row["Calories (KJ)"].replace(/,/g, ''));
+                    }
+                });
 
-                    console.log('Parsed Menu Data:', parsedMenuData); // Debug log
+                // Get the current time
+                const currentTime = new Date();
+                const currentHour = currentTime.getHours();
 
-                    // Clean and prepare data
-                    parsedMenuData.forEach(row => {
-                        if (row["Calories (KJ)"]) {
-                            row["Calories (KJ)"] = parseFloat(row["Calories (KJ)"].replace(/,/g, ''));
-                        }
-                    });
-
+                // Filter dishes by food type based on time (morning/evening restrictions)
+                let filteredByFoodType = [];
+                if (currentHour < 9 || currentHour > 18) {
+                    console.log("It's either morning or evening, recommending only Snack dishes.");
+                    filteredByFoodType = parsedMenuData.filter(row =>
+                        row.Type && row.Type.toLowerCase() === "snack"
+                    );
+                } else {
                     // Filter dishes by user's favourite food
                     const favouriteFoodType = user["Favourite Food"].toLowerCase(); // From users.json
-                    let filteredByFoodType = parsedMenuData.filter(row =>
+                    filteredByFoodType = parsedMenuData.filter(row =>
                         row.Type && row.Type.toLowerCase() === favouriteFoodType
                     );
+                }
 
-                    // Remove disliked dishes
+                // Remove disliked dishes
+                filteredByFoodType = filteredByFoodType.filter(row =>
+                    !dislikedFood.includes(row.Name)
+                );
+
+                // Apply additional filters based on user preferences
+                if (user["Vegetarian"]) {
+                    console.log('User is vegetarian, filtering out non-vegetarian dishes.');
                     filteredByFoodType = filteredByFoodType.filter(row =>
-                        !dislikedFood.includes(row.Name)
+                        row["Is Vegetarian?"] && row["Is Vegetarian?"].toLowerCase() === 'yes'
                     );
+                }
 
-                    // Apply additional filters based on user preferences
-                    if (user["Vegetarian"]) {
-                        console.log('User is vegetarian, filtering out non-vegetarian dishes.');
-                        filteredByFoodType = filteredByFoodType.filter(row =>
-                            row["Is Vegetarian?"] && row["Is Vegetarian?"].toLowerCase() === 'yes'
-                        );
+                if (user["Nut Allergy"]) {
+                    console.log('User has a nut allergy, filtering out dishes with nuts.');
+                    filteredByFoodType = filteredByFoodType.filter(row =>
+                        !(row["Has Nuts?"] && row["Has Nuts?"].toLowerCase() === 'yes')
+                    );
+                }
+
+                if (user["Gluten Allergy"]) {
+                    console.log('User has a gluten allergy, filtering out dishes with gluten.');
+                    filteredByFoodType = filteredByFoodType.filter(row =>
+                        !(row["Has Gluten?"] && row["Has Gluten?"].toLowerCase() === 'yes')
+                    );
+                }
+
+                // Duplicate liked food in the filtered list
+                const likedFood = user["Liked Food"] || [];
+                likedFood.forEach(likedDish => {
+                    // Find the liked dish in the filtered list
+                    const likedDishIndex = filteredByFoodType.findIndex(row => row.Name.toLowerCase() === likedDish.toLowerCase());
+
+                    // If the dish is found, duplicate it
+                    if (likedDishIndex !== -1) {
+                        // Duplicate the dish by pushing it to the list again
+                        filteredByFoodType.push(filteredByFoodType[likedDishIndex]);
                     }
+                });
 
-                    if (user["Nut Allergy"]) {
-                        console.log('User has a nut allergy, filtering out dishes with nuts.');
-                        filteredByFoodType = filteredByFoodType.filter(row =>
-                            !(row["Has Nuts?"] && row["Has Nuts?"].toLowerCase() === 'yes')
-                        );
-                    }
+                console.log('Filtered Dishes with Additional Criteria:', filteredByFoodType); // Debug log
 
-                    if (user["Gluten Allergy"]) {
-                        console.log('User has a gluten allergy, filtering out dishes with gluten.');
-                        filteredByFoodType = filteredByFoodType.filter(row =>
-                            !(row["Has Gluten?"] && row["Has Gluten?"].toLowerCase() === 'yes')
-                        );
-                    }
+                // Initialise recommendation pool
+                let recommendationPool = [];
 
-                    // Duplicate liked food in the filtered list
-                    const likedFood = user["Liked Food"] || [];
-                    likedFood.forEach(likedDish => {
-                        // Find the liked dish in the filtered list
-                        const likedDishIndex = filteredByFoodType.findIndex(row => row.Name.toLowerCase() === likedDish.toLowerCase());
-
-                        // If the dish is found, duplicate it
-                        if (likedDishIndex !== -1) {
-                            // Duplicate the dish by pushing it to the list again
-                            filteredByFoodType.push(filteredByFoodType[likedDishIndex]);
-                        }
-                    });
-
-                    console.log('Filtered Dishes with Additional Criteria:', filteredByFoodType); // Debug log
-
-
-
-                    // Initialise recommendation pool
-                    let recommendationPool = [];
-
+                // Check if the user's Favourite Food is empty
+                if (userFavoriteFood === "") {
+                    // If Favourite Food is empty, use the entire menu
+                    console.log('Favourite Food is empty, recommending from the entire menu.');
+                    recommendationPool = parsedMenuData;
+                } else {
                     // Determine recommendation based on BMI
                     if (bmi > 24.9) {
                         console.log('BMI > 24.9, filtering for dishes under 3000 KJ');
@@ -455,109 +585,113 @@
                     }
 
                     console.log('Filtered Dishes:', recommendationPool); // Debug log
+                }
 
-                    // Pick a random dish from the pool
-                    if (recommendationPool.length > 0) {
-                        const randomIndex = Math.floor(Math.random() * recommendationPool.length);
-                        const selectedDish = recommendationPool[randomIndex];  // Ensure the correct dish is selected
 
-                        // Update UI
-                        document.getElementById('recommendation-dish').textContent = `${selectedDish.Name}`;
-                        document.getElementById('location').textContent = `Location: ${selectedDish.Restaurant} |`;
-                        document.getElementById('kj').textContent = `${selectedDish["Calories (KJ)"]} KJ`;
+                // Pick a random dish from the pool
+                if (recommendationPool.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * recommendationPool.length);
+                    const selectedDish = recommendationPool[randomIndex];  // Ensure the correct dish is selected
 
-                        // When thumbs-up is clicked
-                        document.getElementById('thumbs-up').addEventListener('click', async () => {
-                            const updatedUser = { ...user };
+                    // Update UI
+                    document.getElementById('recommendation-dish').textContent = `${selectedDish.Name}`;
+                    document.getElementById('location').textContent = `Location: ${selectedDish.Restaurant} |`;
+                    document.getElementById('kj').textContent = `${selectedDish["Calories (KJ)"]} KJ`;
 
-                            // Ensure Liked Food is an array, or reset it if it's not
-                            if (!Array.isArray(updatedUser["Liked Food"])) {
-                                updatedUser["Liked Food"] = [];
+                    // When thumbs-up is clicked
+                    document.getElementById('thumbs-up').addEventListener('click', async () => {
+                        const updatedUser = { ...user };
+
+                        // Ensure Liked Food is an array, or reset it if it's not
+                        if (!Array.isArray(updatedUser["Liked Food"])) {
+                            updatedUser["Liked Food"] = [];
+                        }
+
+                        // Add to Liked Food if the dish isn't already in the array
+                        if (!updatedUser["Liked Food"].includes(selectedDish.Name)) {
+                            updatedUser["Liked Food"].push(selectedDish.Name);
+                        }
+
+                        // Make the API request to update the user data
+                        try {
+                            const response = await fetch('/update_user', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Liked Food": updatedUser["Liked Food"] }) // Only send Liked Food
+                            });
+
+                            if (response.ok) {
+                                document.getElementById('feedback-alert').style.display = 'block';
+                                document.getElementById('feedback-text').textContent = 'You liked the AI suggestion!';
+                            } else {
+                                console.error('Error updating Liked Food in users.json');
                             }
+                        } catch (error) {
+                            console.error('Error while sending thumbs-up data:', error);
+                        }
+                    });
 
-                            // Add to Liked Food if the dish isn't already in the array
-                            if (!updatedUser["Liked Food"].includes(selectedDish.Name)) {
-                                updatedUser["Liked Food"].push(selectedDish.Name);
+                    // When thumbs-down is clicked
+                    document.getElementById('thumbs-down').addEventListener('click', async () => {
+                        const updatedUser = { ...user };
+
+                        // Ensure Disliked Food is an array, or reset it if it's not
+                        if (!Array.isArray(updatedUser["Disliked Food"])) {
+                            updatedUser["Disliked Food"] = [];
+                        }
+
+                        // Add to Disliked Food if the dish isn't already in the array
+                        if (!updatedUser["Disliked Food"].includes(selectedDish.Name)) {
+                            updatedUser["Disliked Food"].push(selectedDish.Name);
+                        }
+
+                        // Make the API request to update the user data
+                        try {
+                            const response = await fetch('/update_user', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Disliked Food": updatedUser["Disliked Food"] }) // Only send Disliked Food
+                            });
+
+                            if (response.ok) {
+                                document.getElementById('feedback-alert').style.display = 'block';
+                                document.getElementById('feedback-text').textContent = 'You disliked the AI suggestion!';
+
+                                // Refresh the page after successfully updating the disliked food list
+                                location.reload(); // This will reload the page
+                            } else {
+                                console.error('Error updating Disliked Food in users.json');
                             }
+                        } catch (error) {
+                            console.error('Error while sending thumbs-down data:', error);
+                        }
+                    });
 
-                            // Make the API request to update the user data
-                            try {
-                                const response = await fetch('/update_user', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Liked Food": updatedUser["Liked Food"] }) // Only send Liked Food
-                                });
+                } else {
+                    console.error('No matching dishes found based on BMI, favourite food, and disliked food.');
+                    document.getElementById('recommendation-dish').textContent = 'No recommendation available';
+                }
 
-                                if (response.ok) {
-                                    document.getElementById('feedback-alert').style.display = 'block';
-                                    document.getElementById('feedback-text').textContent = 'You liked the AI suggestion!';
-                                } else {
-                                    console.error('Error updating Liked Food in users.json');
-                                }
-                            } catch (error) {
-                                console.error('Error while sending thumbs-up data:', error);
-                            }
-                        });
+            })
+            .catch(error => {
+                console.error('Error fetching or parsing menu.csv:', error);
+            });
 
-                        // When thumbs-down is clicked
-                        document.getElementById('thumbs-down').addEventListener('click', async () => {
-                            const updatedUser = { ...user };
+      })
+      .catch(error => {
+          console.error("Error fetching or parsing users.json file:", error);
+      });
+  }
 
-                            // Ensure Disliked Food is an array, or reset it if it's not
-                            if (!Array.isArray(updatedUser["Disliked Food"])) {
-                                updatedUser["Disliked Food"] = [];
-                            }
+  loadRecommendation();
+</script>
 
-                            // Add to Disliked Food if the dish isn't already in the array
-                            if (!updatedUser["Disliked Food"].includes(selectedDish.Name)) {
-                                updatedUser["Disliked Food"].push(selectedDish.Name);
-                            }
 
-                            // Make the API request to update the user data
-                            try {
-                                const response = await fetch('/update_user', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Disliked Food": updatedUser["Disliked Food"] }) // Only send Disliked Food
-                                });
 
-                                if (response.ok) {
-                                    document.getElementById('feedback-alert').style.display = 'block';
-                                    document.getElementById('feedback-text').textContent = 'You disliked the AI suggestion!';
-
-                                    // Refresh the page after successfully updating the disliked food list
-                                    location.reload(); // This will reload the page
-                                } else {
-                                    console.error('Error updating Disliked Food in users.json');
-                                }
-                            } catch (error) {
-                                console.error('Error while sending thumbs-down data:', error);
-                            }
-                        });
-
-                    } else {
-                        console.error('No matching dishes found based on BMI, favourite food, and disliked food.');
-                        document.getElementById('recommendation-dish').textContent = 'No recommendation available';
-                    }
-
-                })
-                .catch(error => {
-                    console.error('Error fetching or parsing menu.csv:', error);
-                });
-
-          })
-          .catch(error => {
-              console.error("Error fetching or parsing users.json file:", error);
-          });
-      }
-
-      loadRecommendation();
-
-        </script>
         
       
       
@@ -794,6 +928,11 @@
             
                     if (userData) {
                       // Update the weight
+                      console.log("WEIGHT WATCHER: ", userData.Weight);
+                      if (isNaN(userData.Weight)){
+                        userData.Weight = "XX";
+                      }
+                      console.log("USer weight is: ", userData.Weight);
                       document.getElementById('Weight').textContent = `${userData.Weight} kg`;
             
                       // Set the current date and time (hour and minute only, in the desired format) as the last update
@@ -873,37 +1012,59 @@
                       );
             
                       if (userData) {
-                        // Calculate BMI using the formula: BMI = weight / (height^2)
-                        const bmi = userData.Weight / (userData.Height * userData.Height);
+                        // Check if Weight and Height are not empty
+                        const weight = userData.Weight;
+                        const height = userData.Height;
             
-                        // Update the BMI value in the DOM
-                        const bmiElement = document.getElementById('bmi');
-                        if (bmiElement) {
-                          bmiElement.textContent = bmi.toFixed(2); // Round to 2 decimal places
+                        if (weight && height) {
+                          // Calculate BMI using the formula: BMI = weight / (height^2)
+                          const bmi = weight / (height * height);
+            
+                          // Update the BMI value in the DOM
+                          const bmiElement = document.getElementById('bmi');
+                          if (bmiElement) {
+                            bmiElement.textContent = bmi.toFixed(2); // Round to 2 decimal places
+                          } else {
+                            console.error('Element with id "bmi" not found in the DOM');
+                          }
+            
+                          // Set the current date and time as the last update
+                          const lastUpdate = new Date().toLocaleString('en-GB', {
+                            day: 'numeric',
+                            month: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                          })
+                            .replace('am', ' AM')
+                            .replace('pm', ' PM')
+                            .replace('AM', ' AM')
+                            .replace('PM', ' PM');
+            
+                          // Update the last update timestamp in the DOM
+                          const lastUpdateElement = document.getElementById('bmi-last-update');
+                          if (lastUpdateElement) {
+                            lastUpdateElement.textContent = `As of: ${lastUpdate}`;
+                          } else {
+                            console.error('Element with id "bmi-last-update" not found in the DOM');
+                          }
                         } else {
-                          console.error('Element with id "bmi" not found in the DOM');
-                        }
+                          // If either Weight or Height is empty, do not calculate BMI and set 'N/A' or leave placeholders
+                          const bmiElement = document.getElementById('bmi');
+                          if (bmiElement) {
+                            bmiElement.textContent = 'N/A'; // Set BMI as 'N/A' or keep the placeholder
+                          } else {
+                            console.error('Element with id "bmi" not found in the DOM');
+                          }
             
-                        // Set the current date and time as the last update
-                        const lastUpdate = new Date().toLocaleString('en-GB', {
-                          day: 'numeric',
-                          month: 'numeric',
-                          year: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          hour12: true,
-                        })
-                          .replace('am', ' AM')
-                          .replace('pm', ' PM')
-                          .replace('AM', ' AM')
-                          .replace('PM', ' PM');
-            
-                        // Update the last update timestamp in the DOM
-                        const lastUpdateElement = document.getElementById('bmi-last-update');
-                        if (lastUpdateElement) {
-                          lastUpdateElement.textContent = `As of: ${lastUpdate}`;
-                        } else {
-                          console.error('Element with id "bmi-last-update" not found in the DOM');
+                          // Set "As of: Not available" for last update if BMI is not available
+                          const lastUpdateElement = document.getElementById('bmi-last-update');
+                          if (lastUpdateElement) {
+                            lastUpdateElement.textContent = 'As of: XX-XX-XX XX:XX'; // Set placeholder text
+                          } else {
+                            console.error('Element with id "bmi-last-update" not found in the DOM');
+                          }
                         }
                       } else {
                         console.error('No matching user found in JSON data for name:', currentUserName);
@@ -915,6 +1076,8 @@
                 }
               });
             </script>
+            
+            
             
           
             
