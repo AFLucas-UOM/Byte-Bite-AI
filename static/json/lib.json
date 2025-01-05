@@ -1,10 +1,14 @@
 {
-    "Flask": "flask",
+   "Flask": "flask",
     "os": "os",
     "json": "json",
     "subprocess": "subprocess",
     "sys": "sys",
     "importlib": "importlib",
     "time": "time",
-    "logging": "logging"
-}
+    "logging": "logging",
+    "pandas": "pandas",
+    "chardet": "chardet",
+    "bleach": "bleach",
+    "werkzeug": "werkzeug"
+  }

@@ -15,6 +15,7 @@
         "Gluten Allergy": 0,
         "Height": 1.64,
         "Weight": 77.0,
+        "Weight_LastUpdate": "",
         "Target_weight": 60.0,
         "Favourite Food": "Burgers",
         "Favourite Restaurant": "Burger King",
@@ -47,6 +48,7 @@
         "Member Since": "02/10/2024",
         "Height": 1.64,
         "Weight": 68.0,
+        "Weight_LastUpdate": "05/01/2025, 12:46 PM",
         "Target_weight": 60.0,
         "Favourite Food": "Pasta",
         "Favourite Restaurant": "J'oli",
@@ -60,7 +62,9 @@
             "Threads": "https://www.threads.net/@aflucas26"
         },
         "Disliked Food": [],
-        "Liked Food": []
+        "Liked Food": [
+            "Ravioli Porchini"
+        ]
     },
     {
         "Full Name": "Alexandra Lucas",
@@ -75,6 +79,7 @@
         "Member Since": "04/01/2025",
         "Height": "",
         "Weight": "",
+        "Weight_LastUpdate": "",
         "Target_weight": "",
         "Favourite Food": "",
         "Favourite Restaurant": "",

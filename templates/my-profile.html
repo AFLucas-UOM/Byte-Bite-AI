@@ -304,25 +304,21 @@
                     <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
                   </div>
     
-                  <div class="row">
-                    <div class="col-lg-3 col-md-4 label" id="dynamicLabel" style="color: #212529 !important">
-                      {% if user_data.get('Occupation', '').startswith('Student') %}
-                        Current Course
-                      {% elif user_data.get('Occupation', '').startswith('Lecturer') %}
-                        Department
-                      {% else %}
-                        Occupation Details
-                      {% endif %}
+                  {% if user_data.get('Occupation', '').startswith('Student') or user_data.get('Occupation', '').startswith('Lecturer') %}
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 label" id="dynamicLabel" style="color: #212529 !important">
+                            {% if user_data.get('Occupation', '').startswith('Student') %}
+                                Current Course
+                            {% elif user_data.get('Occupation', '').startswith('Lecturer') %}
+                                Department
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-9 col-md-8" id="dynamicValue">
+                            {{ user_data.get('Current Course', '') }}
+                        </div>
                     </div>
-                    <div class="col-lg-9 col-md-8" id="dynamicValue">
-                      {% if user_data.get('Occupation', '').startswith('Student') or user_data.get('Occupation', '').startswith('Lecturer') %}
-                        {{ user_data['Current Course'] }}
-                      {% else %}
-                        {{ user_data['Occupation'] }}
-                      {% endif %}
-                    </div>
-                  </div>          
-                  
+                  {% endif %}
+                
                   <script>
                     function updateDynamicLabel() {
                       const occupation = "{{ user_data.get('Occupation', '') }}";
@@ -377,8 +373,30 @@
     
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Favorite Food</div>
-                    <div class="col-lg-9 col-md-8">{{ user_data['Favourite Food'] }}</div>
-                  </div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if user_data['Favourite Food'] == 'Burgers' %}
+                        🍔 Burgers
+                      {% elif user_data['Favourite Food'] == 'Pasta' %}
+                        🍝 Pasta
+                      {% elif user_data['Favourite Food'] == 'Pizza' %}
+                        🍕 Pizza
+                      {% elif user_data['Favourite Food'] == 'Chicken' %}
+                        🍗 Chicken
+                      {% elif user_data['Favourite Food'] == 'Salads' %}
+                        🥗 Salads
+                      {% elif user_data['Favourite Food'] == 'Wraps' %}
+                        🌯 Wraps
+                      {% elif user_data['Favourite Food'] == 'Sushi' %}
+                        🍣 Sushi
+                      {% elif user_data['Favourite Food'] == 'Bread' %}
+                        🥖 Bread
+                      {% elif user_data['Favourite Food'] == 'Smoothies' %}
+                        🥤 Smoothies
+                      {% else %}
+                        {{ user_data['Favourite Food'] }}
+                      {% endif %}
+                    </div>
+                  </div>                  
                 </div>
 
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
@@ -533,7 +551,7 @@
                           name="about" 
                           class="form-control" 
                           id="about" 
-                          style="height: 65px" 
+                          style="height: 85px" 
                           maxlength="300" 
                           oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
                         <small id="aboutError" class="text-danger d-none">Content must not contain harmful or hurtful language.</small>
@@ -685,58 +703,50 @@
                         });
                       });
                     </script>
-
+                    
                     <!-- Occupation -->
                     <div class="row mb-3">
-                      <label for="occupation" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Occupation</label>
+                      <label for="occupation" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Occupation
+                      </label>
                       <div class="col-md-8 col-lg-9">
-                        <div class="input-group">
-                          <!-- Dropdown for Occupation -->
-                          <select name="occupation" id="occupation" class="form-control" style="width: 10px !important" onchange="updateOccupationField()">
-                            <option value="Student" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Student' %}selected{% endif %}>Student</option>
-                            <option value="Lecturer" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Lecturer' %}selected{% endif %}>Lecturer</option>
-                            <option value="Staff" {% if user_data.get('Occupation', '').split(' @ ')[0] == 'Staff' %}selected{% endif %}>Staff</option>
+                        <div class="input-group position-relative">
+                          <!-- Occupation Dropdown -->
+                          <select
+                            name="occupation"
+                            id="occupation"
+                            class="form-control"
+                            style="width: auto; appearance: none; padding-right: 2rem;"
+                            onchange="updateOccupationField()"
+                          >
+                            <option
+                              value="Student @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Student @ University of Malta' %}selected{% endif %}
+                            >
+                              Student @ University of Malta
+                            </option>
+                            <option
+                              value="Lecturer @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Lecturer @ University of Malta' %}selected{% endif %}
+                            >
+                              Lecturer @ University of Malta
+                            </option>
+                            <option
+                              value="Staff @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Staff @ University of Malta' %}selected{% endif %}
+                            >
+                              Staff @ University of Malta
+                            </option>
+                            <option
+                              value="Staff @ Campus Hub"
+                              {% if user_data.get('Occupation') == 'Staff @ Campus Hub' %}selected{% endif %}
+                            >
+                              Staff @ Campus Hub
+                            </option>
                           </select>
-
-                          <!-- Custom Occupation Input -->
-                          <input name="customOccupation" type="text" class="form-control d-none" id="customOccupation" placeholder="Enter your occupation"
-                                value="{{ user_data.get('Occupation', '').split(' @ ')[0] if user_data.get('Occupation', '').split(' @ ')[0] not in ['Student', 'Lecturer', 'Staff'] else '' }}">
-
-                          <!-- Static '@' -->
-                          <span class="input-group-text" style="width: auto !important">@</span>
-
-                          <!-- Location Input -->
-                          <input name="location" type="text" class="form-control rounded-end" id="location" list="locations"
-                          placeholder="Enter location"
-                          value="{{ user_data.get('Occupation', '').split(' @ ')[1] if ' @ ' in user_data.get('Occupation', '') else '' }}">
-                          <datalist id="locations">
-                            <option value="University of Malta">
-                            <option value="Campus Hub">
-                          </datalist>
                         </div>
                       </div>
                     </div>
-
-                    <script>
-                      function updateOccupationField() {
-                        const occupationSelect = document.getElementById('occupation');
-                        const customOccupationInput = document.getElementById('customOccupation');
-
-                        if (occupationSelect.value === 'Other') {
-                          customOccupationInput.classList.remove('d-none');
-                          customOccupationInput.classList.add('d-inline');
-                        } else {
-                          customOccupationInput.classList.add('d-none');
-                          customOccupationInput.classList.remove('d-inline');
-                        }
-                      }
-
-                      // Ensure the correct visibility is set on page load
-                      document.addEventListener('DOMContentLoaded', () => {
-                        updateOccupationField();
-                      });
-                    </script>
-
 
                     <!-- Current Course or Department -->
                     <div id="dependentField" class="row mb-3 d-none">
@@ -749,40 +759,28 @@
                     <script>
                       function updateOccupationField() {
                         const occupationSelect = document.getElementById('occupation');
-                        const customOccupationField = document.getElementById('customOccupation');
                         const dependentField = document.getElementById('dependentField');
                         const dependentLabel = document.getElementById('dependentLabel');
                         const jobInput = document.getElementById('Job');
-                        const locationInput = document.getElementById('location');
                         const selectedOccupation = occupationSelect.value;
 
-                        // Show/hide custom occupation field
-                        if (selectedOccupation === 'Other') {
-                          customOccupationField.classList.remove('d-none');
-                          occupationSelect.classList.add('d-none');
-                          customOccupationField.value = '';
-                        } else {
-                          customOccupationField.classList.add('d-none');
-                          occupationSelect.classList.remove('d-none');
-                        }
+                        // Retrieve existing value for currentCourse or department
+                        const existingCourseOrDepartment = "{{ user_data.get('Current Course', '') }}";
 
-                        // Update Current Course or Department field based on occupation
-                        if (selectedOccupation === 'Student') {
+                        // Update and display the dependent field based on the selected occupation
+                        if (selectedOccupation === 'Student @ University of Malta') {
                           dependentField.classList.remove('d-none');
-                          dependentLabel.textContent = 'Current Course';
-                          jobInput.placeholder = 'Enter your current course';
-                        } else if (selectedOccupation === 'Lecturer') {
+                          dependentLabel.textContent = 'Course Detail';
+                          jobInput.placeholder = 'Enter your course details';
+                          jobInput.value = existingCourseOrDepartment || ''; // Display existing value if available
+                        } else if (selectedOccupation === 'Lecturer @ University of Malta') {
                           dependentField.classList.remove('d-none');
                           dependentLabel.textContent = 'Department';
                           jobInput.placeholder = 'Enter your department';
+                          jobInput.value = existingCourseOrDepartment || ''; // Display existing value if available
                         } else {
-                          dependentField.classList.add('d-none');
-                          jobInput.value = ''; // Clear the field
-                        }
-
-                        // Clear location input if Other is selected
-                        if (selectedOccupation === 'Other') {
-                          locationInput.value = '';
+                          dependentField.classList.add('d-none'); // Hide the field for other selections
+                          jobInput.value = existingCourseOrDepartment; // Retain the existing value
                         }
                       }
 
@@ -1010,7 +1008,7 @@
                           fullName: document.getElementById('fullName').value.trim(),
                           about: document.getElementById('about').value.trim(),
                           dob: document.getElementById('dob').value.trim(),
-                          occupation: `${document.getElementById('occupation').value}${document.getElementById('customOccupation').value ? ' @ ' + document.getElementById('location').value : ''}`,
+                          occupation: document.getElementById('occupation').value.trim(),
                           currentCourse: document.getElementById('Job').value.trim(),
                           nationality: document.getElementById('Country').value.trim(),
                           mobileNumber: document.getElementById('MobileNumber').value.trim(),
@@ -1088,19 +1086,18 @@
                           <select name="favouriteFood" id="favouriteFood" class="form-control" onchange="toggleCustomFoodField()" style="border-radius: 0.375rem;">
                             <!-- Placeholder Option -->
                             <option value="" disabled {% if not user_data.get('Favourite Food') %}selected{% endif %}>Select your favorite food</option>
-                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>Pasta</option>
-                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>Pizza</option>
-                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>Burgers</option>
-                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>Sushi</option>
-                            <option value="WarmBowls" {% if user_data.get('Favourite Food', '') == 'WarmBowls' %}selected{% endif %}>Warm Bowls</option>
-                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>Chicken</option>
-                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>Salads</option>
-                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>Wraps</option>
-                            <option value="Asian" {% if user_data.get('Favourite Food', '') == 'Asian' %}selected{% endif %}>Asian</option>
-                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>Smoothies</option>
-                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Asian', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
+                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>🍔 Burgers</option>
+                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>🍝 Pasta</option>
+                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>🍕 Pizza</option>
+                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>🍗 Chicken</option>
+                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>🥗 Salads</option>
+                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>🌯 Wraps</option>
+                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>🍣 Sushi</option>
+                            <option value="Bread" {% if user_data.get('Favourite Food', '') == 'Bread' %}selected{% endif %}>🥖 Bread</option>
+                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>🥤 Smoothies</option>
+                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
                           </select>
-                    
+                
                           <!-- Custom Food Input -->
                           <input 
                             name="customFood" 
@@ -1109,7 +1106,7 @@
                             id="customFood" 
                             placeholder="Enter your favorite food" 
                             style="width: 70%;" 
-                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Asian', 'Smoothies'] else '' }}">
+                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] else '' }}">
                         </div>
                       </div>
                     </div>
@@ -1132,12 +1129,12 @@
                           customFoodField.value = ''; // Clear custom input
                         }
                       }
-                    
                       // Initialize visibility of custom food field on page load
                       document.addEventListener('DOMContentLoaded', () => {
                         toggleCustomFoodField();
                       });
-                    </script>
+                    </script>         
+                   </form>
 
                     <!-- Favourite Restaurant -->
                     <div class="row mb-3">
@@ -1149,13 +1146,13 @@
                           <option value="" disabled {{ 'selected' if not user_data.get('Favourite Restaurant', '') else '' }}>
                             Select your favorite restaurant
                           </option>
-                          <option value="Burger King" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
+                          <option value="BurgerKing" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
                             Burger King
                           </option>
-                          <option value="Pizza Hut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
+                          <option value="PizzaHut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
                             Pizza Hut
                           </option>
-                          <option value="Cafe Cuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Cafe Cuba' else '' }}>
+                          <option value="CafeCuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'CafeCuba' else '' }}>
                             Cafe Cuba
                           </option>
                           <option value="Ottoman" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Ottoman' else '' }}>
@@ -1464,6 +1461,7 @@
                     <div class="text-center">
                       <button id="Save Changes AI Setting" type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
+
                     <script>
                       document.getElementById("Save Changes AI Setting").addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent form submission

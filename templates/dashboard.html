@@ -196,6 +196,30 @@
                 <button id="add-to-orders" class="btn btn-light" title="Add to Orders">
                   <i class="bi bi-plus-lg"></i>
                 </button>
+                <style>
+                  /* Styling for both buttons */
+                  #info-button, #add-to-orders {
+                    background-color: transparent !important; /* No background by default */
+                    border: none !important; /* Remove border */
+                    padding: 6px !important; /* Tighter padding for square shape */
+                    display: inline-flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                    border-radius: 6px !important; /* Slightly rounded edges */
+                    transition: background-color 0.2s ease !important; /* Smooth hover effect */
+                  }
+                
+                  /* Hover effect for both buttons */
+                  #info-button:hover, #add-to-orders:hover {
+                    background-color: #e9e8e88d !important; /* Light grey background on hover */
+                  }
+                
+                  /* Adjusting the icon inside */
+                  #info-button i, #add-to-orders i {
+                    font-size: 16px !important; /* Adjust icon size if needed */
+                    color: inherit !important; /* Icon color stays consistent */
+                  }
+                </style>                
               </h5>
 
               <div class="d-flex align-items-center">

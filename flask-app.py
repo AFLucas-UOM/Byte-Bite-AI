@@ -856,22 +856,28 @@ def create_app() -> Flask:
             dob_parts = dob.split("-")  # Convert YYYY-MM-DD to DD/MM/YYYY
             updated_profile["DOB"] = f"{dob_parts[2]}/{dob_parts[1]}/{dob_parts[0]}"
 
-        occupation = data.get('occupation', '').strip()
-        location = data.get('location', '').strip()
-        if occupation == "Other":
-            custom_occupation = data.get('customOccupation', '').strip()
-            if custom_occupation and location:
-                occupation_value = f"{custom_occupation} @ {location}"
-            else:
-                return jsonify({"success": False, "message": "Please provide both a custom occupation and location."}), 400
-        else:
-            occupation_value = f"{occupation} @ {location}" if occupation and location else user_profile.get("Occupation", "")
+        # Update Occupation and Current Course fields
+        new_occupation = data.get('occupation', '').strip()
+        current_course = data.get('currentCourse', '').strip()
 
-        if occupation_value != user_profile.get("Occupation", ""):
-            updated_profile["Occupation"] = occupation_value
+        # Update occupation only if it has changed
+        if new_occupation != user_profile.get("Occupation", ""):
+            updated_profile["Occupation"] = new_occupation
 
-        if data.get('currentCourse', '') != user_profile.get("Current Course", ""):
-            updated_profile["Current Course"] = data.get('currentCourse', '')
+            # Check if the new occupation supports 'currentCourse'
+            occupations_with_course = [
+                "Student @ University of Malta", 
+                "Lecturer @ University of Malta"
+            ]
+            
+            # If the new occupation doesn't support 'currentCourse', retain the existing value
+            if new_occupation not in occupations_with_course:
+                current_course = user_profile.get("Current Course", "")
+
+        # Update currentCourse only if it has changed and is still relevant
+        if current_course != user_profile.get("Current Course", ""):
+            updated_profile["Current Course"] = current_course
+
         if data.get('nationality', '') != user_profile.get("Nationality", ""):
             updated_profile["Nationality"] = data.get('nationality', '')
         if data.get('mobileNumber', '') != user_profile.get("Mobile Number", ""):
@@ -1029,6 +1035,9 @@ def create_app() -> Flask:
             except ValueError:
                 return jsonify({"success": False, "message": "Invalid height format."}), 400
 
+        # Update the last update time for weight
+        updated_profile['Weight_LastUpdate'] = datetime.now().strftime('%d/%m/%Y, %I:%M %p')
+
         # Save the profile only if there are changes
         if updated_profile != user_profile:
             for i, user in enumerate(users):
@@ -1041,6 +1050,7 @@ def create_app() -> Flask:
             return jsonify({"success": True, "message": "Settings updated successfully."})
 
         return jsonify({"success": True, "message": "No changes were made to the settings."})
+
 
     @app.route('/change-password', methods=['POST'])
     @login_required
@@ -1213,6 +1223,7 @@ def create_app() -> Flask:
             "Height": "",
             "Weight": "",
             "Target_weight": "",
+            "Weight_LastUpdate": "",
             "Favourite Food": "",
             "Favourite Restaurant": "",
             "Vegetarian": 0,
