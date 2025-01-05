@@ -1398,9 +1398,13 @@
                         .then(response => response.json())
                         .then(data => {
                           if (data.success) {
-                            const weightData = data.data.weight_data;
-                            const dateData = data.data.date_data;
-                    
+                            let weightData = data.data.weight_data;
+                            let dateData = data.data.date_data;
+                            
+                            // Only keep the last 15 entries
+                            weightData = weightData.slice(-15);
+                            dateData = dateData.slice(-15);
+
                             // Create chart data
                             new ApexCharts(document.querySelector("#reportsChart"), {
                               series: [{
