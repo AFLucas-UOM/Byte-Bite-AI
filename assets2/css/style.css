@@ -383,7 +383,12 @@ h6 {
 }
 
 .header-nav .nav-profile img {
-  max-height: 36px;
+  width: 36px; /* Fixed width for the image */
+  height: 36px; /* Fixed height for the image */
+  border-radius: 50%; /* Makes the image a perfect circle */
+  object-fit: cover; /* Ensures the image fills the circle */
+  overflow: hidden; /* Ensures no content spills out of the bounds */
+  margin-right: 7px;
 }
 
 .header-nav .nav-profile span {
@@ -714,16 +719,20 @@ h6 {
 }
 
 /*--------------------------------------------------------------
-# Profile Page - TO DO
+# Profile Page
 --------------------------------------------------------------*/
 .profile .profile-card img {
-  max-width: 120px;
+  width: 180px; /* Fixed width for the image */
+  height: 180px; /* Fixed height for the image */
+  border-radius: 50%; /* Makes the image a perfect circle */
+  object-fit: cover; /* Ensures the image fills the circle */
+  overflow: hidden; /* Ensures no content spills out of the bounds */
 }
 
 .profile .profile-card h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #2c384e;
+  color: #2c4e35;
   margin: 10px 0 0 0;
 }
 
@@ -734,14 +743,14 @@ h6 {
 .profile .profile-card .social-links a {
   font-size: 20px;
   display: inline-block;
-  color: rgba(1, 41, 112, 0.5);
+  color: #80B794;
   line-height: 0;
   margin-right: 10px;
   transition: 0.3s;
 }
 
 .profile .profile-card .social-links a:hover {
-  color: #012970;
+  color: var(--accent-color);
 }
 
 .profile .profile-overview .row {
@@ -764,7 +773,7 @@ h6 {
 }
 
 .profile .profile-edit img {
-  max-width: 120px;
+  max-width: 200px;
 }
 
 @media (max-width: 767px) {

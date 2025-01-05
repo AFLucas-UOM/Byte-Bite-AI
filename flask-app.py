@@ -85,10 +85,11 @@ CREDENTIALS_FILE = "static/json/credentials.json"
 USER_DATA_FILE = "static/json/users.json"
 ORDERS_FILE = "static/json/orders.json"
 WEIGHT_JSON_PATH = "static/json/weight.json"
+UPLOAD_FOLDER = 'static/img/PFPs'
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
 AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'heic', 'svg'}
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em']  # Basic text formatting
 ALLOWED_ATTRIBUTES = {}
@@ -320,29 +321,52 @@ def create_app() -> Flask:
             if current_user:
                 # Extract username and file format
                 username = current_user['name'].replace(" ", "").lower()
-                extension = file.filename.rsplit('.', 1)[-1]
-                filename = f"{username}.{extension}"
-                filepath = os.path.join('static/img/PFPs', filename)
+                extension = file.filename.rsplit('.', 1)[-1].lower()
                 
-                # Save file
+                if extension not in {'jpg', 'jpeg', 'png', 'gif'}:  # Validate file type
+                    return jsonify({'success': False, 'message': 'Invalid file type'})
+                
+                # Define new filename and filepath
+                filename = f"{username}.{extension}"
+                filepath = os.path.join(UPLOAD_FOLDER, filename)
+                
+                # Check if a previous profile picture exists and delete it
+                existing_pic = current_user.get('profile_pic', 'default.png')
+                if existing_pic != 'default.png':
+                    old_filepath = os.path.join(UPLOAD_FOLDER, existing_pic)
+                    if os.path.exists(old_filepath):
+                        os.remove(old_filepath)
+                
+                # Save new profile image
                 file.save(filepath)
                 
-                # Update user's profile picture in both JSON files
+                # Update user's profile picture in JSON or database
                 update_user_profile(current_user['email'], {'profile_pic': filename})
+                
                 return jsonify({'success': True, 'new_image_url': filepath})
         
-        # If no file provided, return failure with default profile image
-        return jsonify({'success': False, 'new_image_url': 'static/img/PFPs/default.png'})
-    
+        # If no file provided, return failure
+        return jsonify({'success': False, 'message': 'No file provided'})
+
     @app.route('/remove-profile-image', methods=['POST'])
     @login_required
     def remove_profile_image():
         current_user = get_current_user()
         if current_user:
-            # Reset profile picture to default in both JSON files
+            # Get current profile picture filename
+            current_pic = current_user.get('profile_pic', 'default.png')
+            
+            # Delete the existing profile picture (if it's not the default)
+            if current_pic != 'default.png':
+                current_filepath = os.path.join(UPLOAD_FOLDER, current_pic)
+                if os.path.exists(current_filepath):
+                    os.remove(current_filepath)
+            
+            # Reset profile picture to default in JSON or database
             update_user_profile(current_user['email'], {'profile_pic': 'default.png'})
-            return jsonify({'success': True})
-        return jsonify({'success': False})
+            return jsonify({'success': True, 'new_image_url': os.path.join(UPLOAD_FOLDER, 'default.png')})
+        
+        return jsonify({'success': False, 'message': 'User not authenticated'})
 
 
     @app.route('/update-profile', methods=['POST'])

@@ -1,7 +1,7 @@
 [
     {
         "Full Name": "Sean David Muscat",
-        "profile_pic": "default.png",
+        "profile_pic": "seandavidmuscat.jpeg",
         "about": "Yeet",
         "DOB": "21/05/2004",
         "Occupation": "Student @ University of Malta",
@@ -85,34 +85,6 @@
         "Favourite Restaurant": "CafeCuba",
         "Vegetarian": 0,
         "Nut Allergy": 1,
-        "Gluten Allergy": 0,
-        "Social Links": {
-            "Instagram": "https://instagram.com/",
-            "Facebook": "https://facebook.com/",
-            "Twitter": "https://x.com/",
-            "Threads": "https://www.threads.net/"
-        },
-        "Disliked Food": [],
-        "Liked Food": []
-    },
-    {
-        "Full Name": "John Pork",
-        "profile_pic": "default.png",
-        "about": "",
-        "DOB": "",
-        "Occupation": "",
-        "Current Course": "",
-        "Nationality": "",
-        "Mobile Number": "",
-        "Email": "JohnPork@isCalling.com",
-        "Member Since": "05/01/2025",
-        "Height": 1.65,
-        "Weight": 60.0,
-        "Target_weight": 60.0,
-        "Favourite Food": "",
-        "Favourite Restaurant": "",
-        "Vegetarian": 0,
-        "Nut Allergy": 0,
         "Gluten Allergy": 0,
         "Social Links": {
             "Instagram": "https://instagram.com/",
