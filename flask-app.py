@@ -12,7 +12,6 @@ from datetime import datetime, timedelta
 from functools import wraps
 from typing import Dict, Any, List, Optional
 import chardet
-import emoji
 
 import bleach
 from flask import (
@@ -727,9 +726,6 @@ def create_app() -> Flask:
             return render_template('ar-view.html', profile_pic=f"static/img/PFPs/{profile_pic}")
         return redirect(url_for('login'))
     
-    def remove_emoji(text):
-        return ''.join(c for c in text if c.isalnum() or c.isspace())
-
     @app.route('/my-profile')
     @login_required
     def myprofile():
@@ -738,24 +734,19 @@ def create_app() -> Flask:
         if current_user:
             # Determine the operating system
             system_name = platform.system().lower()
-
+    
             # Choose the appropriate JSON file based on the OS
-            if system_name == 'darwin':  # macOS ("Darwin")
+            if system_name in ['darwin', 'linux']:  # macOS ("Darwin") or Unix/Linux
                 country_codes_file = 'static/json/COUNTRY_CODES_MAC.json'
-            elif system_name == 'linux':  # Unix/Linux
-                country_codes_file = 'static/json/COUNTRY_CODES_MAC.json'
-            elif system_name == 'windows':  # Explicit check for Windows
-                country_codes_file = 'static/json/COUNTRY_CODES_WIN.json'
-            else:
-                # Fallback in case there's an unexpected system name
+            else:  # Assume Windows for other cases
                 country_codes_file = 'static/json/COUNTRY_CODES_WIN.json'
 
             # Load country codes from the chosen file
             with open(country_codes_file, 'r') as f:
                 country_codes = json.load(f)
 
-            # Extract nationalities from country codes and normalize
-            nationalities = [remove_emoji(n) for n in country_codes.keys()]
+            # Extract nationalities from country codes
+            nationalities = list(country_codes.keys())
 
             # Load user data
             with open(USER_DATA_FILE, 'r') as f:
@@ -770,14 +761,12 @@ def create_app() -> Flask:
                 if not profile_pic or not os.path.exists(os.path.join('static/img/PFPs', profile_pic)):
                     profile_pic = DEFAULT_PFP
 
-                # Pass sanitized nationalities to the template
                 return render_template(
                     'my-profile.html',
                     user_data=user_data,
                     profile_pic=profile_pic,
                     nationalities=nationalities,
-                    country_codes=country_codes,
-                    remove_emoji=remove_emoji  # Pass the function to the template
+                    country_codes=country_codes  # Pass country codes to template
                 )
 
         return redirect(url_for('login'))

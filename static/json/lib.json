@@ -11,5 +11,6 @@
   "chardet": "chardet",
   "bleach": "bleach",
   "werkzeug": "werkzeug",
-  "platform": "platform"
+  "platform": "platform",
+  "emoji": "emoji"
 }
