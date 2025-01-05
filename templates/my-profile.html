@@ -1480,7 +1480,35 @@
                         const currentWeight = document.getElementById("currentWeight").value;
                         const targetWeight = document.getElementById("targetWeight").value;
                         const height = document.getElementById("height").value;
-                    
+
+
+                        // Capture the current date
+                        const now = new Date();
+                        const currentDate = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`; // Format: DD-MM-YYYY
+
+
+                        // Get the current user from localStorage
+                        const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+                        // Save as local variables
+                        const savedCurrentDate = currentDate;
+                        const savedCurrentUser = currentUser;
+                        const savedCurrentWeight = currentWeight;
+                        const savedTargetWeight = targetWeight;
+
+                        // Log the variables for verification
+                        console.log("Current Date:", savedCurrentDate);
+                        console.log("Current User Name:", savedCurrentUser);
+                        console.log("User New Weight:", savedCurrentWeight);
+                        console.log("Current Weight Goal:", savedTargetWeight);
+                        
+                        // Prepare the data object to send to the backend for weight graph
+                        const weightData = {
+                          currentDate,
+                          currentUser,
+                          currentWeight,
+                          targetWeight
+                        };
                         // Build the data object
                         const settingsData = {
                           favouriteFood: favouriteFood === "Other" ? "Other" : favouriteFood,
@@ -1493,6 +1521,29 @@
                           targetWeight,
                           height
                         };
+
+
+                        // Send the weight data to the backend for saving
+                        fetch("/update-weight-json", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json"
+                          },
+                          body: JSON.stringify(weightData)
+                        })
+                          .then((response) => response.json())
+                          .then((data) => {
+                            if (data.success) {
+                              alert(data.message); // Show success message
+                              location.reload(); // Refresh the page
+                            } else {
+                              alert(data.message); // Show error message
+                            }
+                          })
+                          .catch((error) => {
+                            console.error("Error:", error);
+                            alert("An error occurred while saving settings. Please try again.");
+                          });
                     
                         // Send data to the backend using fetch
                         fetch("/save-settings", {

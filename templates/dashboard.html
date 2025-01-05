@@ -573,18 +573,19 @@
                             recommendationPool = parsedMenuData;
                         } else {
                             // Determine recommendation based on BMI
-                            if (bmi > 18.5) {
-                                console.log('BMI > 18.5, filtering for dishes under 3000 KJ');
-                                recommendationPool = filteredByFoodType.filter(row =>
-                                    row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
-                                );
-                            } else if (bmi < 25) {
-                                console.log('BMI < 25, filtering for dishes over 3000 KJ');
+                            if (bmi <= 18.5) {
+                                console.log('BMI < 18.5, filtering for dishes over 3000 KJ');
                                 recommendationPool = filteredByFoodType.filter(row =>
                                     row["Calories (KJ)"] && row["Calories (KJ)"] > 3000
                                 );
+                            } else if (bmi >= 25) {
+                                console.log('BMI > 25, filtering for dishes under 3000 KJ');
+                                recommendationPool = filteredByFoodType.filter(row =>
+                                    row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
+                                );
                             } else {
                               console.log('BMI healthy, no filter needed');
+                              recommendationPool = filteredByFoodType;
                             }
 
                             console.log('Filtered Dishes:', recommendationPool); // Debug log

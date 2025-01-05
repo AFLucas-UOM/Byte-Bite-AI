@@ -84,6 +84,7 @@ class LibraryInstaller:
 CREDENTIALS_FILE = "static/json/credentials.json"
 USER_DATA_FILE = "static/json/users.json"
 ORDERS_FILE = "static/json/orders.json"
+WEIGHT_JSON_PATH = "static/json/weight.json"
 DEFAULT_PFP = 'default.png'
 TEACHABLE_MACHINE_URL = "https://teachablemachine.withgoogle.com/models/M6fwGM3tz/"
 AUTHENTICATION_TOKEN = 'a123'  # For protected endpoints
@@ -500,6 +501,74 @@ def create_app() -> Flask:
             return jsonify({"error": str(e)}), 500
 
 
+    # Function to load JSON data from file
+    def load_weight_data():
+        if not os.path.exists(WEIGHT_JSON_PATH):
+            # Create an empty weight.json file if it doesn't exist
+            with open(WEIGHT_JSON_PATH, "w") as file:
+                json.dump({
+                    "Name": "",
+                    "Weight": [],
+                    "Target Weight": [],
+                    "Date": [],
+                    "Date Target Weight": []
+                }, file)
+        with open(WEIGHT_JSON_PATH, "r") as file:
+            return json.load(file)
+
+
+    # Function to save JSON data to file
+    def save_weight_data(data):
+        with open(WEIGHT_JSON_PATH, "w") as file:
+            json.dump(data, file, indent=4)
+
+
+    @app.route("/update-weight-json", methods=["POST"])
+    def update_weight_json():
+        # Parse the incoming request data
+        incoming_data = request.json
+        if not incoming_data:
+            return jsonify({"success": False, "message": "Invalid data received"}), 400
+
+        # Load existing weight.json data
+        weight_data = load_weight_data()
+
+        # Extract relevant fields
+        user_name = incoming_data.get("Name")
+        current_weight = incoming_data.get("currentWeight")
+        target_weight = incoming_data.get("targetWeight")
+        current_date = incoming_data.get("currentDate")
+
+        if not user_name or not current_weight or not target_weight or not current_date:
+            return jsonify({"success": False, "message": "Missing required fields"}), 400
+
+        # Update the data structure
+        if weight_data["Name"] == "" or weight_data["Name"] != user_name:
+            # If user doesn't exist, initialise user
+            weight_data["Name"] = user_name
+            weight_data["Weight"] = []
+            weight_data["Target Weight"] = []
+            weight_data["Date"] = []
+            weight_data["Date Target Weight"] = []
+
+        # Logic for updating Weight, Target Weight, and Dates
+        if len(weight_data["Weight"]) == 0 or weight_data["Weight"][-1] != current_weight:
+            weight_data["Weight"].append(current_weight)
+            weight_data["Date"].append(current_date)
+        else:
+            weight_data["Date Target Weight"].append(current_date)
+
+        if len(weight_data["Target Weight"]) == 0 or weight_data["Target Weight"][-1] != target_weight:
+            weight_data["Target Weight"].append(target_weight)
+            weight_data["Date Target Weight"].append(current_date)
+        else:
+            weight_data["Date"].append(current_date)
+
+        # Save the updated data back to weight.json
+        save_weight_data(weight_data)
+
+        # Respond with success
+        return jsonify({"success": True, "message": "Weight data updated successfully"}), 200
 
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
