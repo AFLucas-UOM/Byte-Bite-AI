@@ -506,12 +506,13 @@
                         const currentTime = new Date();
                         const currentHour = currentTime.getHours();
 
+                        const allowedFoodTypes = ["bread", "dessert", "drink", "smoothies", "snack"];
                         // Filter dishes by food type based on time (morning/evening restrictions)
                         let filteredByFoodType = [];
                         if (currentHour < 9 || currentHour > 18) {
-                            console.log("It's either morning or evening, recommending only Snack dishes.");
+                            console.log("It's either morning or evening, recommending only specific food types.");
                             filteredByFoodType = parsedMenuData.filter(row =>
-                                row.Type && row.Type.toLowerCase() === "snack"
+                                row.Type && allowedFoodTypes.includes(row.Type.toLowerCase())
                             );
                         } else {
                             // Filter dishes by user's favourite food
