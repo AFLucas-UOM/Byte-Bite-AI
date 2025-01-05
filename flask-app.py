@@ -3,6 +3,7 @@ import sys
 import re
 import pandas as pd
 import time
+import platform
 import json
 import logging
 import subprocess
@@ -729,28 +730,37 @@ def create_app() -> Flask:
     @login_required
     def myprofile():
         current_user = get_current_user()
-        
+
         if current_user:
-            # Load country codes from JSON
-            with open('static/json/COUNTRY_CODES.json', 'r') as f:
+            # Determine the operating system
+            system_name = platform.system().lower()
+
+            # Choose the appropriate JSON file based on the OS
+            if system_name in ['darwin', 'linux']:  # macOS ("Darwin") or Unix/Linux
+                country_codes_file = 'static/json/COUNTRY_CODES_MAC.json'
+            else:  # Assume Windows for other cases
+                country_codes_file = 'static/json/COUNTRY_CODES_WIN.json'
+
+            # Load country codes from the chosen file
+            with open(country_codes_file, 'r') as f:
                 country_codes = json.load(f)
 
             # Extract nationalities from country codes
             nationalities = list(country_codes.keys())
-            
+
             # Load user data
             with open(USER_DATA_FILE, 'r') as f:
                 users = json.load(f)
-            
+
             user_data = next((user for user in users if user['Full Name'] == current_user['name']), None)
-            
+
             if user_data:
                 profile_pic = user_data.get('profile_pic', DEFAULT_PFP)
-                
+
                 # Validate the profile picture path
                 if not profile_pic or not os.path.exists(os.path.join('static/img/PFPs', profile_pic)):
                     profile_pic = DEFAULT_PFP
-                
+
                 return render_template(
                     'my-profile.html',
                     user_data=user_data,
@@ -758,6 +768,7 @@ def create_app() -> Flask:
                     nationalities=nationalities,
                     country_codes=country_codes  # Pass country codes to template
                 )
+
         return redirect(url_for('login'))
 
     @app.route('/save-social-links', methods=['POST'])
