@@ -18,8 +18,8 @@ Crispy Chicken Wrap,BurgerKing,Wrap,€6.10,"2208.00",215.00,No,Yes,No
 Chicken Cheddar King Burger,BurgerKing,Burger,€10.50,"3510.00",326.00,No,Yes,No
 King Fish Burger,BurgerKing,Burger,€5.50,"2032.00",179.00,No,Yes,No
 King Fish Cheese Burger,BurgerKing,Burger,€6.15,"2191.00",191.00,No,Yes,No
-Crunchy Chicken Salad,BurgerKing,Salad,€7.60,"1063.00",318.00,No,No,No
-Garden Salad,BurgerKing,Salad,€5.75,"225.00",240.00,Yes,No,No
+Crunchy Chicken Salad,BurgerKing,Salads,€7.60,"1063.00",318.00,No,No,No
+Garden Salad,BurgerKing,Salads,€5.75,"225.00",240.00,Yes,No,No
 Plant-Based Whopper Burger,BurgerKing,Burger,€6.85,"2451.00",293.00,Yes,No,No
 Chicken Fries,BurgerKing,Snack,€3.95,"726.00",72.00,No,Yes,No
 Fries,BurgerKing,Snack,€3.30,"1331.00",116.00,No,Yes,No
@@ -59,19 +59,19 @@ Super Supreme,PizzaHut,Pizza,€13.90,"7000.00",820.00,No,Yes,No
 Bajd u Bacon,PizzaHut,Pizza,€9.75,"5700.00",770.00,No,Yes,No
 BBQ Lovers,PizzaHut,Pizza,€13.00,"6,500.00",800.00,No,Yes,No
 Havana Burger,CafeCuba,Burger,€17.95,"4180.00",400.00,No,Yes,No
-Vegetarian Wrap,CafeCuba,Wrap,€8.75,"1500.00",260.00,Yes,Yes,No
-Chicken and Cucumber Wrap,CafeCuba,Wrap,€8.95,"1505.00",283.00,No,Yes,No
-Chicken Fajita Wrap,CafeCuba,Wrap,€8.95,"1600.00",300.00,No,Yes,No
-Pork Wrap,CafeCuba,Wrap,€8.95,"1800.00",280.00,No,Yes,Yes
+Vegetarian Wrap,CafeCuba,Wraps,€8.75,"1500.00",260.00,Yes,Yes,No
+Chicken and Cucumber Wrap,CafeCuba,Wraps,€8.95,"1505.00",283.00,No,Yes,No
+Chicken Fajita Wrap,CafeCuba,Wraps,€8.95,"1600.00",300.00,No,Yes,No
+Pork Wrap,CafeCuba,Wraps,€8.95,"1800.00",280.00,No,Yes,Yes
 Mushroom Tacos,CafeCuba,Snack,€8.50,"1100.00",200.00,Yes,Yes,No
 Vegan 'Daikon Radish' BLT,CafeCuba,Bread,€6.95,"1400.00",250.00,Yes,Yes,No
-Vegan Protein Bowl,CafeCuba,Salad,€11.30,"1800.00",350.00,Yes,No,Yes
-Salmon Salad,CafeCuba,Salad,€13.95,"2100.00",300.00,No,No,No
-Beef and Kale Salad,CafeCuba,Salad,€14.75,"2300.00",350.00,No,No,No
-Chicken Salad,CafeCuba,Salad,€12.50,"1700.00",320.00,No,No,No
-Asian Chicken Salad,CafeCuba,Salad,€12.95,"1900.00",340.00,No,Yes,Yes
-Lentil Salad,CafeCuba,Salad,€11.50,"1500.00",300.00,No,No,No
-Havana Beef Salad,CafeCuba,Salad,€13.50,"2400.00",400.00,No,Yes,Yes
+Vegan Protein Bowl,CafeCuba,Salads,€11.30,"1800.00",350.00,Yes,No,Yes
+Salmon Salad,CafeCuba,Salads,€13.95,"2100.00",300.00,No,No,No
+Beef and Kale Salad,CafeCuba,Salads,€14.75,"2300.00",350.00,No,No,No
+Chicken Salad,CafeCuba,Salads,€12.50,"1700.00",320.00,No,No,No
+Asian Chicken Salad,CafeCuba,Salads,€12.95,"1900.00",340.00,No,Yes,Yes
+Lentil Salad,CafeCuba,Salads,€11.50,"1500.00",300.00,No,No,No
+Havana Beef Salad,CafeCuba,Salads,€13.50,"2400.00",400.00,No,Yes,Yes
 Achiote Spice Grilled Chicken Breast,CafeCuba,Chicken,€18.95,"3000.00",500.00,No,Yes,No
 Pita De Pollo,CafeCuba,Snack,€7.95,"1700.00",250.00,No,Yes,No
 Taco De Pollo,CafeCuba,Snack,€9.50,"1500.00",200.00,No,Yes,No
@@ -79,9 +79,9 @@ Fluata De Carne,CafeCuba,Snack,€9.50,"2200.00",250.00,No,Yes,No
 Chicken Dynamite,CafeCuba,Snack,€8.95,"1800.00",200.00,Yes,Yes,No
 Nachos Mexicano,CafeCuba,Snack,€13.50,"2500.00",300.00,No,Yes,No
 Cuban Bun,CafeCuba,Snack,€9.50,"1400.00",150.00,No,Yes,No
-Chicken Burrito,CafeCuba,Wrap,€16.95,"2600.00",400.00,No,Yes,No
-Pork Burrito,CafeCuba,Wrap,€16.95,"2800.00",400.00,No,Yes,No
-Beef Burrito,CafeCuba,Wrap,€16.95,"3000.00",400.00,No,Yes,No
+Chicken Burrito,CafeCuba,Wraps,€16.95,"2600.00",400.00,No,Yes,No
+Pork Burrito,CafeCuba,Wraps,€16.95,"2800.00",400.00,No,Yes,No
+Beef Burrito,CafeCuba,Wraps,€16.95,"3000.00",400.00,No,Yes,No
 Spaghetti Calamari,CafeCuba,Pasta,€15.75,"2500.00",300.00,No,Yes,No
 Rigatoni Pesto,CafeCuba,Pasta,€14.20,"2900.00",300.00,No,No,No
 Ravioli Porchini,CafeCuba,Pasta,€14.75,"2100.00",350.00,Yes,Yes,No
@@ -139,39 +139,39 @@ Coco Jamboo Yogurt,Joli,Snack,€3.95,"900.00",98.00,Yes,Yes,Yes
 Crunchy Caramel Yogurt,Joli,Snack,€3.95,"950.00",100.00,Yes,Yes,Yes
 Hasta La Vista Yogurt,Joli,Snack,€3.95,"1000.00",120.00,Yes,Yes,Yes
 Nutty Professor Yogurt,Joli,Snack,€4.95,"1200.00",124.00,Yes,No,Yes
-Buffalo Chicken Wrap,Joli,Wrap,€8.45,"2794.00",142.00,No,Yes,No
-Chicken Twist Wrap,Joli,Wrap,€7.95,"1962.00",124.00,No,Yes,No
-Chicken Bacon Ranch Wrap,Joli,Wrap,€8.65,"2757.00",138.00,No,Yes,No
-Protein Punch Wrap,Joli,Wrap,€8.45,"2711.00",131.00,No,Yes,Yes
-Godzilla Wrap,Joli,Wrap,€8.95,"3723.00",178.00,No,Yes,No
-Salmon Cream Wrap,Joli,Wrap,€9.50,"2112.00",104.00,No,Yes,No
-Oriental Duck Wrap,Joli,Wrap,€9.50,"2552.00",126.00,No,Yes,Yes
-Avo Cobbo Wrap,Joli,Wrap,€8.45,"2878.00",120.00,Yes,Yes,No
-Tuna Feta Wrap,Joli,Wrap,€7.95,"2648.00",117.00,No,Yes,No
-Chicken Jalapeno Wrap,Joli,Wrap,€8.45,"3091.00",142.00,No,Yes,No
-Mykonos Wrap,Joli,Wrap,€7.95,"2326.00",106.00,Yes,Yes,No
-Chicken Parma Wrap,Joli,Wrap,€8.45,"2979.00",142.00,No,Yes,No
-Sweet Potato & Hummus Wrap,Joli,Wrap,€7.95,"2635.00",133.00,Yes,Yes,Yes
-Zesty Tuna Salad,Joli,Salad,€8.95,"2020.00",81.00,No,No,No
-Loaded Chicken BLT Salad,Joli,Salad,€9.45,"2422.00",115.00,No,Yes,No
-Protein Bomb Salad,Joli,Salad,€9.45,"2531.00",113.00,No,No,Yes
-Spiced Chicken Salad,Joli,Salad,€9.45,"2443.00",114.00,No,Yes,No
-Beet It Salad,Joli,Salad,€8.95,"1861.00",70.00,Yes,No,Yes
-Tofu Crunch Salad,Joli,Salad,€10.45,"1828.00",91.00,Yes,No,Yes
-Chicken Egg Caesar,Joli,Salad,€8.95,"2175.00",90.00,No,Yes,No
-Salmon Feta Salad,Joli,Salad,€12.45,"2033.00",107.00,No,No,Yes
-Sesame Duck Salad,Joli,Salad,€11.95,"2096.00",101.00,No,No,Yes
-Superfood Salad,Joli,Salad,"8,95","2171.00",91.00,Yes,No,Yes
-Chicken Cashew Salad,Joli,Salad,€9.45,"2104.00",111.00,No,No,Yes
-The Big Greek Salad,Joli,Salad,€9.95,"2468.00",106.00,No,No,Yes
-King Kong Salad,Joli,Salad,€9.45,"3175.00",147.00,No,Yes,No
-Duck Poke Bowl,Joli,Warm Bowl,€12.50,"2606.00",128.00,No,No,Yes
-Chunky Tuna Bowl,Joli,Warm Bowl,€10.95,"3209.00",145.00,No,No,Yes
-Muscle King Bowl,Joli,Warm Bowl,€11.95,"3849.00",176.00,No,Yes,No
-Avo Energy Bowl,Joli,Warm Bowl,€11.45,"3041.00",141.00,Yes,No,Yes
-Super Power Bowl,Joli,Warm Bowl,€11.95,"3037.00",156.00,No,No,No
-Chicken Meze Bowl,Joli,Warm Bowl,€11.95,"3443.00",168.00,No,Yes,Yes
-Salmon Beet Bowl,Joli,Warm Bowl,€13.95,"3305.00",156.00,No,No,Yes
+Buffalo Chicken Wrap,Joli,Wraps,€8.45,"2794.00",142.00,No,Yes,No
+Chicken Twist Wrap,Joli,Wraps,€7.95,"1962.00",124.00,No,Yes,No
+Chicken Bacon Ranch Wrap,Joli,Wraps,€8.65,"2757.00",138.00,No,Yes,No
+Protein Punch Wrap,Joli,Wraps,€8.45,"2711.00",131.00,No,Yes,Yes
+Godzilla Wrap,Joli,Wraps,€8.95,"3723.00",178.00,No,Yes,No
+Salmon Cream Wrap,Joli,Wraps,€9.50,"2112.00",104.00,No,Yes,No
+Oriental Duck Wrap,Joli,Wraps,€9.50,"2552.00",126.00,No,Yes,Yes
+Avo Cobbo Wrap,Joli,Wraps,€8.45,"2878.00",120.00,Yes,Yes,No
+Tuna Feta Wrap,Joli,Wraps,€7.95,"2648.00",117.00,No,Yes,No
+Chicken Jalapeno Wrap,Joli,Wraps,€8.45,"3091.00",142.00,No,Yes,No
+Mykonos Wrap,Joli,Wraps,€7.95,"2326.00",106.00,Yes,Yes,No
+Chicken Parma Wrap,Joli,Wraps,€8.45,"2979.00",142.00,No,Yes,No
+Sweet Potato & Hummus Wrap,Joli,Wraps,€7.95,"2635.00",133.00,Yes,Yes,Yes
+Zesty Tuna Salad,Joli,Salads,€8.95,"2020.00",81.00,No,No,No
+Loaded Chicken BLT Salad,Joli,Salads,€9.45,"2422.00",115.00,No,Yes,No
+Protein Bomb Salad,Joli,Salads,€9.45,"2531.00",113.00,No,No,Yes
+Spiced Chicken Salad,Joli,Salads,€9.45,"2443.00",114.00,No,Yes,No
+Beet It Salad,Joli,Salads,€8.95,"1861.00",70.00,Yes,No,Yes
+Tofu Crunch Salad,Joli,Salads,€10.45,"1828.00",91.00,Yes,No,Yes
+Chicken Egg Caesar,Joli,Salads,€8.95,"2175.00",90.00,No,Yes,No
+Salmon Feta Salad,Joli,Salads,€12.45,"2033.00",107.00,No,No,Yes
+Sesame Duck Salad,Joli,Salads,€11.95,"2096.00",101.00,No,No,Yes
+Superfood Salad,Joli,Salads,"8,95","2171.00",91.00,Yes,No,Yes
+Chicken Cashew Salad,Joli,Salads,€9.45,"2104.00",111.00,No,No,Yes
+The Big Greek Salad,Joli,Salads,€9.95,"2468.00",106.00,No,No,Yes
+King Kong Salad,Joli,Salads,€9.45,"3175.00",147.00,No,Yes,No
+Duck Poke Bowl,Joli,Warm Bowls,€12.50,"2606.00",128.00,No,No,Yes
+Chunky Tuna Bowl,Joli,Warm Bowls,€10.95,"3209.00",145.00,No,No,Yes
+Muscle King Bowl,Joli,Warm Bowls,€11.95,"3849.00",176.00,No,Yes,No
+Avo Energy Bowl,Joli,Warm Bowls,€11.45,"3041.00",141.00,Yes,No,Yes
+Super Power Bowl,Joli,Warm Bowls,€11.95,"3037.00",156.00,No,No,No
+Chicken Meze Bowl,Joli,Warm Bowls,€11.95,"3443.00",168.00,No,Yes,Yes
+Salmon Beet Bowl,Joli,Warm Bowls,€13.95,"3305.00",156.00,No,No,Yes
 Greek Melt Ciabatta,Joli,Bread,€7.85,"3117.00",149.00,Yes,Yes,No
 Chicken Pesto Ciabatta,Joli,Bread,€8.45,"3271.00",162.00,No,Yes,No
 Parma Ciabatta,Joli,Bread,€7.85,"2589.00",128.00,No,Yes,No
@@ -295,12 +295,12 @@ Mixed Doner Tombik,Ottoman,Tombik,€9.50,"2200.00",300.00,No,Yes,No
 Grilled Meat in a Tombik,Ottoman,Tombik,€10.90,"2400.00",350.00,No,Yes,No
 Falafel Tombik,Ottoman,Tombik,€8.50,"1600.00",300.00,Yes,Yes,No
 Vegetarian Tombik,Ottoman,Tombik,€8.50,"1500.00",300.00,Yes,Yes,No
-Chicken Doner Wrap,Ottoman,Wrap,€8.90,"2000.00",300.00,No,Yes,No
-Lamb & Beef Doner Wrap,Ottoman,Wrap,€8.90,"2200.00",300.00,No,Yes,No
-Mixed Doner Wrap,Ottoman,Wrap,€8.90,"2400.00",300.00,No,Yes,No
-Grilled Meat in a Wrap,Ottoman,Wrap,€10.50,"2500.00",350.00,No,Yes,No
-Falafel Wrap,Ottoman,Wrap,€7.90,"1800.00",300.00,Yes,Yes,No
-Vegetarian Wrap,Ottoman,Wrap,€7.90,"1600.00",300.00,Yes,Yes,No
+Chicken Doner Wrap,Ottoman,Wraps,€8.90,"2000.00",300.00,No,Yes,No
+Lamb & Beef Doner Wrap,Ottoman,Wraps,€8.90,"2200.00",300.00,No,Yes,No
+Mixed Doner Wrap,Ottoman,Wraps,€8.90,"2400.00",300.00,No,Yes,No
+Grilled Meat in a Wrap,Ottoman,Wraps,€10.50,"2500.00",350.00,No,Yes,No
+Falafel Wrap,Ottoman,Wraps,€7.90,"1800.00",300.00,Yes,Yes,No
+Vegetarian Wrap,Ottoman,Wraps,€7.90,"1600.00",300.00,Yes,Yes,No
 Falafel Burger,Ottoman,Burgers,€9.50,"2100.00",350.00,Yes,Yes,No
 Crispy Chicken Fillet Burger,Ottoman,Burgers,€11.50,"2600.00",350.00,No,Yes,No
 Classic Beef Burger,Ottoman,Burgers,€10.50,"2700.00",350.00,No,Yes,No

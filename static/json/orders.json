@@ -173,5 +173,19 @@
         "Restaurant": "CafeCuba",
         "Price": 15.75,
         "userName": "Andrea Filiberto Lucas"
+    },
+    {
+        "Date": "05/01/2025",
+        "Name of dish": "Spaghetti Calamari",
+        "Restaurant": "CafeCuba",
+        "Price": 15.75,
+        "userName": "Andrea Filiberto Lucas"
+    },
+    {
+        "Date": "05/01/2025",
+        "Name of dish": "Rigatoni Pesto",
+        "Restaurant": "CafeCuba",
+        "Price": 14.2,
+        "userName": "Andrea Filiberto Lucas"
     }
 ]
