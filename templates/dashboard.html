@@ -336,8 +336,10 @@
             if (bmi) {
               if (bmi < 18.5) {
                 explanations.push("Your <strong>BMI</strong> is on the underweight side. To update your weight, please go to My Profile -> AI Settings");
-              } else if (bmi > 18.5) {
+              } else if (bmi > 25) {
                 explanations.push("Your <strong>BMI</strong> is on the overweight side. To update your weight, please go to My Profile -> AI Settings");
+              } else {
+                explanations.push("Your <strong>BMI</strong> is within the healthy weight range, so we recommended this dish to maintain your balanced weight. To update your weight, please go to My Profile -> AI Settings");
               }
             }
 
@@ -576,11 +578,13 @@
                                 recommendationPool = filteredByFoodType.filter(row =>
                                     row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
                                 );
-                            } else if (bmi < 18.5) {
-                                console.log('BMI < 18.5, filtering for dishes over 3000 KJ');
+                            } else if (bmi < 25) {
+                                console.log('BMI < 25, filtering for dishes over 3000 KJ');
                                 recommendationPool = filteredByFoodType.filter(row =>
                                     row["Calories (KJ)"] && row["Calories (KJ)"] > 3000
                                 );
+                            } else {
+                              console.log('BMI healthy, no filter needed');
                             }
 
                             console.log('Filtered Dishes:', recommendationPool); // Debug log
