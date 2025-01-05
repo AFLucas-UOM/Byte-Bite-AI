@@ -914,6 +914,7 @@ def create_app() -> Flask:
 
         # Save the profile only if there are changes
         if updated_profile != user_profile:
+            # Update the user in USER_DATA_FILE
             for i, user in enumerate(users):
                 if user['Email'] == current_user['email']:
                     users[i] = updated_profile
@@ -949,6 +950,31 @@ def create_app() -> Flask:
                 with open(ORDERS_FILE, 'w') as orders_file:
                     json.dump(orders, orders_file, indent=4)
 
+            # Update `weight.json` for matching `userName`
+            if name_changed:
+                try:
+                    with open(WEIGHT_JSON_PATH, 'r') as weight_file:
+                        weight_data = json.load(weight_file)
+
+                    # Update occurrences of the old name in both `userName` and `Name` fields
+                    old_name = user_profile.get("Full Name", "")
+                    for record in weight_data:
+                        if record.get("userName") == old_name:
+                            record["userName"] = full_name
+                        if record.get("Name") == old_name:
+                            record["Name"] = full_name
+
+                    # Save the updated weight data
+                    with open(WEIGHT_JSON_PATH, 'w') as weight_file:
+                        json.dump(weight_data, weight_file, indent=4)
+
+                except FileNotFoundError:
+                    logging.error(f"File {WEIGHT_JSON_PATH} not found. Skipping name update.")
+                except json.JSONDecodeError:
+                    logging.error(f"Error decoding JSON from {WEIGHT_JSON_PATH}. Skipping name update.")
+                except Exception as e:
+                    logging.error(f"Unexpected error updating {WEIGHT_JSON_PATH}: {e}")
+
             # Return response and update cookies
             resp = jsonify({"success": True, "message": "Profile updated successfully."})
             if name_changed:
@@ -960,6 +986,7 @@ def create_app() -> Flask:
             return resp
 
         return jsonify({"success": True, "message": "No changes were made to the profile."})
+
 
     @app.route('/save-settings', methods=['POST'])
     @login_required
