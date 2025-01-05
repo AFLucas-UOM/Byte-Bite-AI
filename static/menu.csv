@@ -1,26 +1,26 @@
 Name,Restaurant,Type,Price,Calories (KJ),Serving Size (g),Is Vegetarian?,Has Gluten?,Has Nuts?
-Hamburger,BurgerKing,Burger,€1.85,"1050.00",112.00,No,Yes,No
-Chicken Supreme Burger,BurgerKing,Burger,€6.70,"2480.00",217.00,No,Yes,No
-Double Steakhouse Burger,BurgerKing,Burger,€10.60,"4380.00",380.00,No,Yes,No
-Whopper Burger,BurgerKing,Burger,€6.85,"2565.00",291.00,No,Yes,No
-Whopper Cheese Burger,BurgerKing,Burger,€7.50,"2889.00",312.00,No,Yes,No
-Big King Burger,BurgerKing,Burger,€5.30,"1286.00",213.00,No,Yes,No
-Double Cheese Bacon Burger,BurgerKing,Burger,€5.95,"1932.00",207.00,No,Yes,No
-Whopper Jr. Burger,BurgerKing,Burger,€4.60,"1367.00",157.00,No,Yes,No
-Whopper Jr. Cheese Burger,BurgerKing,Burger,€5.25,"1527.00",168.00,No,Yes,No
-Cheeseburger,BurgerKing,Burger,€2.35,"1210.00",123.00,No,Yes,No
+Hamburger,BurgerKing,Burgers,€1.85,"1050.00",112.00,No,Yes,No
+Chicken Supreme Burger,BurgerKing,Burgers,€6.70,"2480.00",217.00,No,Yes,No
+Double Steakhouse Burger,BurgerKing,Burgers,€10.60,"4380.00",380.00,No,Yes,No
+Whopper Burger,BurgerKing,Burgers,€6.85,"2565.00",291.00,No,Yes,No
+Whopper Cheese Burger,BurgerKing,Burgers,€7.50,"2889.00",312.00,No,Yes,No
+Big King Burger,BurgerKing,Burgers,€5.30,"1286.00",213.00,No,Yes,No
+Double Cheese Bacon Burger,BurgerKing,Burgers,€5.95,"1932.00",207.00,No,Yes,No
+Whopper Jr. Burger,BurgerKing,Burgers,€4.60,"1367.00",157.00,No,Yes,No
+Whopper Jr. Cheese Burger,BurgerKing,Burgers,€5.25,"1527.00",168.00,No,Yes,No
+Cheeseburger,BurgerKing,Burgers,€2.35,"1210.00",123.00,No,Yes,No
 BBQ Beef Wrap,BurgerKing,Wrap,€6.85,"2434.00",231.00,No,Yes,No
-Gooey Cheddar King Burger,BurgerKing,Burger,€13.10,"4520.00",398.00,No,Yes,No
-Chicken Supreme Cheese Burger,BurgerKing,Burger,€7.35,"2803.00",240.00,No,Yes,No
-Crispy Chicken Burger,BurgerKing,Burger,€5.65,"1814.00",158.00,No,Yes,No
-Crispy Chicken Cheese Burger,BurgerKing,Burger,€6.30,"1974.00",170.00,No,Yes,No
+Gooey Cheddar King Burger,BurgerKing,Burgers,€13.10,"4520.00",398.00,No,Yes,No
+Chicken Supreme Cheese Burger,BurgerKing,Burgers,€7.35,"2803.00",240.00,No,Yes,No
+Crispy Chicken Burger,BurgerKing,Burgers,€5.65,"1814.00",158.00,No,Yes,No
+Crispy Chicken Cheese Burger,BurgerKing,Burgers,€6.30,"1974.00",170.00,No,Yes,No
 Crispy Chicken Wrap,BurgerKing,Wrap,€6.10,"2208.00",215.00,No,Yes,No
-Chicken Cheddar King Burger,BurgerKing,Burger,€10.50,"3510.00",326.00,No,Yes,No
-King Fish Burger,BurgerKing,Burger,€5.50,"2032.00",179.00,No,Yes,No
-King Fish Cheese Burger,BurgerKing,Burger,€6.15,"2191.00",191.00,No,Yes,No
+Chicken Cheddar King Burger,BurgerKing,Burgers,€10.50,"3510.00",326.00,No,Yes,No
+King Fish Burger,BurgerKing,Burgers,€5.50,"2032.00",179.00,No,Yes,No
+King Fish Cheese Burger,BurgerKing,Burgers,€6.15,"2191.00",191.00,No,Yes,No
 Crunchy Chicken Salad,BurgerKing,Salads,€7.60,"1063.00",318.00,No,No,No
 Garden Salad,BurgerKing,Salads,€5.75,"225.00",240.00,Yes,No,No
-Plant-Based Whopper Burger,BurgerKing,Burger,€6.85,"2451.00",293.00,Yes,No,No
+Plant-Based Whopper Burger,BurgerKing,Burgers,€6.85,"2451.00",293.00,Yes,No,No
 Chicken Fries,BurgerKing,Snack,€3.95,"726.00",72.00,No,Yes,No
 Fries,BurgerKing,Snack,€3.30,"1331.00",116.00,No,Yes,No
 Chicken Nuggets,BurgerKing,Snack,€4.90,"1035.00",102.00,No,Yes,No
@@ -88,13 +88,13 @@ Ravioli Porchini,CafeCuba,Pasta,€14.75,"2100.00",350.00,Yes,Yes,No
 Rigatoni Beef Ragu,CafeCuba,Pasta,€15.75,"2400.00",400.00,No,Yes,No
 Spaghetti All' Amatriciana,CafeCuba,Pasta,€13.95,"2200.00",350.00,No,Yes,No
 Risotto Nduja,CafeCuba,Pasta,€15.75,"2300.00",350.00,No,No,No
-La Berenjena Burger,CafeCuba,Burger,€9.95,"2300.00",320.00,Yes,Yes,No
-Barbacao Burger,CafeCuba,Burger,€9.95,"3000.00",400.00,No,Yes,No
-El Primero Burger,CafeCuba,Burger,€9.95,"2200.00",300.00,No,Yes,No
-Cuba Burger,CafeCuba,Burger,€16.50,"3200.00",420.00,No,Yes,No
-El Toro Burger,CafeCuba,Burger,€16.50,"3400.00",430.00,No,Yes,No
-El Pollo Supremo Burger,CafeCuba,Burger,€15.95,"2800.00",380.00,No,Yes,No
-Trinidad Burger,CafeCuba,Burger,€17.95,"3800.00",480.00,No,Yes,No
+La Berenjena Burger,CafeCuba,Burgers,€9.95,"2300.00",320.00,Yes,Yes,No
+Barbacao Burger,CafeCuba,Burgers,€9.95,"3000.00",400.00,No,Yes,No
+El Primero Burger,CafeCuba,Burgers,€9.95,"2200.00",300.00,No,Yes,No
+Cuba Burger,CafeCuba,Burgers,€16.50,"3200.00",420.00,No,Yes,No
+El Toro Burger,CafeCuba,Burgers,€16.50,"3400.00",430.00,No,Yes,No
+El Pollo Supremo Burger,CafeCuba,Burgers,€15.95,"2800.00",380.00,No,Yes,No
+Trinidad Burger,CafeCuba,Burgers,€17.95,"3800.00",480.00,No,Yes,No
 BBQ Pork Ribs,CafeCuba,Pork,€25.95,"5200.00",600.00,No,Yes,No
 Pollo A La Plancha,CafeCuba,Chicken,€19.60,"3900.00",500.00,No,No,No
 Beef Tagliata,CafeCuba,Beef,€27.50,"4200.00",550.00,No,Yes,No
@@ -184,20 +184,20 @@ Milk Chocolate Cookie,Joli,Snack,€2.50,"1354.00",89.00,Yes,Yes,No
 Vegal Energy Ball,Joli,Snack,€2.50,"1240.00",34.00,Yes,No,No
 Coconut Bite Ball,Joli,Snack,€2.50,"1245.00",35.00,Yes,No,No
 Real Salt & Vinegar Crisps,Joli,Snack,€2.50,"1345.00",240.00,Yes,No,No
-Green Gains Liquid Meal,Joli,Smoothie,€5.95,853.54,41.00,Yes,No,No
-Iron Man Liquid Meal,Joli,Smoothie,€5.45,"1221.73",57.00,Yes,No,No
-Power Shake Liquid Meal,Joli,Smoothie,€5.45,"1301.22",62.00,Yes,No,Yes
-Tarzan Liquid Meal,Joli,Smoothie,€5.45,"1774.02",74.00,Yes,No,Yes
-Berrylicious Juicw,Joli,Smoothie,€5.95,765.00,43.50,Yes,No,No
-Detox Queen Juice,Joli,Smoothie,€5.95,732.20,42.25,Yes,No,No
-Green Mile Juice,Joli,Smoothie,€5.95,564.84,33.25,Yes,No,No
-Hangover Destroyer Juice,Joli,Smoothie,€5.95,753.1244.50,Yes,No,No
-Stay Home Doc Juice,Joli,Smoothie,€5.95,857.7251.00,Yes,No,No
-Shakawaka Smoothie,Joli,Smoothie,€5.45,824.25,45.75,Yes,No,No
-Re-Charger Smoothie,Joli,Smoothie,€5.45,698.7340.85,Yes,No,No
-Morning Delight Smoothie,Joli,Smoothie,€5.45,"1171.52",60.00,Yes,No,No
-Morning Delight Smoothie,Joli,Smoothie,€5.45,937.2253.50,Yes,No,No
-Blood Cleanser Smoothie,Joli,Smoothie,€5.45,979.06,40.50,Yes,No,No
+Green Gains Liquid Meal,Joli,Smoothies,€5.95,853.54,41.00,Yes,No,No
+Iron Man Liquid Meal,Joli,Smoothies,€5.45,"1221.73",57.00,Yes,No,No
+Power Shake Liquid Meal,Joli,Smoothies,€5.45,"1301.22",62.00,Yes,No,Yes
+Tarzan Liquid Meal,Joli,Smoothies,€5.45,"1774.02",74.00,Yes,No,Yes
+Berrylicious Juicw,Joli,Smoothies,€5.95,765.00,43.50,Yes,No,No
+Detox Queen Juice,Joli,Smoothies,€5.95,732.20,42.25,Yes,No,No
+Green Mile Juice,Joli,Smoothies,€5.95,564.84,33.25,Yes,No,No
+Hangover Destroyer Juice,Joli,Smoothies,€5.95,753.1244.50,Yes,No,No
+Stay Home Doc Juice,Joli,Smoothies,€5.95,857.7251.00,Yes,No,No
+Shakawaka Smoothie,Joli,Smoothies,€5.45,824.25,45.75,Yes,No,No
+Re-Charger Smoothie,Joli,Smoothies,€5.45,698.7340.85,Yes,No,No
+Morning Delight Smoothie,Joli,Smoothies,€5.45,"1171.52",60.00,Yes,No,No
+Morning Delight Smoothie,Joli,Smoothies,€5.45,937.2253.50,Yes,No,No
+Blood Cleanser Smoothie,Joli,Smoothies,€5.45,979.06,40.50,Yes,No,No
 Prawn Toast,Amami,Snack,€8.80,"1464.00",160.00,No,Yes,Yes
 Edamame,Amami,Snack,€4.90,650.00,120.00,Yes,Yes,No
 Vegetable Spring Roll,Amami,Snack,€6.90,850.00,150.00,Yes,Yes,Yes
