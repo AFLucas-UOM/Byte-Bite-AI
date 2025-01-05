@@ -880,32 +880,34 @@
                       });
                     </script>
 
-                    <!-- Nationality -->
-                    <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Nationality</label>
-                      <div class="col-md-8 col-lg-9">
-                        <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
-                          <!-- Placeholder text if no nationality is found -->
-                          {% if not user_data.get('Nationality') %}
-                            <option value="" disabled selected>Select your nationality</option>
-                          {% endif %}
+<!-- Nationality -->
+<div class="row mb-3">
+  <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Nationality</label>
+  <div class="col-md-8 col-lg-9">
+    <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
+      <!-- Placeholder text if no nationality is found -->
+      {% if not user_data.get('Nationality') %}
+        <option value="" disabled selected>Select your nationality</option>
+      {% endif %}
 
-                          <!-- Show user's nationality -->
-                          {% if user_data.get('Nationality') %}
-                            <option value="{{ user_data.get('Nationality') }}" selected>
-                              {{ user_data.get('Nationality') }}
-                            </option>
-                          {% endif %}
+      <!-- Show user's nationality -->
+      {% if user_data.get('Nationality') %}
+        <option value="{{ user_data.get('Nationality') }}" selected>
+          {{ user_data.get('Nationality') }}
+        </option>
+      {% endif %}
 
-                          <!-- Dropdown of all other nationalities -->
-                          {% for nationality in nationalities %}
-                            {% if nationality != user_data.get('Nationality', '') %}
-                              <option value="{{ nationality }}">{{ nationality }}</option>
-                            {% endif %}
-                          {% endfor %}
-                        </select>
-                      </div>
-                    </div>
+      <!-- Dropdown of all other nationalities -->
+      {% for nationality in nationalities %}
+        {% if nationality != remove_emoji(user_data.get('Nationality', '')) %}
+          <option value="{{ nationality }}">{{ nationality }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+
 
                     <!-- Mobile Number -->
                     <div class="row mb-3">
