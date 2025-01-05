@@ -145,5 +145,26 @@
         "Restaurant": "Ottoman",
         "Price": 21.5,
         "userName": "Andrea Filiberto Lucas"
+    },
+    {
+        "Date": "04/01/2025",
+        "Name of dish": "Falafel Burger",
+        "Restaurant": "Ottoman",
+        "Price": 9.5,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "04/01/2025",
+        "Name of dish": "Taco De Pollo",
+        "Restaurant": "CafeCuba",
+        "Price": 9.5,
+        "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "04/01/2025",
+        "Name of dish": "Chicken Dynamite",
+        "Restaurant": "CafeCuba",
+        "Price": 8.95,
+        "userName": "Sean David Muscat"
     }
 ]

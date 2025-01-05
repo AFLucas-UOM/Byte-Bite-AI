@@ -1308,3 +1308,20 @@ section,
   color: #333; /* Dark text color */
   text-align: center; /* Center align the text */
 }
+
+#add-to-orders {
+  width: 40px;    /* Smaller size */
+  height: 40px;   /* Smaller size */
+  padding: 0;     /* Remove any padding */
+  border-radius: 8px;  /* Rounded corners */
+  background-color: white;  /* White background */
+  border: 1px solid #ccc;   /* Subtle border */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#add-to-orders i {
+  font-size: 1.5rem;  /* Icon size */
+  color: #333;        /* Icon colour */
+}
