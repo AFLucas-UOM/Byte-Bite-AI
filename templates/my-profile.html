@@ -1504,12 +1504,12 @@
                         
                         // Prepare the data object to send to the backend for weight graph
                         const weightData = {
-                          currentDate,
-                          currentUser,
-                          currentWeight,
-                          targetWeight
+                          Name: savedCurrentUser,          // User name from localStorage
+                          Weight: [savedCurrentWeight],     // Array with current weight
+                          TargetWeight: savedTargetWeight,  // Target weight
+                          Date: [savedCurrentDate]          // Array with current date
                         };
-                        
+
                         // Build the data object
                         const settingsData = {
                           favouriteFood: favouriteFood === "Other" ? "Other" : favouriteFood,
