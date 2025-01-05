@@ -836,6 +836,7 @@ section,
   background: var(--accent-color);
   padding: 30px;
   padding-bottom: 1cm;
+  min-height: 500px;
 }
 
 .why-us .why-box h3 {
