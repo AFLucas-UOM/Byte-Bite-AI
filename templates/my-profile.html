@@ -377,8 +377,30 @@
     
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Favorite Food</div>
-                    <div class="col-lg-9 col-md-8">{{ user_data['Favourite Food'] }}</div>
-                  </div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if user_data['Favourite Food'] == 'Burgers' %}
+                        🍔 Burgers
+                      {% elif user_data['Favourite Food'] == 'Pasta' %}
+                        🍝 Pasta
+                      {% elif user_data['Favourite Food'] == 'Pizza' %}
+                        🍕 Pizza
+                      {% elif user_data['Favourite Food'] == 'Chicken' %}
+                        🍗 Chicken
+                      {% elif user_data['Favourite Food'] == 'Salads' %}
+                        🥗 Salads
+                      {% elif user_data['Favourite Food'] == 'Wraps' %}
+                        🌯 Wraps
+                      {% elif user_data['Favourite Food'] == 'Sushi' %}
+                        🍣 Sushi
+                      {% elif user_data['Favourite Food'] == 'Bread' %}
+                        🥖 Bread
+                      {% elif user_data['Favourite Food'] == 'Smoothies' %}
+                        🥤 Smoothies
+                      {% else %}
+                        {{ user_data['Favourite Food'] }}
+                      {% endif %}
+                    </div>
+                  </div>                  
                 </div>
 
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
@@ -1088,18 +1110,18 @@
                           <select name="favouriteFood" id="favouriteFood" class="form-control" onchange="toggleCustomFoodField()" style="border-radius: 0.375rem;">
                             <!-- Placeholder Option -->
                             <option value="" disabled {% if not user_data.get('Favourite Food') %}selected{% endif %}>Select your favorite food</option>
-                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>Pasta</option>
-                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>Pizza</option>
-                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>Burgers</option>
-                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>Sushi</option>
-                            <option value="WarmBowls" {% if user_data.get('Favourite Food', '') == 'WarmBowls' %}selected{% endif %}>Warm Bowls</option>
-                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>Chicken</option>
-                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>Salads</option>
-                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>Wraps</option>
-                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>Smoothies</option>
-                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
+                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>🍔 Burgers</option>
+                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>🍝 Pasta</option>
+                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>🍕 Pizza</option>
+                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>🍗 Chicken</option>
+                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>🥗 Salads</option>
+                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>🌯 Wraps</option>
+                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>🍣 Sushi</option>
+                            <option value="Bread" {% if user_data.get('Favourite Food', '') == 'Bread' %}selected{% endif %}>🥖 Bread</option>
+                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>🥤 Smoothies</option>
+                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
                           </select>
-                    
+                
                           <!-- Custom Food Input -->
                           <input 
                             name="customFood" 
@@ -1108,7 +1130,7 @@
                             id="customFood" 
                             placeholder="Enter your favorite food" 
                             style="width: 70%;" 
-                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Pasta', 'Pizza', 'Burgers', 'Sushi', 'WarmBowls', 'Chicken', 'Salads', 'Wraps', 'Smoothies'] else '' }}">
+                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] else '' }}">
                         </div>
                       </div>
                     </div>
@@ -1131,12 +1153,12 @@
                           customFoodField.value = ''; // Clear custom input
                         }
                       }
-                    
                       // Initialize visibility of custom food field on page load
                       document.addEventListener('DOMContentLoaded', () => {
                         toggleCustomFoodField();
                       });
-                    </script>
+                    </script>         
+                   </form>
 
                     <!-- Favourite Restaurant -->
                     <div class="row mb-3">
@@ -1148,13 +1170,13 @@
                           <option value="" disabled {{ 'selected' if not user_data.get('Favourite Restaurant', '') else '' }}>
                             Select your favorite restaurant
                           </option>
-                          <option value="Burger King" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
+                          <option value="BurgerKing" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
                             Burger King
                           </option>
-                          <option value="Pizza Hut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
+                          <option value="PizzaHut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
                             Pizza Hut
                           </option>
-                          <option value="Cafe Cuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Cafe Cuba' else '' }}>
+                          <option value="CafeCuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'CafeCuba' else '' }}>
                             Cafe Cuba
                           </option>
                           <option value="Ottoman" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Ottoman' else '' }}>
@@ -1463,6 +1485,7 @@
                     <div class="text-center">
                       <button id="Save Changes AI Setting" type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
+
                     <script>
                       document.getElementById("Save Changes AI Setting").addEventListener("click", function (event) {
                         event.preventDefault(); // Prevent form submission

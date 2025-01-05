@@ -904,6 +904,9 @@ def create_app() -> Flask:
             except ValueError:
                 return jsonify({"success": False, "message": "Invalid height format."}), 400
 
+        # Update the last update time for weight
+        updated_profile['Weight_LastUpdate'] = datetime.now().strftime('%d/%m/%Y, %I:%M %p')
+
         # Save the profile only if there are changes
         if updated_profile != user_profile:
             for i, user in enumerate(users):
@@ -916,6 +919,7 @@ def create_app() -> Flask:
             return jsonify({"success": True, "message": "Settings updated successfully."})
 
         return jsonify({"success": True, "message": "No changes were made to the settings."})
+
 
     @app.route('/change-password', methods=['POST'])
     @login_required
@@ -1088,6 +1092,7 @@ def create_app() -> Flask:
             "Height": "",
             "Weight": "",
             "Target_weight": "",
+            "Weight_LastUpdate": "",
             "Favourite Food": "",
             "Favourite Restaurant": "",
             "Vegetarian": 0,
