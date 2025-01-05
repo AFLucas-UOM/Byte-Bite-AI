@@ -360,8 +360,10 @@
             if (bmi) {
               if (bmi < 18.5) {
                 explanations.push("Your <strong>BMI</strong> is on the underweight side. To update your weight, please go to My Profile -> AI Settings");
-              } else if (bmi > 18.5) {
+              } else if (bmi > 25) {
                 explanations.push("Your <strong>BMI</strong> is on the overweight side. To update your weight, please go to My Profile -> AI Settings");
+              } else {
+                explanations.push("Your <strong>BMI</strong> is within the healthy weight range, so we recommended this dish to maintain your balanced weight. To update your weight, please go to My Profile -> AI Settings");
               }
             }
 
@@ -528,12 +530,13 @@
                         const currentTime = new Date();
                         const currentHour = currentTime.getHours();
 
+                        const allowedFoodTypes = ["bread", "dessert", "drink", "smoothies", "snack"];
                         // Filter dishes by food type based on time (morning/evening restrictions)
                         let filteredByFoodType = [];
                         if (currentHour < 9 || currentHour > 18) {
-                            console.log("It's either morning or evening, recommending only Snack dishes.");
+                            console.log("It's either morning or evening, recommending only specific food types.");
                             filteredByFoodType = parsedMenuData.filter(row =>
-                                row.Type && row.Type.toLowerCase() === "snack"
+                                row.Type && allowedFoodTypes.includes(row.Type.toLowerCase())
                             );
                         } else {
                             // Filter dishes by user's favourite food
@@ -595,16 +598,19 @@
                             recommendationPool = parsedMenuData;
                         } else {
                             // Determine recommendation based on BMI
-                            if (bmi > 18.5) {
-                                console.log('BMI > 18.5, filtering for dishes under 3000 KJ');
-                                recommendationPool = filteredByFoodType.filter(row =>
-                                    row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
-                                );
-                            } else if (bmi < 18.5) {
+                            if (bmi <= 18.5) {
                                 console.log('BMI < 18.5, filtering for dishes over 3000 KJ');
                                 recommendationPool = filteredByFoodType.filter(row =>
                                     row["Calories (KJ)"] && row["Calories (KJ)"] > 3000
                                 );
+                            } else if (bmi >= 25) {
+                                console.log('BMI > 25, filtering for dishes under 3000 KJ');
+                                recommendationPool = filteredByFoodType.filter(row =>
+                                    row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
+                                );
+                            } else {
+                              console.log('BMI healthy, no filter needed');
+                              recommendationPool = filteredByFoodType;
                             }
 
                             console.log('Filtered Dishes:', recommendationPool); // Debug log
@@ -1402,49 +1408,75 @@
                   <div id="reportsChart" style="height:25.5rem;"></div>
                   <script>
                     document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Goal Weight',
-                          data: [70, 69, 68, 67, 66, 66, 65], // Example goal weights over 7 weeks
-                        }, {
-                          name: 'Actual Weight',
-                          data: [71, 70, 67, 68, 67, 66, 66] // Example actual weights over 7 weeks
-                        }],
-                        chart: {
-                          height: 350,
-                          type: 'line',
-                          toolbar: {
-                            show: false
-                          },
-                        },
-                        markers: {
-                          size: 4
-                        },
-                        colors: ['#4154f1', '#ff771d'], // Blue for goal weight, orange for actual weight
-                        fill: {
-                          type: "solid"
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'], // Weeks as x-axis labels
-                        },
-                        tooltip: {
-                          x: {
-                            show: true
-                          },
-                          y: {
-                            formatter: (val) => val + ' kg'
+                      // Get the current user's name from localStorage
+                      const userName = localStorage.getItem('BBAIcurrentuser');
+                    
+                      // Make sure the username is available
+                      if (!userName) {
+                        console.error('No user is logged in!');
+                        return;
+                      }
+                    
+                      // Fetch user data from Flask backend, passing the username as a query parameter
+                      fetch(`/get-weight-data?username=${encodeURIComponent(userName)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                          if (data.success) {
+                            let weightData = data.data.weight_data;
+                            let dateData = data.data.date_data;
+                            
+                            // Only keep the last 15 entries
+                            weightData = weightData.slice(-15);
+                            dateData = dateData.slice(-15);
+
+                            // Create chart data
+                            new ApexCharts(document.querySelector("#reportsChart"), {
+                              series: [{
+                                name: 'Actual Weight',
+                                data: weightData // Actual weight data over time
+                              }],
+                              chart: {
+                                height: 350,
+                                type: 'line',
+                                toolbar: {
+                                  show: false
+                                },
+                              },
+                              markers: {
+                                size: 4
+                              },
+                              colors: ['#ff771d'], // Orange for actual weight
+                              fill: {
+                                type: "solid"
+                              },
+                              dataLabels: {
+                                enabled: false
+                              },
+                              stroke: {
+                                curve: 'smooth',
+                                width: 2
+                              },
+                              xaxis: {
+                                categories: dateData, // Use the dates for x-axis labels
+                              },
+                              tooltip: {
+                                x: {
+                                  show: true
+                                },
+                                y: {
+                                  formatter: (val) => val + ' kg'
+                                }
+                              }
+                            }).render();
+                          } else {
+                            console.error('Error fetching user data:', data.message);
                           }
-                        }
-                      }).render();
+                        })
+                        .catch(error => {
+                          console.error('Error fetching data:', error);
+                        });
                     });
-                  </script>
+                  </script>                  
                   <!-- End Line Chart -->
                 </div>
               </div>
