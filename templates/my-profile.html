@@ -409,7 +409,14 @@
                       <label for="profileImage" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Profile Image</label>
                       <div class="col-md-8 col-lg-9">
                         <!-- Profile Image -->
-                        <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle pfp-img">
+                        <div class="profile-container position-relative">
+                          <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle pfp-img">
+                          <label for="uploadProfileImage" class="upload-overlay">
+                            <span>Upload Image</span>
+                          </label>
+                          <input type="file" id="uploadProfileImage" class="d-none" accept="image/*">
+                        </div>
+                        
                         <div class="pt-2" style="padding-left: 43px;">
                           <!-- Upload New Profile Image -->
                           <label for="uploadProfileImage" class="btn btn-primary btn-sm" title="Upload new profile image">
@@ -421,6 +428,7 @@
                           <button type="button" id="removeProfileImage" class="btn btn-danger btn-sm" title="Remove my profile image">
                             <i class="bi bi-trash"></i>
                           </button>
+                          
                           <style>
                             #removeProfileImage {
                               background-color: #b73a3a !important; /* Background color */
@@ -440,10 +448,77 @@
                               object-fit: cover; /* Ensures the image is cropped to fit within the circle */
                               overflow: hidden; /* Ensures no content spills out of the bounds */
                             }
+                            .profile-container {
+                                position: relative;
+                                display: inline-block;
+                              }
+
+                              .pfp-img {
+                                width: 150px; /* Fixed size for profile image */
+                                height: 150px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                              }
+
+                              .upload-overlay {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 150px; /* Match the size of the profile image */
+                                height: 150px;
+                                border-radius: 50%;
+                                background-color: rgba(0, 0, 0, 0.45); /* Light black background with transparency */
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                color: white !important;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                opacity: 0; /* Initially hidden */
+                                transition: opacity 0.3s ease;
+                              }
+
+                              .upload-overlay:hover {
+                                opacity: 1; /* Show overlay on hover */
+                              }
+
                           </style>
                         </div>
 
                         <script>
+                          document.getElementById('uploadProfileImage').addEventListener('change', function (event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                              // Show preview before upload
+                              const reader = new FileReader();
+                              reader.onload = function (e) {
+                                document.getElementById('profilePreview').src = e.target.result;
+                              };
+                              reader.readAsDataURL(file);
+
+                              // Prepare and send the file to the backend
+                              const formData = new FormData();
+                              formData.append('profile_image', file);
+
+                              fetch('/upload-profile-image', {
+                                method: 'POST',
+                                body: formData,
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    alert('Profile image updated successfully!');
+                                  } else {
+                                    alert(data.message || 'Failed to upload the image.');
+                                  }
+                                })
+                                .catch(error => {
+                                  console.error('Error:', error);
+                                });
+                            }
+                          });
+
                           // Handle file input for profile image preview
                           document.getElementById('uploadProfileImage').addEventListener('change', function (event) {
                             const file = event.target.files[0];
@@ -468,8 +543,10 @@
                                   if (data.success) {
                                     // Update the preview image with the server's image URL
                                     document.getElementById('profilePreview').src = data.new_image_url;
+                                    location.reload(); // Refresh the page
                                   } else {
                                     alert(data.message || 'Failed to upload the image.');
+                                    location.reload(); // Refresh the page
                                     // Reset preview to the original image if upload fails
                                     document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
                                   }
@@ -495,6 +572,7 @@
                                     location.reload(); // Refresh the page
                                   } else {
                                     alert(data.message || 'Failed to remove the image.');
+                                    location.reload(); // Refresh the page
                                   }
                                 })
                                 .catch(error => console.error('Error:', error));
@@ -563,7 +641,7 @@
                           name="about" 
                           class="form-control" 
                           id="about" 
-                          style="height: 85px" 
+                          style="height: 90px" 
                           maxlength="300" 
                           oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
                         <small id="aboutError" class="text-danger d-none">Content must not contain harmful or hurtful language.</small>
