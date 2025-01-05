@@ -1,9 +1,12 @@
-[
-    {
-        "Name": "",
-        "Weight": [],
-        "Target Weight": "",
-        "Date": []
-    }
-
-]
+{
+    "Name": "Sean David Muscat",
+    "Weight": [
+        "76",
+        "77"
+    ],
+    "Target Weight": "60.0",
+    "Date": [
+        "5-1-2025",
+        "5-1-2025"
+    ]
+}

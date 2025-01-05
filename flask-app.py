@@ -501,27 +501,30 @@ def create_app() -> Flask:
             return jsonify({"error": str(e)}), 500
 
 
-    # Function to load JSON data from file
+    # Function to load data from weight.json
     def load_weight_data():
-        if not os.path.exists(WEIGHT_JSON_PATH):
-            # Create an empty weight.json file if it doesn't exist
-            with open(WEIGHT_JSON_PATH, "w") as file:
-                json.dump({
-                    "Name": "",
-                    "Weight": [],
-                    "Target Weight": [],
-                    "Date": [],
-                    "Date Target Weight": []
-                }, file)
-        with open(WEIGHT_JSON_PATH, "r") as file:
-            return json.load(file)
+        try:
+            with open(WEIGHT_JSON_PATH, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            # If the file doesn't exist, return a new structure
+            return {
+                "Name": "",
+                "Weight": [],
+                "Target Weight": "",
+                "Date": []
+            }
 
-
-    # Function to save JSON data to file
+    # Function to save updated data to weight.json
     def save_weight_data(data):
         with open(WEIGHT_JSON_PATH, "w") as file:
             json.dump(data, file, indent=4)
 
+    # Utility function to remove .0 from float values
+    def remove_decimal(weight):
+        if weight.endswith('.0'):
+            return str(int(float(weight)))  # Convert to int and back to string to remove .0
+        return weight
 
     @app.route("/update-weight-json", methods=["POST"])
     def update_weight_json():
@@ -535,40 +538,42 @@ def create_app() -> Flask:
 
         # Extract relevant fields
         user_name = incoming_data.get("Name")
-        current_weight = incoming_data.get("currentWeight")
-        target_weight = incoming_data.get("targetWeight")
-        current_date = incoming_data.get("currentDate")
+        current_weight = incoming_data.get("Weight")[0]  # Get first element from Weight array
+        target_weight = incoming_data.get("TargetWeight")
+        current_date = incoming_data.get("Date")[0]  # Get first element from Date array
 
         if not user_name or not current_weight or not target_weight or not current_date:
             return jsonify({"success": False, "message": "Missing required fields"}), 400
 
-        # Update the data structure
+        # Remove .0 if the weight ends with .0
+        current_weight = remove_decimal(current_weight)
+
+        # Initialize data for new user if necessary
         if weight_data["Name"] == "" or weight_data["Name"] != user_name:
-            # If user doesn't exist, initialise user
+            # If user doesn't exist, initialize user
             weight_data["Name"] = user_name
             weight_data["Weight"] = []
-            weight_data["Target Weight"] = []
+            weight_data["Target Weight"] = ""
             weight_data["Date"] = []
-            weight_data["Date Target Weight"] = []
 
-        # Logic for updating Weight, Target Weight, and Dates
+        # Logic for updating Weight and Dates
+        date_added = False  # Flag to ensure Date is added only once for Weight
         if len(weight_data["Weight"]) == 0 or weight_data["Weight"][-1] != current_weight:
             weight_data["Weight"].append(current_weight)
-            weight_data["Date"].append(current_date)
-        else:
-            weight_data["Date Target Weight"].append(current_date)
+            weight_data["Date"].append(current_date)  # Append date only for weight change
+            date_added = True  # Mark Date as added for weight change
 
-        if len(weight_data["Target Weight"]) == 0 or weight_data["Target Weight"][-1] != target_weight:
-            weight_data["Target Weight"].append(target_weight)
-            weight_data["Date Target Weight"].append(current_date)
-        else:
-            weight_data["Date"].append(current_date)
+        # Logic for updating Target Weight (no date appended)
+        if weight_data["Target Weight"] != target_weight:
+            weight_data["Target Weight"] = target_weight  # Update target weight without date
 
         # Save the updated data back to weight.json
         save_weight_data(weight_data)
 
         # Respond with success
         return jsonify({"success": True, "message": "Weight data updated successfully"}), 200
+
+
 
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
