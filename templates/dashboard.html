@@ -1036,31 +1036,25 @@
                     const userData = data.find(user =>
                       user["Full Name"].split(' ')[0].toLowerCase() === currentUserName?.toLowerCase()
                     );
-            
+
                     if (userData) {
                       // Update the weight
                       console.log("WEIGHT WATCHER: ", userData.Weight);
-                      if (isNaN(userData.Weight)){
+                      if (isNaN(userData.Weight)) {
                         userData.Weight = "XX";
                       }
-                      console.log("USer weight is: ", userData.Weight);
+                      console.log("User weight is: ", userData.Weight);
                       document.getElementById('Weight').textContent = `${userData.Weight} kg`;
-            
-                      // Set the current date and time (hour and minute only, in the desired format) as the last update
-                      const options = {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true,
-                      };
-                      const lastUpdate = new Date().toLocaleString('en-GB', options)
-                        .replace(' am', ' AM')
-                        .replace(' pm', ' PM')
-                        .replace('AM', ' AM')
-                        .replace('PM', ' PM');
-                      document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
+
+                      // Use the Weight_LastUpdate field from users.json for the last update time
+                      const lastUpdate = userData.Weight_LastUpdate;
+
+                      if (lastUpdate) {
+                        document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
+                      } else {
+                        console.warn("Weight_LastUpdate field is missing or empty for the user.");
+                        document.getElementById('last-update').textContent = "As of: Unknown";
+                      }
                     } else {
                       console.error('No matching user found in JSON data for name:', currentUserName);
                     }
