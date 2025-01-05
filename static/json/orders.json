@@ -187,5 +187,12 @@
         "Restaurant": "CafeCuba",
         "Price": 14.2,
         "userName": "Andrea Filiberto Lucas"
+    },
+    {
+        "Date": "05/01/2025",
+        "Name of dish": "Funghi Pizza",
+        "Restaurant": "Ottoman",
+        "Price": 12.9,
+        "userName": "Alexandra Lucas"
     }
 ]

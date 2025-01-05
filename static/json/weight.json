@@ -51,10 +51,16 @@
         "Name": "Andrea Filiberto Lucas",
         "Weight": [
             "66",
-            "68"
+            "68",
+            "65",
+            "67",
+            "65"
         ],
-        "Target Weight": "60.0",
+        "Target Weight": "58.0",
         "Date": [
+            "5-1-2025",
+            "5-1-2025",
+            "5-1-2025",
             "5-1-2025",
             "5-1-2025"
         ]
@@ -68,6 +74,16 @@
         "Target Weight": "60.0",
         "Date": [
             "5-1-2025",
+            "5-1-2025"
+        ]
+    },
+    {
+        "Name": "Alexandra Lucas",
+        "Weight": [
+            "70"
+        ],
+        "Target Weight": "60.0",
+        "Date": [
             "5-1-2025"
         ]
     }

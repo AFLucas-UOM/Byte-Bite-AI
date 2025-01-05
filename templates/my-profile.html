@@ -1520,8 +1520,6 @@
                           targetWeight,
                           height
                         };
-
-
                         // Send the weight data to the backend for saving
                         fetch("/update-weight-json", {
                           method: "POST",
@@ -1533,10 +1531,8 @@
                           .then((response) => response.json())
                           .then((data) => {
                             if (data.success) {
-                              alert(data.message); // Show success message
                               location.reload(); // Refresh the page
                             } else {
-                              alert(data.message); // Show error message
                             }
                           })
                           .catch((error) => {
