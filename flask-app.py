@@ -507,13 +507,9 @@ def create_app() -> Flask:
             with open(WEIGHT_JSON_PATH, "r") as file:
                 return json.load(file)
         except FileNotFoundError:
-            # If the file doesn't exist, return a new structure
-            return {
-                "Name": "",
-                "Weight": [],
-                "Target Weight": "",
-                "Date": []
-            }
+            # If the file doesn't exist, return an empty list (to represent no users)
+            return []
+
 
     # Function to save updated data to weight.json
     def save_weight_data(data):
@@ -533,7 +529,7 @@ def create_app() -> Flask:
         if not incoming_data:
             return jsonify({"success": False, "message": "Invalid data received"}), 400
 
-        # Load existing weight.json data
+        # Load existing weight.json data (which should now be a list of users)
         weight_data = load_weight_data()
 
         # Extract relevant fields
@@ -548,30 +544,85 @@ def create_app() -> Flask:
         # Remove .0 if the weight ends with .0
         current_weight = remove_decimal(current_weight)
 
-        # Initialize data for new user if necessary
-        if weight_data["Name"] == "" or weight_data["Name"] != user_name:
-            # If user doesn't exist, initialize user
-            weight_data["Name"] = user_name
-            weight_data["Weight"] = []
-            weight_data["Target Weight"] = ""
-            weight_data["Date"] = []
+        # Search for the user in the list of users
+        user_data = None
+        for user in weight_data:
+            if user["Name"] == user_name:
+                user_data = user
+                break  # Exit the loop once we find the user
+
+        # If user does not exist, initialize the user data
+        if user_data is None:
+            user_data = {
+                "Name": user_name,
+                "Weight": [],
+                "Target Weight": "",
+                "Date": []
+            }
+            weight_data.append(user_data)  # Add the new user data to the list
 
         # Logic for updating Weight and Dates
         date_added = False  # Flag to ensure Date is added only once for Weight
-        if len(weight_data["Weight"]) == 0 or weight_data["Weight"][-1] != current_weight:
-            weight_data["Weight"].append(current_weight)
-            weight_data["Date"].append(current_date)  # Append date only for weight change
+        if len(user_data["Weight"]) == 0 or user_data["Weight"][-1] != current_weight:
+            user_data["Weight"].append(current_weight)
+            user_data["Date"].append(current_date)  # Append date only for weight change
             date_added = True  # Mark Date as added for weight change
 
         # Logic for updating Target Weight (no date appended)
-        if weight_data["Target Weight"] != target_weight:
-            weight_data["Target Weight"] = target_weight  # Update target weight without date
+        if user_data["Target Weight"] != target_weight:
+            user_data["Target Weight"] = target_weight  # Update target weight without date
 
         # Save the updated data back to weight.json
         save_weight_data(weight_data)
 
         # Respond with success
         return jsonify({"success": True, "message": "Weight data updated successfully"}), 200
+
+    # Load the JSON data
+    def load_weight_data_2():
+        file_path = os.path.join('static', 'json', 'weight.json')
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        return []
+
+    # Route to get weight data
+    @app.route("/get-weight-data", methods=["GET"])
+    def get_weight_data():
+        # Get the username from the query parameter
+        user_name = request.args.get('username')
+
+        if not user_name:
+            return jsonify({"success": False, "message": "Username not provided"}), 400
+
+        # Load users data
+        users_data = load_weight_data_2()  # This will load the JSON as a list of users
+        
+        # Find the user data that matches the current user
+        user_data = None
+        for user in users_data:
+            if user["Name"] == user_name:
+                user_data = user
+                break  # Exit the loop once we find the user
+
+        if user_data is None:
+            return jsonify({"success": False, "message": "User not found"}), 404
+
+        # If user is found, extract data for chart
+        target_weight = user_data["Target Weight"]
+        weight_data = user_data["Weight"]
+        date_data = user_data["Date"]
+
+        # Process data as needed for chart
+        chart_data = {
+            "target_weight": target_weight,
+            "weight_data": weight_data,
+            "date_data": date_data
+        }
+
+        # Respond with success and the data
+        return jsonify({"success": True, "data": chart_data}), 200
+
 
 
 
