@@ -201,5 +201,12 @@
         "Restaurant": "Ottoman",
         "Price": 14.5,
         "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "05/01/2025",
+        "Name of dish": "Lemon Muffin",
+        "Restaurant": "Starbucks",
+        "Price": 3.9,
+        "userName": "Alexandra Lucas"
     }
 ]

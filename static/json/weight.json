@@ -70,10 +70,12 @@
     {
         "Name": "Alexandra Lucas",
         "Weight": [
-            "70"
+            "70",
+            "84"
         ],
-        "Target Weight": "60.0",
+        "Target Weight": "70",
         "Date": [
+            "5-1-2025",
             "5-1-2025"
         ]
     }

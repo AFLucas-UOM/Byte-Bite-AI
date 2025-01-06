@@ -77,10 +77,10 @@
         "Mobile Number": "99257339",
         "Email": "alexandralucasmalta@gmail.com",
         "Member Since": "04/01/2025",
-        "Height": 1.45,
-        "Weight": 70.0,
-        "Weight_LastUpdate": "05/01/2025, 03:07 PM",
-        "Target_weight": 60.0,
+        "Height": 1.6,
+        "Weight": 84.0,
+        "Weight_LastUpdate": "05/01/2025, 09:31 PM",
+        "Target_weight": 70.0,
         "Favourite Food": "Pasta",
         "Favourite Restaurant": "CafeCuba",
         "Vegetarian": 0,
@@ -92,7 +92,9 @@
             "Twitter": "https://x.com/",
             "Threads": "https://www.threads.net/"
         },
-        "Disliked Food": [],
+        "Disliked Food": [
+            "Sesame Mushroom"
+        ],
         "Liked Food": []
     }
 ]
