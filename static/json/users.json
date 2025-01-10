@@ -96,5 +96,36 @@
             "Sesame Mushroom"
         ],
         "Liked Food": []
+    },
+    {
+        "Full Name": "Eric Bezzina",
+        "profile_pic": "default.png",
+        "about": "",
+        "DOB": "",
+        "Occupation": "",
+        "Current Course": "",
+        "Nationality": "",
+        "Mobile Number": "",
+        "Email": "ericbezzina@gmail.com",
+        "Member Since": "10/01/2025",
+        "Height": 1.6,
+        "Weight": 80.0,
+        "Target_weight": 70.0,
+        "Favourite Food": "Pizza",
+        "Favourite Restaurant": "PizzaHut",
+        "Vegetarian": 0,
+        "Nut Allergy": 0,
+        "Gluten Allergy": 0,
+        "Social Links": {
+            "Instagram": "https://instagram.com/",
+            "Facebook": "https://facebook.com/",
+            "Twitter": "https://x.com/",
+            "Threads": "https://www.threads.net/"
+        },
+        "Disliked Food": [
+            "Carrot Sliced Baklava"
+        ],
+        "Liked Food": [],
+        "Weight_LastUpdate": "10/01/2025, 09:31 PM"
     }
 ]

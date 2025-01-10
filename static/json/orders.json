@@ -208,5 +208,19 @@
         "Restaurant": "Starbucks",
         "Price": 3.9,
         "userName": "Alexandra Lucas"
+    },
+    {
+        "Date": "10/01/2025",
+        "Name of dish": "Smarties Fusion",
+        "Restaurant": "BurgerKing",
+        "Price": 3.55,
+        "userName": "Eric Bezzina"
+    },
+    {
+        "Date": "10/01/2025",
+        "Name of dish": "Crunchy Caramel Yogurt",
+        "Restaurant": "Joli",
+        "Price": 3.95,
+        "userName": "Eric Bezzina"
     }
 ]
