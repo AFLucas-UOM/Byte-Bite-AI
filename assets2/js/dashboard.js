@@ -2,25 +2,12 @@
 document.addEventListener("DOMContentLoaded", () => {
     const favicon = document.getElementById("favicon");
     const appleIcon = document.getElementById("apple-touch-icon");
+    const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
 
-    const updateIcons = () => {
-        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const isNight = new Date().getHours() >= 18 || new Date().getHours() < 5;
-        const useDarkIcon = prefersDarkScheme || isNight;
-
-        const iconSrc = useDarkIcon ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
-        favicon.href = iconSrc;
-        appleIcon.href = iconSrc;
-    };
-
-    // Initial update on page load
-    updateIcons();
-
-    // Listen for system color scheme changes
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addEventListener("change", updateIcons);
+    const iconSrc = isNight ? favicon.dataset.darkIcon : favicon.dataset.lightIcon;
+    favicon.href = iconSrc;
+    appleIcon.href = iconSrc;
 });
-
 
 /** Signout Function */
 function signOut() {
@@ -64,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (alertTimeout) {
           clearTimeout(alertTimeout);
       }
+      
       // Set the new timeout
       hideAlertAfterTimeout();
   };

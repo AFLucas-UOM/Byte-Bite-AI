@@ -24,14 +24,14 @@
         "Date": "04/11/2024",
         "Name of dish": "Lamb Kofta Wrap",
         "Restaurant": "Ottoman",
-        "Price": 8.5,
+        "Price": 8.50,
         "userName": "Sean David Muscat"
     },
     {
         "Date": "05/11/2024",
         "Name of dish": "Margherita Pizza",
         "Restaurant": "PizzaHut",
-        "Price": 9.0,
+        "Price": 9.00,
         "userName": "Sean David Muscat"
     },
     {
@@ -52,7 +52,7 @@
         "Date": "07/11/2024",
         "Name of dish": "Grilled Chicken Skewers",
         "Restaurant": "Joli",
-        "Price": 10.5,
+        "Price": 10.50,
         "userName": "Sean David Muscat"
     },
     {
@@ -80,7 +80,7 @@
         "Date": "12/09/2024",
         "Name of dish": "Chicken Shawarma",
         "Restaurant": "Ottoman",
-        "Price": 11.5,
+        "Price": 11.50,
         "userName": "Sean David Muscat"
     },
     {
@@ -115,112 +115,28 @@
         "Date": "01/12/2024",
         "Name of dish": "Vegan Burger",
         "Restaurant": "Joli",
-        "Price": 12.5,
+        "Price": 12.50,
         "userName": "Sean David Muscat"
     },
     {
         "Date": "02/12/2024",
         "Name of dish": "Pepperoni Pizza",
         "Restaurant": "PizzaHut",
-        "Price": 14.0,
+        "Price": 14.00,
         "userName": "Sean David Muscat"
     },
     {
-        "Date": "02/12/2024",
+        "Date": "03/12/2024",
         "Name of dish": "Grilled Salmon",
         "Restaurant": "CafeCuba",
         "Price": 18.75,
         "userName": "Sean David Muscat"
     },
     {
-        "Date": "03/12/2024",
+        "Date": "04/12/2024",
         "Name of dish": "Beef Steak",
         "Restaurant": "CafeCuba",
-        "Price": 21.5,
+        "Price": 21.50,
         "userName": "Sean David Muscat"
-    },
-    {
-        "Date": "02/01/2025",
-        "Name of dish": "Kebab",
-        "Restaurant": "Ottoman",
-        "Price": 21.5,
-        "userName": "Andrea Filiberto Lucas"
-    },
-    {
-        "Date": "04/01/2025",
-        "Name of dish": "Falafel Burger",
-        "Restaurant": "Ottoman",
-        "Price": 9.5,
-        "userName": "Sean David Muscat"
-    },
-    {
-        "Date": "04/01/2025",
-        "Name of dish": "Taco De Pollo",
-        "Restaurant": "CafeCuba",
-        "Price": 9.5,
-        "userName": "Sean David Muscat"
-    },
-    {
-        "Date": "29/12/2024",
-        "Name of dish": "Chicken Dynamite",
-        "Restaurant": "CafeCuba",
-        "Price": 8.95,
-        "userName": "Sean David Muscat"
-    },
-    {
-        "Date": "29/12/2024",
-        "Name of dish": "Risotto Nduja",
-        "Restaurant": "CafeCuba",
-        "Price": 15.75,
-        "userName": "Andrea Filiberto Lucas"
-    },
-    {
-        "Date": "03/01/2025",
-        "Name of dish": "Spaghetti Calamari",
-        "Restaurant": "CafeCuba",
-        "Price": 15.75,
-        "userName": "Andrea Filiberto Lucas"
-    },
-    {
-        "Date": "05/01/2025",
-        "Name of dish": "Rigatoni Pesto",
-        "Restaurant": "CafeCuba",
-        "Price": 14.2,
-        "userName": "Andrea Filiberto Lucas"
-    },
-    {
-        "Date": "05/01/2025",
-        "Name of dish": "Funghi Pizza",
-        "Restaurant": "Ottoman",
-        "Price": 12.9,
-        "userName": "Alexandra Lucas"
-    },
-    {
-        "Date": "05/01/2025",
-        "Name of dish": "Mixed Doner Plate",
-        "Restaurant": "Ottoman",
-        "Price": 14.5,
-        "userName": "Sean David Muscat"
-    },
-    {
-        "Date": "05/01/2025",
-        "Name of dish": "Lemon Muffin",
-        "Restaurant": "Starbucks",
-        "Price": 3.9,
-        "userName": "Alexandra Lucas"
-    },
-    {
-        "Date": "10/01/2025",
-        "Name of dish": "Smarties Fusion",
-        "Restaurant": "BurgerKing",
-        "Price": 3.55,
-        "userName": "Eric Bezzina"
-    },
-    {
-        "Date": "10/01/2025",
-        "Name of dish": "Crunchy Caramel Yogurt",
-        "Restaurant": "Joli",
-        "Price": 3.95,
-        "userName": "Eric Bezzina"
     }
 ]

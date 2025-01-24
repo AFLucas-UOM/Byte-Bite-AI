@@ -304,6 +304,7 @@ function findHighestPrediction(avgLikelihoods) {
   return highestPrediction;
 }
 
+// Function to update the restaurant info section with the highest prediction
 function updateRestaurantInfo(highestPrediction) {
   const logoImg = document.getElementById("restaurant-logo");
   const likelihoodSpan = document.getElementById("likelihood-percentage");
@@ -324,9 +325,7 @@ function updateRestaurantInfo(highestPrediction) {
   
   // Assume that health score and average kilojoules are pre-defined or fetched dynamically
   healthScoreSpan.textContent = getHealthScore(highestPrediction); // Replace with your actual function to fetch health score
-  getAverageKilojoules(highestPrediction).then(kjValue => {
-    kjValueSpan.textContent = kjValue; // Display the average kilojoules once the promise resolves
-  });
+  kjValueSpan.textContent = getAverageKilojoules(highestPrediction); // Replace with your actual function to fetch average kilojoules
 }
 
 // Dummy function to return health score based on restaurant name
@@ -344,70 +343,20 @@ function getHealthScore(restaurant) {
   return healthScores[restaurant] || "☆☆☆☆☆";
 }
 
+// Dummy function to return average kilojoules based on restaurant name
 function getAverageKilojoules(restaurant) {
-  return fetch('/static/menu.csv') // Path to your menu CSV file
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then(csvData => {
-      const rows = csvData.split('\n');
-      const headers = rows[0].split(',');
-      const restaurantIndex = headers.indexOf('Restaurant');
-      const caloriesIndex = headers.indexOf('Calories (KJ)');
-
-      // Ensure the correct columns are found
-      if (restaurantIndex === -1 || caloriesIndex === -1) {
-        throw new Error("Required columns not found in the CSV file");
-      }
-
-      let totalKilojoules = 0;
-      let count = 0;
-
-      // Loop through the rows (skipping the header)
-      rows.slice(1).forEach(row => {
-        const cols = row.split(',');
-
-        // Check if the row has valid data
-        if (cols.length > caloriesIndex && cols[restaurantIndex]?.trim() === restaurant) {
-          let calories = cols[caloriesIndex]?.replace(/["\s]/g, '').trim(); // Remove quotes and spaces
-
-          // Log the raw calorie value for debugging
-          console.log(`Raw calorie value for ${restaurant}: "${calories}"`);
-
-          // Now parse the calorie value, leaving commas in place
-          // Remove commas only for parsing
-          let parsedCalories = parseFloat(calories.replace(/,/g, ''));
-
-          // Only proceed if the calories value is a valid number
-          if (!isNaN(parsedCalories)) {
-            totalKilojoules += parsedCalories;
-            count++;
-          } else {
-            console.warn(`Skipping invalid calorie value for row: ${row}`);
-          }
-        } else {
-          console.warn(`Skipping row due to missing or invalid restaurant: ${row}`);
-        }
-      });
-
-      // Log the results for debugging
-      console.log(`Total Kilojoules for ${restaurant}: ${totalKilojoules}`);
-      console.log(`Count of matching entries: ${count}`);
-
-      // Return the average, or "XXXX" if no valid data
-      return count > 0 ? (totalKilojoules / count).toFixed(2) : "XXXX";
-    })
-    .catch(error => {
-      console.error("Error fetching or processing menu.csv:", error);
-      return "XXXX";
-    });
+  const averageKJs = {
+    "Amami": 2200,
+    "Boost": 1800,
+    "BurgerKing": 3500,
+    "CafeCuba": 2100,
+    "Joli": 2500,
+    "Ottoman": 2300,
+    "PizzaHut": 2900,
+    "Starbucks": 2000
+  };
+  return averageKJs[restaurant] || "XXXX";
 }
-
-
-
 
 // Function to temporarily reset the UI and clear averages
 function toggleReset() {
