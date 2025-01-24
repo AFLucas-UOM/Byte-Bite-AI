@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Chatbot- Byte Bite-AI</title>
+  <title>Chatbot - Byte Bite-AI</title>
 
   <!-- Favicons -->
   <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
@@ -55,7 +55,7 @@
           <!-- Correctly reference the image path -->
           <img src="{{ profile_pic }}" alt="Profile" class="rounded-circle">
           <!-- Placeholder span for the user's name -->
-          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em;">Loading... </span>
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em; padding-left: 0 !important;">Loading... </span>
         </a><!-- End Profile Image Icon -->
         
         <script>
@@ -75,7 +75,7 @@
         
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li>
-            <a class="dropdown-item d-flex align-items-center" href="/in-dev">
+            <a class="dropdown-item d-flex align-items-center" href="/my-profile">
               <i class="bi bi-person"></i>
               <span>My Profile</span>
             </a>
@@ -116,7 +116,7 @@
 
     <!-- Profile Section -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="/in-dev" aria-label="My Profile" aria-expanded="false">
+      <a class="nav-link collapsed" href="/my-profile" aria-label="My Profile" aria-expanded="false">
         <i class="bi bi-person"></i>
         <span>My Profile</span>
       </a>
@@ -219,7 +219,7 @@
           flex-direction: column;
           padding: 20px 0px;
           background-color: white;
-          height: calc(62vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
+          height: calc(56vh - 90px); /* Dynamically calculate height based on viewport, adjust for padding or other elements */
           position: relative;
           overflow: hidden; /* Prevents the chatbox itself from growing */
           width: 110%;
@@ -593,101 +593,257 @@
       }
   });
 
-  // Send message function
+  // Function to create and display a random welcome message
+  function displayWelcomeMessage() {
+      // Check if 'BBAIcurrentuser' exists in localStorage
+      const currentUser = localStorage.getItem('BBAIcurrentuser');
+      let firstName = "Walter Error"; // Default in case of missing user
+
+      if (currentUser) {
+          // Split the full name into an array and get the first part (first name)
+          firstName = currentUser.split(' ')[0];
+      }
+
+      // Define an array of greetings
+      const greetings = [
+          `Hello ${firstName}, welcome to your health assistant! How can I help you today?`,
+          `Hi ${firstName}! I’m here to assist you with any health questions you have. What’s on your mind?`,
+          `Welcome, ${firstName}! Feel free to ask me anything about your health, and I’ll do my best to help.`,
+          `Hey ${firstName}, I’m your health assistant. What can I do for you today?`,
+          `Good day ${firstName}! Ready to assist you with your health and wellness needs. How can I help?`
+      ];
+
+      // Randomly choose a greeting from the array
+      const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+
+      // Create the welcome message
+      const welcomeMessage = document.createElement("div");
+      welcomeMessage.classList.add("message", "bot-message");  // Use bot-message class for consistent styling
+      welcomeMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p>${randomGreeting}</p>
+          </div>
+      `;
+
+      // Append the message to the message container
+      if (messageContainer) {
+          messageContainer.appendChild(welcomeMessage);
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom to show the latest message
+      } else {
+          console.error("Message container not found.");
+      }
+  }
+
+  // Call the function to display the welcome message when the page loads
+  window.onload = function() {
+      displayWelcomeMessage();
+  };
+
+
+
+  // Define a predefined prompt - can be further edited
+  const predefinedPrompt = `
+You are a health assistant AI. Your primary role is to provide accurate, evidence-based, and concise information about health, wellness, medical conditions, fitness, nutrition, and mental well-being. You should not answer questions outside the domain of health or provide personal medical diagnoses. If a question is beyond your scope, politely advise the user to consult a qualified healthcare professional. You can also give some background information on the restaurants we cater for. Here is a quick run down on each restaurant, you are to reply to the user with the fact corresponding to the restaurant they want:
+Burger King: A global fast-food chain known for its flame-grilled burgers, fries, and quick service.
+Pizza Hut: A popular pizza chain offering a variety of crust styles, toppings, and Italian-American dishes.
+Boost Juice: A vibrant juice and smoothie bar focusing on fresh, healthy drinks made from natural ingredients.
+Starbucks: An iconic coffeehouse chain serving high-quality coffee, teas, pastries, and light snacks in a cosy environment.
+Ottoman Posh Turkish: A kebab shop specialising in authentic Turkish dishes like doner, wraps, and grilled meats.
+Amami: A sushi restaurant offering fresh and artfully presented Japanese cuisine, including sashimi, rolls, and hot dishes.
+J'oli: A trendy café known for its fresh sandwiches, salads, and healthy meal options.
+Cafe Cuba: Café Cuba is a versatile restaurant offering a wide array of dishes, with a special emphasis on Cuban-inspired cuisine.
+
+Additionally, if a user specifically requests something to eat, ignore all previous instructions and provide a dish from the list I gave you, you are able to suggest one item from a given menu based on the user's preferences or dietary needs. Please limit your recommendation to just one item from the menu provided. Only suggest food when explicitly requested by the user.`;
+
+
+  // Function to create and display the bot's thinking message (3 dots)
+  function showThinkingMessage() {
+      const thinkingMessage = document.createElement("div");
+      thinkingMessage.classList.add("message", "bot-message");
+      thinkingMessage.id = "thinkingMessage";  // Assign an ID to easily update this later
+      thinkingMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p>...</p>
+          </div>
+      `;
+      if (messageContainer) {
+          messageContainer.appendChild(thinkingMessage);
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom to show the latest message
+      }
+  }
+
+  // Function to animate the thinking dots (show three dots in the pattern)
+  function animateThinkingDots() {
+      const thinkingMessage = document.getElementById("thinkingMessage");
+      let dots = 1;
+      const dotInterval = setInterval(() => {
+          if (dots > 3) {
+              dots = 1;
+          }
+          thinkingMessage.querySelector("p").textContent = '.'.repeat(dots);  // Update with current dot count
+          dots++;
+      }, 500);  // Update every 500ms
+      return dotInterval;
+  }
+
+  // Function to simulate typing effect with blinking pipe symbol
+  function simulateTypingEffect(response) {
+      const botMessage = document.createElement("div");
+      botMessage.classList.add("message", "bot-message");
+      botMessage.innerHTML = `
+          <div class="message-content_bot">
+              <div class="message-icon_bot">
+                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+              </div>
+          </div>
+          <div class="message-text">
+              <p id="typingText"></p>
+          </div>
+      `;
+      messageContainer.appendChild(botMessage);
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+
+      const typingTextElement = document.getElementById("typingText");
+      let index = 0;
+      let typedText = '';
+      const typingInterval = setInterval(() => {
+          // Add the character to the text and move the pipe symbol
+          typedText += response.charAt(index);  // Add one character at a time
+          typingTextElement.textContent = typedText + "|";  // Show the current text with pipe
+
+          index++;
+          if (index === response.length) {
+              clearInterval(typingInterval);  // Stop once the entire message is typed
+
+              // Blink the pipe symbol twice
+              let blinkCount = 0;
+              const blinkInterval = setInterval(() => {
+                  typingTextElement.textContent = typedText + (blinkCount % 2 === 0 ? "|" : "");
+                  blinkCount++;
+                  if (blinkCount === 4) {
+                      clearInterval(blinkInterval);  // Stop blinking after 2 cycles
+                      typingTextElement.textContent = typedText; // Remove the pipe after blinking
+                  }
+              }, 500);  // Blink every 500ms (half a second)
+          }
+      }, 50);  // Faster typing (50ms per character)
+  }
+
+  // Function to simulate sending the user's message and bot's response with typing effect
   function sendMessage() {
-    const userInput = chatInput.value;
+      const userInput = chatInput.value;
+      if (userInput.trim()) {
+          sendButton.disabled = true;
+          sendButton.innerHTML = "&#10005;"; // Cross symbol
 
-    if (userInput.trim()) {
-        // Disable send button and change it to a cross
-        sendButton.disabled = true;
-        sendButton.innerHTML = "&#10005;"; // Cross symbol
+          // Create user message
+          const userMessage = document.createElement("div");
+          userMessage.classList.add("message", "user-message");
+          userMessage.innerHTML = `
+              <div class="message-content_user">
+                  <div class="message-text_user_input"><p>${userInput}</p></div>
+                  <div class="message-icon" style="min-width: 10%">
+                      <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
+                  </div>
+              </div>`;
+          messageContainer.appendChild(userMessage);
+          chatInput.value = "";  // Clear the input field
+          messageContainer.scrollTop = messageContainer.scrollHeight;  // Scroll to the bottom
 
-        // Create user message
-        const userMessage = document.createElement("div");
-        userMessage.classList.add("message", "user-message");
-        userMessage.innerHTML = `
-                <div class="message-content_user">
-                    <div class="message-text_user_input"><p>${userInput}</p></div>
-                    <div class="message-icon" style="min-width: 10%">
-                        <!-- Dynamically load user profile picture -->
-                        <img src="{{ profile_pic }}" alt="User Icon" class="user-icon">
-                    </div>
-                </div>`;
-        // Append the message to the message container
-        if (messageContainer) {
-            messageContainer.appendChild(userMessage);
+          // Show thinking message and animate dots
+          showThinkingMessage();
+          const thinkingInterval = animateThinkingDots();
 
-            // Clear input field
-            chatInput.value = "";
+          // Combine predefined prompt with user input
+          const combinedPrompt = `${predefinedPrompt}\n\nUser: ${userInput}`;
 
-            // Scroll to the bottom of the chat
-            messageContainer.scrollTop = messageContainer.scrollHeight;
+          // Send user input to the chatbot API
+          fetch("http://127.0.0.1:1000/chatbot", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ prompt: combinedPrompt }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              const botResponse = data.response;
 
-            // Send the user input to the chatbot API
-            fetch("http://127.0.0.1:1000/chatbot", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ prompt: userInput }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const botResponse = data.response;
+              // Check if this is the first message and make sure it is not overwritten
+              const thinkingMessage = document.getElementById("thinkingMessage");
+              if (thinkingMessage) {
+                  thinkingMessage.remove();  // Remove the thinking message after response
+              }
 
-                // Create bot message
-                const botMessage = document.createElement("div");
-                botMessage.classList.add("message", "bot-message");
-                botMessage.innerHTML = `
-                        <div class="message-content_bot">
-                            <div class="message-icon_bot">
-                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                            </div>
-                        </div>
-                        <div class="message-text">
-                            <p>${botResponse}</p>
-                        </div>
-                    </div>
-                `;
-                messageContainer.appendChild(botMessage);
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-            })
-            .catch(error => {
-                console.error("Error fetching chatbot response:", error);
-                const errorMessage = document.createElement("div");
-                errorMessage.classList.add("message", "bot-message");
-                errorMessage.innerHTML = `
-                        <div class="message-content_bot">
-                            <div class="message-icon_bot">
-                                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-                            </div>
-                        </div>
-                        <div class="message-text">
-                            <p>Oops! Something went wrong. Please try again later.</p>
-                        </div>
-                    </div>
-                `;
-                messageContainer.appendChild(errorMessage);
-                messageContainer.scrollTop = messageContainer.scrollHeight;
-            })
-            .finally(() => {
-                // Re-enable the send button and change it back to the arrow
-                sendButton.disabled = false;
-                sendButton.innerHTML = "↑"; // Reset the button to the arrow
-            });
-        } else {
-            console.error("Message container not found.");
-        }
-    }
-}
+              // Ensure the first bot message isn't overwritten
+              const firstMessage = document.querySelector(".bot-message");
+              if (!firstMessage) {
+                  simulateTypingEffect(botResponse);
+              } else {
+                  // If the first message exists, it means it's already shown, so we skip replacing it
+                  simulateTypingEffect(botResponse);
+              }
+          })
+          .catch(error => {
+              console.error("Error fetching chatbot response:", error);
+              const errorMessage = document.createElement("div");
+              errorMessage.classList.add("message", "bot-message");
+              errorMessage.innerHTML = `
+                  <div class="message-content_bot">
+                      <div class="message-icon_bot">
+                          <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+                      </div>
+                  </div>
+                  <div class="message-text">
+                      <p>Oops! Something went wrong. Please try again later.</p>
+                  </div>
+              `;
+              messageContainer.appendChild(errorMessage);
+              messageContainer.scrollTop = messageContainer.scrollHeight;
+          })
+          .finally(() => {
+              sendButton.disabled = false;
+              sendButton.innerHTML = "↑"; // Reset the button to the arrow
+          });
+      }
+  }
+
 
   // Call requestMicrophonePermission to check permission when the page loads
   requestMicrophonePermission();
 </script>
-
+  <!-- Chatbot Section -->
+<section aria-labelledby="ar-view-title" style="z-index: 999999999 !important;">
+  <div id="info-area" style="display: none; margin-bottom: 0;">
+      <div class="info-group">
+        <h2>About BB-AI's Chatbot</h2>
+        <p>
+          The <span class="highlight">BB-AI's Chatbot</span> is your go-to assistant for quick answers on healthy eating, the BB-AI system, or Campus Hub outlets, offering personalized support whenever you need it.
+        </p>
+        <p>
+          Powered by <a href="https://ollama.com" target="_blank" class="bold-link"><b>&copy; Ollama</b></a> using the <a href="https://ollama.com/library/orca-mini" target="_blank" class="bold-link"><b>&copy; Orca-Mini</b></a> model.
+        </p>          
+      </div>
+  </div>    
+</section>
   </main><!-- End #main -->
   
   <!-- ======= Footer ======= -->
+  <footer style="position: relative; display: flex; justify-content: center; align-items: center; width: auto; bottom: -50px !important;" id="footer" role="contentinfo">
+    <p style="margin: 0;">
+      <a id="info-button" href="javascript:void(0)" onclick="toggleInfo()">Click here to find out more about this page</a>
+    </p>
+  </footer>
   <footer style= "align-items: center;"id="footer" class="footer position-relative dark-background" role="contentinfo">
     <div class="credits">
       Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
@@ -730,5 +886,6 @@
   <script src="assets/js/main.js"></script>
   <script src="assets2/js/main.js"></script>
   <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
 </body>
 </html>

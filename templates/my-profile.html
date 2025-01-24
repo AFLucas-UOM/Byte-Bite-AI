@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>My Profile - Byte Bite-AI</title>
+
+  <!-- Favicons -->
+  <link id="favicon" rel="icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="{{ url_for('serve_assets', filename='img/faviconBB.png') }}" 
+    data-dark-icon="{{ url_for('serve_assets', filename='img/faviconBBDark.png') }}" 
+    data-light-icon="{{ url_for('serve_assets', filename='img/faviconBB.png') }}">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets2', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('serve_assets', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  
+  <!-- Main CSS File (DASHBOARD) -->
+  <link href="{{ url_for('serve_assets2', filename='css/style.css') }}" rel="stylesheet">
+
+  <!-- FOR GRAPHS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
+  <!-- FOR PARSING -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script src="{{ url_for('serve_assets2', filename='js/ar-main.js') }}"></script>
+</head>
+
+<body>
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="d-flex align-items-center justify-content-between">
+    <a href="#" class="logo d-flex align-items-center">
+      <i class="bi bi-list toggle-sidebar-btn" style="color: #212529; padding-left: 1vw;"></i>
+      <h1 class="sitename" onclick="location.reload();">
+        <span style="padding-left: 0.5cm;" class="title">Byte Bite</span>-<span style="padding-right: 0.5cm;" class="accent">AI</span>
+      </h1>
+    </a>      
+  </div><!-- End BBAI-Logo -->
+
+  <nav class="header-nav ms-auto">
+    <ul class="d-flex align-items-center">
+        <!-- Profile Image Icon -->
+        <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+          <!-- Correctly reference the image path -->
+          <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+          <!-- Placeholder span for the user's name -->
+          <span id="profileName" class="d-none d-md-block dropdown-toggle ps-2" style="padding-right: 1.5em; padding-left: 0 !important;">Loading... </span>
+        </a><!-- End Profile Image Icon -->
+        
+        <script>
+          // Check if 'BBAIcurrentuser' exists in localStorage
+          const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+          if (currentUser) {
+            // Split the full name into an array and get the first part (first name)
+            const firstName = currentUser.split(' ')[0];
+            // Update the span text with the first name
+            document.getElementById('profileName').textContent = firstName;
+          } else {
+            // If no user is found, keep the default "Loading..."
+            document.getElementById('profileName').textContent = 'Walter Error';
+          }
+        </script>
+        
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/my-profile">
+              <i class="bi bi-person"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center" href="/faqs">
+              <i class="ri-question-mark"></i>
+              <span>Need Help</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li>
+            <a id="signout-btn" class="dropdown-item d-flex align-items-center" href="#" onclick="signOut()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Sign Out</span>
+            </a>         
+          </li><!-- End Profile Nav -->
+        </ul>
+      </nav><!-- End Icons Navigation -->
+</header><!-- End Header -->
+
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- Dashboard Section -->
+    <li class="nav-heading">Overview</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/dashboard" aria-label="Dashboard" aria-expanded="false">
+        <i class="rbi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <!-- Profile Section -->
+    <li class="nav-item">
+      <a class="nav-link" href="" aria-label="My-Profile">
+        <i class="bi bi-person"></i>
+        <span>My Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+    <!-- Pages Section -->
+    <li class="nav-heading">Pages</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/chatbot" aria-label="Chatbot" aria-expanded="false">
+        <i class="ri-question-answer-line"></i>
+        <span>Chatbot</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/ar-view" aria-label="AR-View" aria-expanded="false">
+        <i class="ri-qr-code-line"></i>
+        <span>AR-View</span>
+      </a>
+    </li><!-- End ChatBot Page Nav -->
+
+    <!-- Other Section -->
+    <li class="nav-heading">Other</li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/faqs" aria-label="FAQs" aria-expanded="false">
+        <i class="ri-question-mark"></i>
+        <span>FAQs</span>
+      </a>
+    </li><!-- End FAQs Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" onclick="signOut()" aria-label="Sign Out" aria-expanded="false">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sign Out</span>
+      </a>
+    </li><!-- End Sign Out Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->
+
+  <main id="main" class="main-content">
+
+    <div class="pagetitle">
+      <h1 id="profileHeading"><b>'s Profile</b></h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+          <li class="breadcrumb-item">Pages</li>
+          <li class="breadcrumb-item active">My Profile</li>
+        </ol>
+      </nav>
+    </div> <!-- End Page Title -->
+    
+    <script>
+      // Check if 'BBAIcurrentuser' exists in localStorage
+      const currentUser2 = localStorage.getItem('BBAIcurrentuser');
+    
+      if (currentUser2) {
+        // Split the full name into an array and get the first part (first name)
+        const firstName = currentUser2.split(' ')[0];
+        // Update the <h1> element with the first name
+        document.getElementById('profileHeading').innerHTML = `<b>${firstName}'s Profile</b>`;
+      } else {
+        // If no user is found, keep a default message
+        document.getElementById('profileHeading').innerHTML = `<b>Walter Error's Profile</b>`;
+      }
+    </script>
+    
+    <section class="section profile">
+      <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-xl-4">
+          <div class="card">
+            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+              <!-- Profile Picture -->
+              <img src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile Picture" class="rounded-circle">
+              <h2 class="text-center" style="color: #212529 !important">{{ user_data['Full Name'] }}</h2>
+              <h3 style="color: #212529 !important">{{ user_data['Current Course'] }}</h3>
+      
+              <!-- Social Links -->
+              <div class="social-links mt-2">
+                {% if user_data['Social Links'].get('Instagram') and user_data['Social Links']['Instagram'] != 'https://instagram.com/' %}
+                  <a href="{{ user_data['Social Links']['Instagram'] }}" class="instagram" target="_blank"><i class="bi bi-instagram"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Facebook') and user_data['Social Links']['Facebook'] != 'https://facebook.com/' %}
+                  <a href="{{ user_data['Social Links']['Facebook'] }}" class="facebook" target="_blank"><i class="bi bi-facebook"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Twitter') and user_data['Social Links']['Twitter'] != 'https://x.com/' %}
+                  <a href="{{ user_data['Social Links']['Twitter'] }}" class="twitter" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                {% endif %}
+                {% if user_data['Social Links'].get('Threads') and user_data['Social Links']['Threads'] != 'https://www.threads.net/' %}
+                  <a href="{{ user_data['Social Links']['Threads'] }}" class="threads" target="_blank"><i class="bi bi-threads"></i></a>
+                {% endif %}
+              </div>
+              <style>
+                .social-links a i {
+                  color: #80B794 !important; /* Default color */
+                  transition: color 0.3s ease; /* Smooth transition */
+                }
+              
+                .social-links a i:hover {
+                  color: #036628 !important; /* Hover color */
+                }
+              </style>
+              
+            </div>
+          </div>
+        </div>    
+    
+        <!-- Profile Main Content -->
+        <div class="col-xl-8">
+          <div class="card">
+            <div class="card-body pt-3">
+              <!-- Tab Navigation -->
+              <ul class="nav nav-tabs nav-tabs-bordered">
+                <li class="nav-item">
+                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview" style="color: #212529">Overview</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit" style="color: #212529">Edit Profile</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password" style="color: #212529">Change Password</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings" style="color: #212529">AI Settings</button>
+                </li>
+              </ul>
+              
+              <style>
+                /* Scoped styling for the nav-tabs in this specific card-body */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link {
+                  color: #212529 !important; /* Default text color */
+                  background-color: transparent !important; /* Default background */
+                  border: var(--bs-nav-tabs-border-width) solid transparent !important; /* Transparent border */
+                  border-radius: 0.25rem !important; /* Keep original border radius for top corners */
+                  transition: all 0.3s ease !important; /* Smooth transition */
+                }
+                
+                /* Remove rounded corners at the bottom for active and focus states */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link.active,
+                .card-body.pt-3 .nav-tabs-bordered .nav-link:focus {
+                  color: #0F6E32 !important; /* Green text color */
+                  background-color: #EFFCF2 !important; /* Light green background */
+                  border-color: #0F6E32 !important; /* Green border */
+                  border-bottom-left-radius: 0 !important; /* Remove bottom left rounded corner */
+                  border-bottom-right-radius: 0 !important; /* Remove bottom right rounded corner */
+                }
+                
+                /* Hover state styling remains the same */
+                .card-body.pt-3 .nav-tabs-bordered .nav-link:hover {
+                  color: #0F6E32 !important; /* Green text color */
+                  background-color: #EFFCF2 !important; /* Light green background */
+                  border-color: #0F6E32 !important; /* Green border */
+                  border-bottom-left-radius: 0 !important; /* Remove bottom left rounded corner */
+                  border-bottom-right-radius: 0 !important; /* Remove bottom right rounded corner */
+                }
+                </style>
+                
+              <!-- Tab Content -->
+              <div class="tab-content pt-2">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                  <!-- About Section -->
+                  <h5 class="card-title" style="color: #036628 !important">About</h5>
+                  {% if user_data['about'] %}
+                    <p class="small fst-italic">{{ user_data['about'] }}</p>
+                  {% else %}
+                    <p class="small fst-italic text-muted text-center">No information provided.</p>
+                  {% endif %}
+    
+                  <!-- Profile Details -->
+                  <h5 class="card-title" style="color: #036628 !important">Profile Details</h5>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Full Name</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Full Name'] }}</div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Date of Birth</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['DOB'] }}</div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Occupation</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Occupation'] }}</div>
+                  </div>
+    
+                  {% if user_data.get('Occupation', '').startswith('Student') or user_data.get('Occupation', '').startswith('Lecturer') %}
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 label" id="dynamicLabel" style="color: #212529 !important">
+                            {% if user_data.get('Occupation', '').startswith('Student') %}
+                                Current Course
+                            {% elif user_data.get('Occupation', '').startswith('Lecturer') %}
+                                Department
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-9 col-md-8" id="dynamicValue">
+                            {{ user_data.get('Current Course', '') }}
+                        </div>
+                    </div>
+                  {% endif %}
+                
+                  <script>
+                    function updateDynamicLabel() {
+                      const occupation = "{{ user_data.get('Occupation', '') }}";
+                      const dynamicLabel = document.getElementById('dynamicLabel');
+                      const dynamicValue = document.getElementById('dynamicValue');
+                  
+                      if (occupation.startsWith('Student')) {
+                        dynamicLabel.textContent = 'Current Course';
+                        dynamicValue.textContent = "{{ user_data['Current Course'] }}";
+                      } else if (occupation.startsWith('Lecturer')) {
+                        dynamicLabel.textContent = 'Department';
+                        dynamicValue.textContent = "{{ user_data['Current Course'] }}";
+                      }
+                    }
+                  
+                    document.addEventListener('DOMContentLoaded', updateDynamicLabel);
+                  </script>
+                      
+                  <!-- Nationality -->
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Nationality</div>
+                    <div class="col-lg-9 col-md-8" id="DisplayedNationality">
+                      {{ user_data.get('Nationality', 'Not specified') }}
+                    </div>
+                  </div>
+
+                  <!-- Mobile Number -->
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Mobile Number</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if user_data.get('Nationality', '') %}
+                        <span id="DynamicCountryCode">
+                          {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
+                        </span>
+                      {% endif %}
+                      {{ user_data.get('Mobile Number', 'Not specified') }}
+                    </div>
+                  </div>
+
+                  <!-- Hidden JSON for Country Codes -->
+                  <div id="CountryCodesData" style="display: none;">
+                    {{ country_codes | tojson }}
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Email</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Email'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Member Since</div>
+                    <div class="col-lg-9 col-md-8">{{ user_data['Member Since'] }}</div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label" style="color: #212529 !important">Favorite Food</div>
+                    <div class="col-lg-9 col-md-8">
+                      {% if user_data['Favourite Food'] == 'Burgers' %}
+                        🍔 Burgers
+                      {% elif user_data['Favourite Food'] == 'Pasta' %}
+                        🍝 Pasta
+                      {% elif user_data['Favourite Food'] == 'Pizza' %}
+                        🍕 Pizza
+                      {% elif user_data['Favourite Food'] == 'Chicken' %}
+                        🍗 Chicken
+                      {% elif user_data['Favourite Food'] == 'Salads' %}
+                        🥗 Salads
+                      {% elif user_data['Favourite Food'] == 'Wraps' %}
+                        🌯 Wraps
+                      {% elif user_data['Favourite Food'] == 'Sushi' %}
+                        🍣 Sushi
+                      {% elif user_data['Favourite Food'] == 'Bread' %}
+                        🥖 Bread
+                      {% elif user_data['Favourite Food'] == 'Smoothies' %}
+                        🥤 Smoothies
+                      {% else %}
+                        {{ user_data['Favourite Food'] }}
+                      {% endif %}
+                    </div>
+                  </div>                  
+                </div>
+
+                <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                  <!-- Profile Edit Form -->
+                  <form>
+                    <!-- Profile Image -->
+                    <div class="row mb-3">
+                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Profile Image</label>
+                      <div class="col-md-8 col-lg-9">
+                        <!-- Profile Image -->
+                        <div class="profile-container position-relative">
+                          <img id="profilePreview" src="static/img/PFPs/{{ user_data['profile_pic'] }}" alt="Profile" class="rounded-circle pfp-img">
+                          <label for="uploadProfileImage" class="upload-overlay">
+                            <span>Upload Image</span>
+                          </label>
+                          <input type="file" id="uploadProfileImage" class="d-none" accept="image/*">
+                        </div>
+                        
+                        <div class="pt-2" style="padding-left: 43px;">
+                          <!-- Upload New Profile Image -->
+                          <label for="uploadProfileImage" class="btn btn-primary btn-sm" title="Upload new profile image">
+                            <i class="bi bi-upload" style="color: white;"></i>
+                          </label>
+                          <input type="file" id="uploadProfileImage" class="d-none" accept="image/*">
+
+                          <!-- Remove Profile Image -->
+                          <button type="button" id="removeProfileImage" class="btn btn-danger btn-sm" title="Remove my profile image">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                          
+                          <style>
+                            #removeProfileImage {
+                              background-color: #b73a3a !important; /* Background color */
+                              color: white !important; /* Ensure the icon remains visible */
+                              border: none; /* Remove border for a cleaner look */
+                              transition: background-color 0.3s ease; /* Smooth transition on hover */
+                            }
+
+                            #removeProfileImage:hover {
+                              background-color: #c13838e6 !important; /* Slightly darker shade for hover */
+                            }
+
+                            .pfp-img {
+                              width: 150px; /* Fixed width for the image */
+                              height: 150px; /* Fixed height for the image */
+                              border-radius: 50%; /* Ensures it is always circular */
+                              object-fit: cover; /* Ensures the image is cropped to fit within the circle */
+                              overflow: hidden; /* Ensures no content spills out of the bounds */
+                            }
+                            .profile-container {
+                                position: relative;
+                                display: inline-block;
+                              }
+
+                              .pfp-img {
+                                width: 150px; /* Fixed size for profile image */
+                                height: 150px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                              }
+
+                              .upload-overlay {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 150px; /* Match the size of the profile image */
+                                height: 150px;
+                                border-radius: 50%;
+                                background-color: rgba(0, 0, 0, 0.45); /* Light black background with transparency */
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                color: white !important;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;
+                                opacity: 0; /* Initially hidden */
+                                transition: opacity 0.3s ease;
+                              }
+
+                              .upload-overlay:hover {
+                                opacity: 1; /* Show overlay on hover */
+                              }
+
+                          </style>
+                        </div>
+
+                        <script>
+                          document.getElementById('uploadProfileImage').addEventListener('change', function (event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                              // Show preview before upload
+                              const reader = new FileReader();
+                              reader.onload = function (e) {
+                                document.getElementById('profilePreview').src = e.target.result;
+                              };
+                              reader.readAsDataURL(file);
+
+                              // Prepare and send the file to the backend
+                              const formData = new FormData();
+                              formData.append('profile_image', file);
+
+                              fetch('/upload-profile-image', {
+                                method: 'POST',
+                                body: formData,
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    alert('Profile image updated successfully!');
+                                  } else {
+                                    alert(data.message || 'Failed to upload the image.');
+                                  }
+                                })
+                                .catch(error => {
+                                  console.error('Error:', error);
+                                });
+                            }
+                          });
+
+                          // Handle file input for profile image preview
+                          document.getElementById('uploadProfileImage').addEventListener('change', function (event) {
+                            const file = event.target.files[0];
+                            if (file) {
+                              // Show preview before upload
+                              const reader = new FileReader();
+                              reader.onload = function (e) {
+                                document.getElementById('profilePreview').src = e.target.result;
+                              };
+                              reader.readAsDataURL(file);
+                        
+                              // Prepare and send the file to the backend
+                              const formData = new FormData();
+                              formData.append('profile_image', file);
+                        
+                              fetch('/upload-profile-image', {
+                                method: 'POST',
+                                body: formData,
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    // Update the preview image with the server's image URL
+                                    document.getElementById('profilePreview').src = data.new_image_url;
+                                    location.reload(); // Refresh the page
+                                  } else {
+                                    alert(data.message || 'Failed to upload the image.');
+                                    location.reload(); // Refresh the page
+                                    // Reset preview to the original image if upload fails
+                                    document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                  }
+                                })
+                                .catch(error => {
+                                  console.error('Error:', error);
+                                  document.getElementById('profilePreview').src = 'static/img/PFPs/{{ user_data["profile_pic"] }}';
+                                });
+                            }
+                          });
+                        
+                          // Handle profile image removal
+                          document.getElementById('removeProfileImage').addEventListener('click', function () {
+                            if (confirm('Are you sure you want to remove your profile image?')) {
+                              fetch('/remove-profile-image', {
+                                method: 'POST',
+                              })
+                                .then(response => response.json())
+                                .then(data => {
+                                  if (data.success) {
+                                    // Reset to default image
+                                    document.getElementById('profilePreview').src = data.new_image_url;
+                                    location.reload(); // Refresh the page
+                                  } else {
+                                    alert(data.message || 'Failed to remove the image.');
+                                    location.reload(); // Refresh the page
+                                  }
+                                })
+                                .catch(error => console.error('Error:', error));
+                            }
+                          });
+                        </script>                        
+                      </div>
+                    </div>
+                                    
+                    <!-- Full Name -->
+                    <div class="row mb-3">
+                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Full Name
+                      </label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="fullName" type="text" class="form-control" id="fullName" 
+                              value="{{ user_data.get('Full Name', '') }}" 
+                              oninput="validateFullName(this)" required>
+                        <small id="fullNameError" class="text-danger d-none"></small>
+                      </div>
+                    </div>
+
+                    <script>
+                      function validateFullName(input) {
+                        const fullNameError = document.getElementById("fullNameError");
+
+                        // Regular expression to allow only letters, spaces, hyphens, and apostrophes
+                        const validNamePattern = /^[A-Za-z]+([A-Za-z\s'-]*)[A-Za-z]+$/;
+
+                        // Trim input to prevent unnecessary leading or trailing spaces
+                        const trimmedValue = input.value.trim();
+
+                        if (trimmedValue === "") {
+                          // Check for empty input
+                          fullNameError.textContent = "Name cannot be empty.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else if (!validNamePattern.test(trimmedValue)) {
+                          // Check for invalid characters
+                          fullNameError.textContent =
+                            "Name must not contain any special characters or numbers.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else if (/\s{2,}/.test(trimmedValue)) {
+                          // Check for multiple consecutive spaces
+                          fullNameError.textContent = "Name cannot have multiple consecutive spaces.";
+                          fullNameError.classList.remove("d-none");
+                          input.classList.add("is-invalid");
+                          input.classList.remove("is-valid");
+                        } else {
+                          // If valid
+                          fullNameError.classList.add("d-none");
+                          input.classList.remove("is-invalid");
+                          input.classList.add("is-valid");
+                        }
+                      }
+                    </script>
+
+                    <!-- About -->
+                    <div class="row mb-3">
+                      <label for="about" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">About</label>
+                      <div class="col-md-8 col-lg-9">
+                        <textarea 
+                          name="about" 
+                          class="form-control" 
+                          id="about" 
+                          style="height: 90px" 
+                          maxlength="300" 
+                          oninput="validateAbout(this)">{{ user_data.get('about', '') }}</textarea>
+                        <small id="aboutError" class="text-danger d-none">Content must not contain harmful or hurtful language.</small>
+                        <small id="characterCount" class="text-muted"></small>
+                      </div>
+                    </div>
+
+                    <script>
+                      // Function to validate "About" content
+                      function validateAbout(input) {
+                        const errorElement = document.getElementById("aboutError");
+                        const characterCountElement = document.getElementById("characterCount");
+                        const maxCharacters = 300;
+                        const forbiddenWords = [
+                            // General Offensive Language
+                            "fuck", "shit", "damn", "bitch", "bastard", "asshole", "dick", "cunt", "piss", "prick",
+                            "slut", "whore", "idiot", "stupid", "moron", "nazi", "hitler", "racist", "bigot",
+                            "homophobe", "transphobe", "sexist", "misogynist", "terrorist", "violence",
+                            "hate", "offensive", "discrimination", "xenophobia", "ableist", "retard",
+                            "cripple", "spaz", "fatphobic", "ugly", "loser", "dumbass", "scumbag",
+                            "trash", "garbage", "jerk", "creep", "pervert", "predator", "molester", "abuser",
+
+                            // Body Image & Eating Disorders
+                            "fat", "skinny", "thin", "obese", "anorexic", "bulimic", "starvation", "anorexia",
+                            "binge", "purge", "restrict", "underweight", "calorie deficit", "diet pill",
+                            "fasting", "body shaming", "self-harm", "body dysmorphia", "weight loss obsession",
+                            "thinspo", "fitspo", "pro-ana", "pro-mia", "food guilt", "guilty pleasure",
+                            "cheat meal", "calorie counting", "obsessive eating", "emotional eating",
+                            "comfort eating", "yo-yo dieting", "unhealthy weight loss", "crash diet",
+                            "extreme fasting", "detox diet", "cleanse", "juice fast", "appetite suppressant",
+                            "meal replacement", "body negativity", "self-loathing", "unrealistic goals",
+                            "ideal weight", "ideal body", "size zero", "weight stigma", "body comparison",
+                            "appearance anxiety", "eating disorder", "fasting challenge", "weight obsession",
+                            "carb fear", "sugar fear", "food avoidance", "unbalanced diet", "scale addiction",
+                            "unrealistic beauty standards", "body goals", "skinny challenge", "waist training",
+                            "dangerous habits", "extreme weight loss", "quick fixes", "fat-phobic",
+                            "muscle dysmorphia", "compulsive exercise", "over-exercising", "body perfection",
+                            "comparison trap", "weight-based judgment", "food shame", "clean eating obsession",
+                            "orthorexia", "carb-free", "low-fat obsession", "fad diets", "extreme restriction",
+                            "disordered eating", "eating anxiety", "fear foods", "good food vs bad food",
+                            "body dissatisfaction", "body perfectionism", "appearance idealization",
+                            "self-starvation", "food anxiety", "body anxiety", "self-esteem issues",
+                            "weight bullying", "appearance bullying", "unhealthy comparison",
+                            "social media pressure", "unhealthy coping", "weight control obsession",
+                            "body distortion", "perceived flaws", "self-hate", "dieting obsession",
+                            "food obsession", "ideal image", "diet culture", "toxic fitness", "exercise guilt",
+                            "weight-focused", "eating guilt", "carb shaming", "size shaming", "unhealthy diet",
+
+                            // Additional Sensitive Words
+                            "kill", "murder", "suicide", "abuse", "trauma", "trigger", "rape", "molest",
+                            "pedophile", "exploitation", "incest", "terror", "bomb", "extremist", "violator",
+                            "predatory", "assault", "harassment", "lynch", "genocide", "holocaust",
+                            "gaslight", "manipulate", "victim", "exclusion", "marginalize", "oppress"
+                        ];
+
+                        // Check for forbidden words
+                        const containsForbiddenWords = forbiddenWords.some(word =>
+                          input.value.toLowerCase().includes(word)
+                        );
+
+                        if (containsForbiddenWords) {
+                          errorElement.classList.remove("d-none");
+                        } else {
+                          errorElement.classList.add("d-none");
+                        }
+
+                        // Update character count
+                        const currentLength = input.value.length;
+                        characterCountElement.textContent = `${currentLength}/${maxCharacters} characters`;
+
+                        // Change character count color if exceeding limit
+                        if (currentLength > maxCharacters) {
+                          characterCountElement.classList.add("text-danger");
+                        } else {
+                          characterCountElement.classList.remove("text-danger");
+                        }
+                      }
+
+                      // Initialize character count on page load
+                      document.addEventListener("DOMContentLoaded", () => {
+                        const aboutInput = document.getElementById("about");
+                        const characterCountElement = document.getElementById("characterCount");
+                        const maxCharacters = 300;
+
+                        // Set initial character count based on existing content
+                        const initialContent = aboutInput.value || "";
+                        characterCountElement.textContent = `${initialContent.length}/${maxCharacters} characters`;
+
+                        // Add event listener for dynamic updates
+                        aboutInput.addEventListener("input", validateAbout);
+                      });
+                    </script>
+                    
+                    <!-- DOB -->
+                    <div class="row mb-3">
+                      <label for="dob" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Date of Birth</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input 
+                          name="dob" 
+                          type="date" 
+                          class="form-control" 
+                          placeholder="dd/mm/yyyy"
+                          id="dob" 
+                          required>
+                        <small id="dobError" class="text-danger d-none">Invalid date. Please check the requirements.</small>
+                      </div>
+                    </div>
+
+                    <script>
+                      document.addEventListener("DOMContentLoaded", () => {
+                        const dobInput = document.getElementById("dob");
+                        const dobError = document.getElementById("dobError");
+
+                        // Load DOB from user.json (if available) and convert DD/MM/YYYY to YYYY-MM-DD
+                        const userDOB = "{{ user_data.get('DOB', '') }}";
+                        if (userDOB) {
+                          const [day, month, year] = userDOB.split("/"); // Split DD/MM/YYYY
+                          const formattedDOB = `${year}-${month}-${day}`; // Convert to YYYY-MM-DD
+                          dobInput.value = formattedDOB;
+                        }
+
+                        dobInput.addEventListener("change", () => {
+                          const dobValue = new Date(dobInput.value);
+                          const today = new Date();
+
+                          // Calculate age in years
+                          const age = today.getFullYear() - dobValue.getFullYear();
+                          const monthDifference = today.getMonth() - dobValue.getMonth();
+                          const dayDifference = today.getDate() - dobValue.getDate();
+
+                          // Adjust age if the birthday hasn't occurred this year yet
+                          const adjustedAge = monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0) ? age : age - 1;
+
+                          if (dobValue > today) {
+                            // Future DOB
+                            dobError.textContent = "Are you a time traveler? DOB can't be in the future!";
+                            dobError.classList.remove("d-none");
+                            dobInput.classList.add("is-invalid");
+                          } else if (adjustedAge < 16) {
+                            // Age under 16
+                            dobError.textContent = "You need to be at least 16 years old to proceed. Come back when you've had more birthday cakes!";
+                            dobError.classList.remove("d-none");
+                            dobInput.classList.add("is-invalid");
+                          } else {
+                            // Valid DOB
+                            dobError.classList.add("d-none");
+                            dobInput.classList.remove("is-invalid");
+                          }
+                        });
+                      });
+                    </script>
+                    
+                    <!-- Occupation -->
+                    <div class="row mb-3">
+                      <label for="occupation" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Occupation
+                      </label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group position-relative">
+                          <!-- Occupation Dropdown -->
+                          <select
+                            name="occupation"
+                            id="occupation"
+                            class="form-control"
+                            style="width: auto; appearance: none; padding-right: 2rem;"
+                            onchange="updateOccupationField()"
+                          >
+                            <option
+                              value="Student @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Student @ University of Malta' %}selected{% endif %}
+                            >
+                              Student @ University of Malta
+                            </option>
+                            <option
+                              value="Lecturer @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Lecturer @ University of Malta' %}selected{% endif %}
+                            >
+                              Lecturer @ University of Malta
+                            </option>
+                            <option
+                              value="Staff @ University of Malta"
+                              {% if user_data.get('Occupation') == 'Staff @ University of Malta' %}selected{% endif %}
+                            >
+                              Staff @ University of Malta
+                            </option>
+                            <option
+                              value="Staff @ Campus Hub"
+                              {% if user_data.get('Occupation') == 'Staff @ Campus Hub' %}selected{% endif %}
+                            >
+                              Staff @ Campus Hub
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Current Course or Department -->
+                    <div id="dependentField" class="row mb-3 d-none">
+                      <label id="dependentLabel" for="Job" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important"></label>
+                      <div class="col-md-8 col-lg-9">
+                        <input name="job" type="text" class="form-control" id="Job" value="{{ user_data.get('Current Course', '') }}">
+                      </div>
+                    </div>
+
+                    <script>
+                      function updateOccupationField() {
+                        const occupationSelect = document.getElementById('occupation');
+                        const dependentField = document.getElementById('dependentField');
+                        const dependentLabel = document.getElementById('dependentLabel');
+                        const jobInput = document.getElementById('Job');
+                        const selectedOccupation = occupationSelect.value;
+
+                        // Retrieve existing value for currentCourse or department
+                        const existingCourseOrDepartment = "{{ user_data.get('Current Course', '') }}";
+
+                        // Update and display the dependent field based on the selected occupation
+                        if (selectedOccupation === 'Student @ University of Malta') {
+                          dependentField.classList.remove('d-none');
+                          dependentLabel.textContent = 'Course Detail';
+                          jobInput.placeholder = 'Enter your course details';
+                          jobInput.value = existingCourseOrDepartment || ''; // Display existing value if available
+                        } else if (selectedOccupation === 'Lecturer @ University of Malta') {
+                          dependentField.classList.remove('d-none');
+                          dependentLabel.textContent = 'Department';
+                          jobInput.placeholder = 'Enter your department';
+                          jobInput.value = existingCourseOrDepartment || ''; // Display existing value if available
+                        } else {
+                          dependentField.classList.add('d-none'); // Hide the field for other selections
+                          jobInput.value = existingCourseOrDepartment; // Retain the existing value
+                        }
+                      }
+
+                      // Initialize on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        updateOccupationField();
+                      });
+                    </script>
+
+                    <!-- Nationality -->
+                    <div class="row mb-3">
+                      <label for="Country" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Nationality</label>
+                      <div class="col-md-8 col-lg-9">
+                        <select name="country" id="Country" class="form-control" onchange="updateCountryCode()">
+                          <!-- Placeholder text if no nationality is found -->
+                          {% if not user_data.get('Nationality') %}
+                            <option value="" disabled selected>Select your nationality</option>
+                          {% endif %}
+
+                          <!-- Show user's nationality -->
+                          {% if user_data.get('Nationality') %}
+                            <option value="{{ user_data.get('Nationality') }}" selected>
+                              {{ user_data.get('Nationality') }}
+                            </option>
+                          {% endif %}
+
+                          <!-- Dropdown of all other nationalities -->
+                          {% for nationality in nationalities %}
+                            {% if nationality != user_data.get('Nationality', '') %}
+                              <option value="{{ nationality }}">{{ nationality }}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Mobile Number -->
+                    <div class="row mb-3">
+                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Mobile Number</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text" id="CountryCode" style="width: auto !important">
+                            {{ country_codes.get(user_data.get('Nationality', ''), '+') }}
+                          </span>
+                          <input 
+                            name="phone" 
+                            type="text" 
+                            class="form-control" 
+                            id="MobileNumber" 
+                            value="{{ user_data.get('Mobile Number', '') }}" 
+                            placeholder="{{ 'Enter your mobile number' if not user_data.get('Mobile Number') else '' }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Hidden JSON for Country Codes -->
+                    <div id="CountryCodesData" style="display: none;">
+                      {{ country_codes | tojson }}
+                    </div>
+
+                    <script>
+                      // Parse the country codes from the hidden JSON element
+                      const countryCodes = JSON.parse(document.getElementById('CountryCodesData').textContent);
+                    
+                      function updateCountryCode() {
+                        const nationalitySelect = document.getElementById('Country');
+                        const selectedNationality = nationalitySelect.value;
+                        const countryCodeElement = document.getElementById('CountryCode');
+                    
+                        // Update the country code prefix based on the selected nationality
+                        countryCodeElement.textContent = countryCodes[selectedNationality] || '+';
+                      }
+                    
+                      // Attach event listener to nationality dropdown
+                      document.getElementById('Country').addEventListener('change', updateCountryCode);
+                    
+                      // Call the function on page load to set the initial value
+                      document.addEventListener('DOMContentLoaded', updateCountryCode);
+                    </script>                    
+
+                    <!-- Email -->
+                    <div class="row mb-3">
+                      <label for="Email" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Email</label>
+                      <div class="col-md-8 col-lg-9">
+                        <input
+                          name="email"
+                          type="email"
+                          class="form-control"
+                          id="Email"
+                          value="{{ user_data.get('Email', '') }}"
+                          placeholder="example@domain.com"
+                          required
+                          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                          title="Please enter a valid email address (e.g., example@domain.com)"
+                        >
+                        <div id="emailFeedback" class="invalid-feedback">
+                          Please provide a valid email address.
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      // Client-side validation script
+                      const emailInput = document.getElementById('Email');
+                      emailInput.addEventListener('input', () => {
+                        if (emailInput.checkValidity()) {
+                          emailInput.classList.remove('is-invalid');
+                          emailInput.classList.add('is-valid');
+                        } else {
+                          emailInput.classList.remove('is-valid');
+                          emailInput.classList.add('is-invalid');
+                        }
+                      });
+                    </script>
+
+                    <style>
+                      .input-group-text {
+                        width: 135px; /* Adjust this value to fit the longest prefix */
+                        text-align: right; /* Align text to the right for consistency */
+                      }
+                    </style>
+
+                    <!-- Instagram -->
+                    <div class="row mb-3">
+                      <label for="Instagram" class="col-md-4 col-lg-3 col-form-label"  style="color: #212529 !important">Insta Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">instagram.com/</span>
+                          <input name="instagram" type="text" class="form-control" id="Instagram" 
+                                value="{{ user_data['Social Links'].get('Instagram', '').replace('https://instagram.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div class="row mb-3">
+                      <label for="Facebook" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">FB Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">facebook.com/</span>
+                          <input name="facebook" type="text" class="form-control" id="Facebook" 
+                                value="{{ user_data['Social Links'].get('Facebook', '').replace('https://facebook.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Twitter -->
+                    <div class="row mb-3">
+                      <label for="Twitter" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">X Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">x.com/</span>
+                          <input name="twitter" type="text" class="form-control" id="Twitter" 
+                                value="{{ user_data['Social Links'].get('Twitter', '').replace('https://x.com/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Threads -->
+                    <div class="row mb-3">
+                      <label for="Threads" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Threads Profile</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <span class="input-group-text">threads.net/</span>
+                          <input name="threads" type="text" class="form-control" id="Threads" 
+                                value="{{ user_data['Social Links'].get('Threads', '').replace('https://www.threads.net/', '') }}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      document.querySelector('form').addEventListener('submit', function (e) {
+                      e.preventDefault();
+
+                      const instagram = `https://instagram.com/${document.getElementById('Instagram').value}`;
+                      const facebook = `https://facebook.com/${document.getElementById('Facebook').value}`;
+                      const twitter = `https://x.com/${document.getElementById('Twitter').value}`;
+                      const threads = `https://www.threads.net/${document.getElementById('Threads').value}`;
+
+                      const formData = {
+                        instagram,
+                        facebook,
+                        twitter,
+                        threads,
+                      };
+
+                      fetch('/save-social-links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                            alert('Social links updated successfully!');
+                          } else {
+                            alert('Failed to update social links.');
+                          }
+                        })
+                        .catch((error) => console.error('Error:', error));
+                    });
+                    </script>
+
+                    <!-- Save Changes Button -->
+                    <div class="text-center">
+                      <button type="button" class="btn btn-primary" id="saveChangesButton">Save Changes</button>
+                    </div>
+
+                    <script>
+                      document.getElementById('saveChangesButton').addEventListener('click', function () {
+                        // Collect original data from `user_data`
+                        const originalData = {
+                          fullName: "{{ user_data.get('Full Name', '') }}",
+                          about: "{{ user_data.get('about', '') }}",
+                          dob: "{{ user_data.get('DOB', '') }}",
+                          occupation: "{{ user_data.get('Occupation', '') }}",
+                          currentCourse: "{{ user_data.get('Current Course', '') }}",
+                          nationality: "{{ user_data.get('Nationality', '') }}",
+                          mobileNumber: "{{ user_data.get('Mobile Number', '') }}",
+                          email: "{{ user_data.get('Email', '') }}",
+                          socialLinks: {
+                            instagram: "{{ user_data['Social Links'].get('Instagram', '') }}",
+                            facebook: "{{ user_data['Social Links'].get('Facebook', '') }}",
+                            twitter: "{{ user_data['Social Links'].get('Twitter', '') }}",
+                            threads: "{{ user_data['Social Links'].get('Threads', '') }}"
+                          }
+                        };
+                    
+                        // Collect new data from the form
+                        const newData = {
+                          fullName: document.getElementById('fullName').value.trim(),
+                          about: document.getElementById('about').value.trim(),
+                          dob: document.getElementById('dob').value.trim(),
+                          occupation: document.getElementById('occupation').value.trim(),
+                          currentCourse: document.getElementById('Job').value.trim(),
+                          nationality: document.getElementById('Country').value.trim(),
+                          mobileNumber: document.getElementById('MobileNumber').value.trim(),
+                          email: document.getElementById('Email').value.trim(),
+                          socialLinks: {
+                            instagram: `https://instagram.com/${document.getElementById('Instagram').value.trim()}`,
+                            facebook: `https://facebook.com/${document.getElementById('Facebook').value.trim()}`,
+                            twitter: `https://x.com/${document.getElementById('Twitter').value.trim()}`,
+                            threads: `https://www.threads.net/${document.getElementById('Threads').value.trim()}`
+                          }
+                        };
+                    
+                        // Check for changes between original and new data
+                        const hasChanges = JSON.stringify(originalData) !== JSON.stringify(newData);
+                    
+                        if (hasChanges) {
+                          // Send updated data to the backend
+                          fetch('/save-profile', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(newData)
+                          })
+                            .then(response => {
+                              // Check for the X-Update-LocalStorage header and update localStorage if present
+                              const localStorageUpdate = response.headers.get('X-Update-LocalStorage');
+                              if (localStorageUpdate) {
+                                const [key, value] = localStorageUpdate.split('=');
+                                localStorage.setItem(key, value);
+                              }
+                              return response.json();
+                            })
+                            .then(data => {
+                              if (data.success) {
+                                alert('Profile updated successfully!');
+                                location.reload(); // Refresh the page
+                              } else {
+                                alert('Failed to update profile!');
+                              }
+                            })
+                            .catch(error => {
+                              console.error('Error:', error);
+                              alert('An error occurred. Please try again.');
+                            });
+                        } else {
+                          location.reload(); // Refresh the page even when no changes were made
+                        }
+                      });
+                    </script>                    
+
+                  </form>
+                  <style>
+                    .btn-primary {
+                      border: none;
+                      background-color: #036628 !important; /* Default background color */
+                      color: white; /* Ensure text is visible */
+                      transition: background-color 0.3s ease; /* Smooth transition */
+                    }
+                  
+                    .btn-primary:hover {
+                      background-color: #297D48 !important; /* Hover background color */
+                    }
+                  </style>                  
+                </div>                
+
+                <div class="tab-pane fade pt-3" id="profile-settings">
+                  <!-- Settings Form -->
+                   <form>
+                    <!-- Favourite Food -->
+                    <h5 class="card-title" style="color: #036628 !important">Food Preferences</h5>
+                    <div class="row mb-3">
+                      <label for="favouriteFood" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important;">Favourite Food</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <!-- Dropdown for Favorite Food -->
+                          <select name="favouriteFood" id="favouriteFood" class="form-control" onchange="toggleCustomFoodField()" style="border-radius: 0.375rem;">
+                            <!-- Placeholder Option -->
+                            <option value="" disabled {% if not user_data.get('Favourite Food') %}selected{% endif %}>Select your favorite food</option>
+                            <option value="Burgers" {% if user_data.get('Favourite Food', '') == 'Burgers' %}selected{% endif %}>🍔 Burgers</option>
+                            <option value="Pasta" {% if user_data.get('Favourite Food', '') == 'Pasta' %}selected{% endif %}>🍝 Pasta</option>
+                            <option value="Pizza" {% if user_data.get('Favourite Food', '') == 'Pizza' %}selected{% endif %}>🍕 Pizza</option>
+                            <option value="Chicken" {% if user_data.get('Favourite Food', '') == 'Chicken' %}selected{% endif %}>🍗 Chicken</option>
+                            <option value="Salads" {% if user_data.get('Favourite Food', '') == 'Salads' %}selected{% endif %}>🥗 Salads</option>
+                            <option value="Wraps" {% if user_data.get('Favourite Food', '') == 'Wraps' %}selected{% endif %}>🌯 Wraps</option>
+                            <option value="Sushi" {% if user_data.get('Favourite Food', '') == 'Sushi' %}selected{% endif %}>🍣 Sushi</option>
+                            <option value="Bread" {% if user_data.get('Favourite Food', '') == 'Bread' %}selected{% endif %}>🥖 Bread</option>
+                            <option value="Smoothies" {% if user_data.get('Favourite Food', '') == 'Smoothies' %}selected{% endif %}>🥤 Smoothies</option>
+                            <option value="Other" {% if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] and user_data.get('Favourite Food') %}selected{% endif %}>Other</option>
+                          </select>
+                
+                          <!-- Custom Food Input -->
+                          <input 
+                            name="customFood" 
+                            type="text" 
+                            class="form-control d-none" 
+                            id="customFood" 
+                            placeholder="Enter your favorite food" 
+                            style="width: 70%;" 
+                            value="{{ user_data.get('Favourite Food', '') if user_data.get('Favourite Food', '') not in ['Burgers', 'Pasta', 'Pizza', 'Chicken', 'Salads', 'Wraps', 'Sushi', 'Bread', 'Smoothies'] else '' }}">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <script>
+                      function toggleCustomFoodField() {
+                        const favouriteFoodSelect = document.getElementById('favouriteFood');
+                        const customFoodField = document.getElementById('customFood');
+                        const selectedFood = favouriteFoodSelect.value;
+                    
+                        // Show/hide custom food field and adjust corner styling
+                        if (selectedFood === 'Other') {
+                          favouriteFoodSelect.style.borderRadius = "0.375rem 0 0 0.375rem";
+                          customFoodField.classList.remove('d-none');
+                          customFoodField.style.borderRadius = "0 0.375rem 0.375rem 0";
+                          customFoodField.focus();
+                        } else {
+                          favouriteFoodSelect.style.borderRadius = "0.375rem";
+                          customFoodField.classList.add('d-none');
+                          customFoodField.value = ''; // Clear custom input
+                        }
+                      }
+                      // Initialize visibility of custom food field on page load
+                      document.addEventListener('DOMContentLoaded', () => {
+                        toggleCustomFoodField();
+                      });
+                    </script>         
+                   </form>
+
+                    <!-- Favourite Restaurant -->
+                    <div class="row mb-3">
+                      <label for="favoriteRestaurant" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Favourite Restaurant
+                      </label>
+                      <div class="col-md-8 col-lg-9">
+                        <select name="favoriteRestaurant" class="form-control" id="favoriteRestaurant">
+                          <option value="" disabled {{ 'selected' if not user_data.get('Favourite Restaurant', '') else '' }}>
+                            Select your favorite restaurant
+                          </option>
+                          <option value="BurgerKing" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'BurgerKing' else '' }}>
+                            Burger King
+                          </option>
+                          <option value="PizzaHut" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'PizzaHut' else '' }}>
+                            Pizza Hut
+                          </option>
+                          <option value="CafeCuba" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'CafeCuba' else '' }}>
+                            Cafe Cuba
+                          </option>
+                          <option value="Ottoman" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Ottoman' else '' }}>
+                            Ottoman
+                          </option>
+                          <option value="Boost" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Boost' else '' }}>
+                            Boost
+                          </option>
+                          <option value="Amami" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Amami' else '' }}>
+                            Amami
+                          </option>
+                          <option value="Joli" {{ 'selected' if user_data.get('Favourite Restaurant', '') == "Joli" else '' }}>
+                            J'oli                          
+                          </option>
+                          <option value="Starbucks" {{ 'selected' if user_data.get('Favourite Restaurant', '') == 'Starbucks' else '' }}>
+                            Starbucks
+                          </option>
+                        </select>
+                        <small id="favoriteRestaurantError" class="text-danger d-none">Please select your favorite restaurant.</small>
+                      </div>
+                    </div>
+
+                    <script>
+                      document.getElementById('favoriteRestaurant').addEventListener('change', function () {
+                        const errorElement = document.getElementById('favoriteRestaurantError');
+                        if (this.value === '') {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      });
+                    </script>
+
+                    <!-- Dietary Requirements -->
+                    <div class="row mb-3">
+                      <label class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Dietary Requirements</label>
+                      <div class="col-md-8 col-lg-9">
+                        <!-- Vegetarian -->
+                        <div class="form-check mb-2">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="vegetarian" 
+                            name="vegetarian" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Vegetarian', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="vegetarian">
+                            Vegetarian
+                          </label>
+                        </div>
+                        
+                        <!-- Nut Allergy -->
+                        <div class="form-check mb-2">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="nutAllergy" 
+                            name="nutAllergy" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Nut Allergy', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="nutAllergy">
+                            Nut Allergy
+                          </label>
+                        </div>
+                        
+                        <!-- Gluten Allergy -->
+                        <div class="form-check">
+                          <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="glutenAllergy" 
+                            name="glutenAllergy" 
+                            value="1" 
+                            {{ 'checked' if user_data.get('Gluten Allergy', 0) == 1 else '' }}>
+                          <label class="form-check-label" for="glutenAllergy">
+                            Gluten Allergy
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <h5 class="card-title" style="color: #036628 !important">Personal Health Details</h5>
+                    <!-- Current Weight -->
+                    <div class="row mb-3">
+                      <label for="currentWeight" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Current Weight</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <input 
+                            name="currentWeight" 
+                            type="number" 
+                            class="form-control" 
+                            id="currentWeight" 
+                            value="{{ user_data.get('Weight', '') }}" 
+                            placeholder="Enter your current weight" 
+                            oninput="validateWeights()" 
+                            required>
+                          <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">kilograms&nbsp;<i>(kg)</i></span>
+                        </div>
+                        <small id="weightError" class="text-danger d-none">Please enter a valid weight between 20 and 300 kg.</small>
+                      </div>
+                    </div>
+
+                    <!-- Target Weight -->
+                    <div class="row mb-3">
+                      <label for="targetWeight" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Target Weight</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <input 
+                            name="targetWeight" 
+                            type="number" 
+                            class="form-control" 
+                            id="targetWeight" 
+                            value="{{ user_data.get('Target_weight', '') }}" 
+                            placeholder="Enter your target weight" 
+                            oninput="validateWeights()" 
+                            required>
+                          <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">kilograms&nbsp;<i>(kg)</i></span>
+                        </div>
+                        <!-- Error messages and recommendation -->
+                        <small id="targetWeightError" class="text-danger d-none">Please enter a valid target weight between 20 and 300 kg.</small>
+                        <small id="relationshipError" class="text-danger d-none"></small>
+                        <small id="recommendationMessage" class="d-none" style="color: #036628 !important;"></small>
+                      </div>
+                    </div>
+
+                    <script>
+                      function validateWeights() {
+                        const currentWeightInput = document.getElementById('currentWeight');
+                        const targetWeightInput = document.getElementById('targetWeight');
+                        const currentWeight = parseFloat(currentWeightInput.value);
+                        const targetWeight = parseFloat(targetWeightInput.value);
+
+                        const weightError = document.getElementById('weightError');
+                        const targetWeightError = document.getElementById('targetWeightError');
+                        const relationshipError = document.getElementById('relationshipError');
+                        const recommendationMessage = document.getElementById('recommendationMessage');
+
+                        // Reset visibility for recommendation and error messages
+                        recommendationMessage.classList.add('d-none');
+                        relationshipError.classList.add('d-none');
+                        targetWeightError.classList.add('d-none');
+
+                        // Basic validation
+                        const isCurrentWeightValid = !isNaN(currentWeight) && currentWeight >= 20 && currentWeight <= 300;
+                        const isTargetWeightValid = !isNaN(targetWeight) && targetWeight >= 20 && targetWeight <= 300;
+
+                        if (!isCurrentWeightValid) {
+                          // No need to proceed if current weight is invalid
+                          weightError.classList.remove('d-none');
+                          return;
+                        } else {
+                          weightError.classList.add('d-none');
+                        }
+
+                        if (!isTargetWeightValid) {
+                          // If the target weight is invalid, show the error message
+                          targetWeightError.classList.remove('d-none');
+                          return;
+                        }
+
+                        // Calculate recommended range
+                        const minRecommended = Math.max(20, currentWeight * 0.8); // 80% of current weight, minimum 20 kg
+                        const maxRecommended = Math.min(300, currentWeight * 1.2); // 120% of current weight, maximum 300 kg
+
+                        // Relationship validation
+                        if (currentWeight < 50 && targetWeight < currentWeight) {
+                          relationshipError.textContent = "For low weights, setting a lower target weight is not recommended.";
+                          relationshipError.classList.remove('d-none');
+                        } else if (targetWeight < minRecommended || targetWeight > maxRecommended) {
+                          relationshipError.textContent = `The target weight is outside the recommended range of ${minRecommended.toFixed(1)} kg - ${maxRecommended.toFixed(1)} kg.`;
+                          relationshipError.classList.remove('d-none');
+                        } else {
+                          // Display recommendation only if there are no relationship errors
+                          recommendationMessage.textContent = `Recommended target weight: ${minRecommended.toFixed(1)} kg - ${maxRecommended.toFixed(1)} kg.`;
+                          recommendationMessage.classList.remove('d-none');
+                        }
+                      }
+                    </script>
+
+                    <!-- Height -->
+                    <div class="row mb-3">
+                      <label for="height" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">Height</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <input 
+                            name="height" 
+                            type="number" 
+                            step="0.01" 
+                            class="form-control" 
+                            id="height" 
+                            value="{{ user_data.get('Height', '') }}" 
+                            placeholder="Enter your height" 
+                            oninput="validateHeight(this)" 
+                            required>
+                            <span class="input-group-text border-start-0 rounded-end" style="width: 150px;">meters&nbsp;<i>(m)</i></span>
+                        </div>
+                        <small id="heightError" class="text-danger d-none">Please enter a valid height between 0.5 and 2.5 meters.</small>
+                      </div>
+                    </div>
+
+                    <script>
+                      function validateHeight(input) {
+                        const value = parseFloat(input.value);
+                        const errorElement = document.getElementById('heightError');
+
+                        // Validate height range (0.5 to 2.5 meters)
+                        if (isNaN(value) || value < 0.5 || value > 2.5) {
+                          errorElement.classList.remove('d-none');
+                        } else {
+                          errorElement.classList.add('d-none');
+                        }
+                      }
+                    </script>
+
+                    <!-- Static Current BMI -->
+                    <div class="row mb-3">
+                      <label for="currentBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Current BMI
+                      </label>
+                      <div class="col-md-8 col-lg-9">
+                        <input 
+                          name="currentBMI" 
+                          type="text" 
+                          class="form-control" 
+                          id="currentBMI" 
+                          style="background-color: #F8F9FA;" 
+                          value="0.00" 
+                          readonly 
+                          aria-live="polite">
+                      </div>
+                    </div>
+
+                    <!-- Static Target BMI -->
+                    <div class="row mb-3">
+                      <label for="targetBMI" class="col-md-4 col-lg-3 col-form-label" style="color: #212529 !important">
+                        Target BMI
+                      </label>
+                      <div class="col-md-8 col-lg-9">
+                        <input 
+                          name="targetBMI" 
+                          type="text" 
+                          class="form-control" 
+                          id="targetBMI" 
+                          style="background-color: #F8F9FA;" 
+                          value="0.00" 
+                          readonly 
+                          aria-live="polite">
+                      </div>
+                    </div>
+
+                    <!-- Validation Message -->
+                    <div id="bmiWarning" class="text-danger" style="display: none;">
+                      Please enter valid, positive values for weight and height.
+                    </div>
+
+                    <script>
+                      // BMI Calculation Function
+                      function calculateBMI(weight, height) {
+                        if (!weight || !height || height <= 0) return null; // Ensure valid inputs
+                        return (weight / (height * height)).toFixed(2); // BMI formula
+                      }
+
+                      // Function to Update BMI Fields
+                      function updateBMIs() {
+                        // Retrieve Input Values
+                        const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+                        const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+                        const height = parseFloat(document.getElementById('height').value);
+
+                        const currentBMIField = document.getElementById('currentBMI');
+                        const targetBMIField = document.getElementById('targetBMI');
+                        const warningMessage = document.getElementById('bmiWarning');
+
+                        // Validate Input Values
+                        if (
+                          (currentWeight && currentWeight <= 0) ||
+                          (targetWeight && targetWeight <= 0) ||
+                          (height && height <= 0)
+                        ) {
+                          warningMessage.style.display = "block"; // Show warning message
+                          currentBMIField.value = "0.00";
+                          targetBMIField.value = "0.00";
+                          return;
+                        } else {
+                          warningMessage.style.display = "none"; // Hide warning message
+                        }
+
+                        // Calculate and Update BMI Values
+                        currentBMIField.value = height ? calculateBMI(currentWeight, height) || "0.00" : "0.00";
+                        targetBMIField.value = height ? calculateBMI(targetWeight, height) || "0.00" : "0.00";
+                      }
+
+                      // Populate BMI on Page Load
+                      document.addEventListener("DOMContentLoaded", () => {
+                        updateBMIs(); // Initialize BMI values
+                      });
+
+                      // Attach Event Listeners for Dynamic Updates
+                      ['currentWeight', 'targetWeight', 'height'].forEach(id => {
+                        document.getElementById(id).addEventListener('input', updateBMIs);
+                      });
+                    </script>
+
+                    <!-- Save Changes Button -->
+                    <div class="text-center">
+                      <button id="Save Changes AI Setting" type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+
+                    <script>
+                      document.getElementById("Save Changes AI Setting").addEventListener("click", function (event) {
+                        event.preventDefault(); // Prevent form submission
+                    
+                        // Gather form data
+                        const favouriteFood = document.getElementById("favouriteFood").value;
+                        const customFood = document.getElementById("customFood").value;
+                        const favouriteRestaurant = document.getElementById("favoriteRestaurant").value;
+                    
+                        const vegetarian = document.getElementById("vegetarian").checked ? 1 : 0;
+                        const nutAllergy = document.getElementById("nutAllergy").checked ? 1 : 0;
+                        const glutenAllergy = document.getElementById("glutenAllergy").checked ? 1 : 0;
+                    
+                        const currentWeight = document.getElementById("currentWeight").value;
+                        const targetWeight = document.getElementById("targetWeight").value;
+                        const height = document.getElementById("height").value;
+
+
+                        // Capture the current date
+                        const now = new Date();
+                        const currentDate = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`; // Format: DD-MM-YYYY
+
+
+                        // Get the current user from localStorage
+                        const currentUser = localStorage.getItem('BBAIcurrentuser');
+
+                        // Save as local variables
+                        const savedCurrentDate = currentDate;
+                        const savedCurrentUser = currentUser;
+                        const savedCurrentWeight = currentWeight;
+                        const savedTargetWeight = targetWeight;
+
+                        // Log the variables for verification
+                        console.log("Current Date:", savedCurrentDate);
+                        console.log("Current User Name:", savedCurrentUser);
+                        console.log("User New Weight:", savedCurrentWeight);
+                        console.log("Current Weight Goal:", savedTargetWeight);
+                        
+                        // Prepare the data object to send to the backend for weight graph
+                        const weightData = {
+                          Name: savedCurrentUser,          // User name from localStorage
+                          Weight: [savedCurrentWeight],     // Array with current weight
+                          TargetWeight: savedTargetWeight,  // Target weight
+                          Date: [savedCurrentDate]          // Array with current date
+                        };
+
+                        // Build the data object
+                        const settingsData = {
+                          favouriteFood: favouriteFood === "Other" ? "Other" : favouriteFood,
+                          customFood: favouriteFood === "Other" ? customFood : "",
+                          favouriteRestaurant,
+                          vegetarian,
+                          nutAllergy,
+                          glutenAllergy,
+                          currentWeight,
+                          targetWeight,
+                          height
+                        };
+                        // Send the weight data to the backend for saving
+                        fetch("/update-weight-json", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json"
+                          },
+                          body: JSON.stringify(weightData)
+                        })
+                          .then((response) => response.json())
+                          .then((data) => {
+                            if (data.success) {
+                              location.reload(); // Refresh the page
+                            } else {
+                            }
+                          })
+                          .catch((error) => {
+                            console.error("Error:", error);
+                            alert("An error occurred while saving settings. Please try again.");
+                          });
+                    
+                        // Send data to the backend using fetch
+                        fetch("/save-settings", {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json"
+                          },
+                          body: JSON.stringify(settingsData)
+                        })
+                          .then((response) => response.json())
+                          .then((data) => {
+                            if (data.success) {
+                              alert(data.message); // Show success message
+                              location.reload(); // Refresh the page
+                            } else {
+                              alert(data.message); // Show error message
+                              location.reload(); // Refresh the page
+                            }
+                          })
+                          .catch((error) => {
+                            console.error("Error:", error);
+                            alert("An error occurred while saving settings. Please try again.");
+                            location.reload(); // Refresh the page
+                          });
+                      });
+                    </script>                                     
+                  </form>  
+                </div>
+
+                <div class="tab-pane fade pt-3" id="profile-change-password">
+                  <!-- Change Password Form -->
+                  <form id="changePasswordForm">
+                    <div class="row mb-3">
+                      <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <!-- Icon part -->
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#currentPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <!-- Password input -->
+                          <input name="password" type="password" class="form-control border-start rounded-end" id="currentPassword">
+                        </div>
+                        <small id="currentPasswordFeedback" class="text-danger d-none">Incorrect current password.</small>
+                      </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#newPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <input name="newpassword" type="password" class="form-control border-start rounded-end" id="newPassword">
+                        </div>
+                        <small id="newPasswordFeedback" class="text-danger d-none">New password must be at least 8 characters and include a number.</small>
+                      </div>
+                    </div>
+                
+                    <div class="row mb-3">
+                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Confirm New Password</label>
+                      <div class="col-md-8 col-lg-9">
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text border-end-0 rounded-start" style="width: 45px; display: flex; justify-content: center; align-items: center; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                              <i class="bi bi-eye-slash toggle-password" data-target="#renewPassword" style="cursor: pointer;"></i>
+                            </span>
+                          </div>
+                          <input name="renewpassword" type="password" class="form-control border-start rounded-end" id="renewPassword">
+                        </div>
+                        <small id="confirmPasswordFeedback" class="text-danger d-none">Passwords do not match.</small>
+                      </div>
+                    </div>
+                
+                    <div class="text-center">
+                      <button id="changePasswordButton" type="submit" class="btn btn-primary">Change Password</button>
+                    </div>
+                  </form>
+                  <script>
+                    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+                      event.preventDefault(); // Prevent form submission
+                  
+                      // Get input values
+                      const currentPassword = document.getElementById('currentPassword').value.trim();
+                      const newPassword = document.getElementById('newPassword').value.trim();
+                      const confirmPassword = document.getElementById('renewPassword').value.trim();
+                  
+                      // Reset feedback
+                      const feedbackElements = [
+                        'currentPasswordFeedback',
+                        'newPasswordFeedback',
+                        'confirmPasswordFeedback',
+                      ];
+                      feedbackElements.forEach((id) => document.getElementById(id).classList.add('d-none'));
+                  
+                      // Basic validation
+                      let hasError = false;
+                  
+                      if (!currentPassword) {
+                        document.getElementById('currentPasswordFeedback').textContent = 'Please enter your current password.';
+                        document.getElementById('currentPasswordFeedback').classList.remove('d-none');
+                        hasError = true;
+                      }
+                  
+                      if (!newPassword || newPassword.length < 8 || !/\d/.test(newPassword)) {
+                        document.getElementById('newPasswordFeedback').textContent =
+                          'New password must be at least 8 characters and include a number.';
+                        document.getElementById('newPasswordFeedback').classList.remove('d-none');
+                        hasError = true;
+                      }
+                  
+                      if (newPassword === currentPassword) {
+                        document.getElementById('newPasswordFeedback').textContent =
+                          'New password cannot be the same as the current password.';
+                        document.getElementById('newPasswordFeedback').classList.remove('d-none');
+                        hasError = true;
+                      }
+                  
+                      if (newPassword !== confirmPassword) {
+                        document.getElementById('confirmPasswordFeedback').textContent = 'Passwords do not match.';
+                        document.getElementById('confirmPasswordFeedback').classList.remove('d-none');
+                        hasError = true;
+                      }
+                  
+                      if (hasError) return;
+                  
+                      // Prepare data for backend
+                      const passwordData = {
+                        currentPassword,
+                        newPassword,
+                        confirmPassword,
+                      };
+                  
+                      // Send data to the backend
+                      fetch('/change-password', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(passwordData),
+                      })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          if (data.success) {
+                            alert('Password successfully updated!');
+                            location.reload(); // Refresh the page
+                          } else {
+                            // Show error message
+                            const feedbackElement = document.getElementById('currentPasswordFeedback');
+                            feedbackElement.textContent = data.message;
+                            feedbackElement.classList.remove('d-none');
+                          }
+                        })
+                        .catch((error) => {
+                          console.error('Error:', error);
+                          alert('An error occurred while changing the password. Please try again.');
+                        });
+                    });
+                  
+                    // Prevent copy, paste, and cut on password fields
+                    const passwordFields = ['currentPassword', 'newPassword', 'renewPassword'];
+                    passwordFields.forEach((fieldId) => {
+                      const field = document.getElementById(fieldId);
+                      field.addEventListener('copy', (e) => e.preventDefault());
+                      field.addEventListener('paste', (e) => e.preventDefault());
+                      field.addEventListener('cut', (e) => e.preventDefault());
+                    });
+                  
+                    // Toggle password visibility
+                    document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+                      toggle.addEventListener('click', function () {
+                        const target = document.querySelector(this.getAttribute('data-target'));
+                        if (target.type === 'password') {
+                          target.type = 'text';
+                          this.classList.remove('bi-eye-slash');
+                          this.classList.add('bi-eye');
+                        } else {
+                          target.type = 'password';
+                          this.classList.remove('bi-eye');
+                          this.classList.add('bi-eye-slash');
+                        }
+                      });
+                    });
+                  </script>                  
+                </div>                               
+              </div><!-- End Bordered Tabs -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main><!-- End #main -->
+  
+<!-- ======= Footer ======= -->
+<footer style= "align-items: center;" id="footer" class="footer position-relative dark-background" role="contentinfo">
+  <div class="credits">
+    Designed by <a href="mailto:andrea.f.lucas.22@um.edu.mt" target="_blank">Andrea Filiberto Lucas</a> & <a href="mailto:sean.muscat.22@um.edu.mt" target="_blank">Sean David Muscat</a>
+  </div>
+  <div class="credits">
+    Template from <a href="https://bootstrapmade.com/">Bootstrap</a>
+  </div>
+</footer>
+
+<style>
+  /* Style the footer to stay at the bottom */
+  html, body {
+      height: 100%; /* Ensure full page height */
+      display: flex;
+      flex-direction: column; /* Stack content vertically */
+      margin: 0;
+      padding: 0;
+  }
+  @media (min-width: 1200px) and (max-width: 1600px) {
+    .header~main {
+      margin-left: 90px;
+    }
+
+    .header~main .hero {
+      margin-left: -160px;
+      width: 100vw;
+    }
+  }
+  .bold-link:hover {
+    text-decoration: underline;
+  }
+  </style>
+
+  <!-- Vendor JS Files -->
+  <script src="assets1/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets2/vendor/chart.js/chart.umd.js"></script>
+  <script src="assets2/vendor/echarts/echarts.min.js"></script>
+  <script src="assets2/vendor/quill/quill.js"></script>
+  <script src="assets2/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets2/vendor/tinymce/tinymce.min.js"></script>
+
+  <!-- Template JS File -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets2/js/main.js"></script>
+  <script src="assets2/js/dashboard.js"></script>
+  <script src="assets2/js/ar-main.js"></script>
+</body>
+</html>

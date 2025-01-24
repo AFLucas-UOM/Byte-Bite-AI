@@ -33,7 +33,6 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts"></script>
   <!-- FOR PARSING -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
 </head>
 
 <body>
@@ -75,7 +74,7 @@
         
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
           <li>
-            <a class="dropdown-item d-flex align-items-center" href="/in-dev">
+            <a class="dropdown-item d-flex align-items-center" href="/my-profile">
               <i class="bi bi-person"></i>
               <span>My Profile</span>
             </a>
@@ -116,7 +115,7 @@
 
     <!-- Profile Section -->
     <li class="nav-item">
-      <a class="nav-link collapsed" href="/in-dev" aria-label="My Profile" aria-expanded="false">
+      <a class="nav-link collapsed" href="/my-profile" aria-label="My Profile" aria-expanded="false">
         <i class="bi bi-person"></i>
         <span>My Profile</span>
       </a>
@@ -185,9 +184,44 @@
                 </button>
                 <button id="thumbs-down" class="btn btn-light p-1" style="color: #b73a3a; margin-left: 0;" title="Dislike">
                   <i class="bi bi-hand-thumbs-down"></i>
-                </button>        
+                </button>
+                <!-- Information Button -->
+                <button 
+                  id="info-button" 
+                  class="btn btn-light p-1 position-absolute top-0 end-0 m-2" 
+                  title="How AI Recommends">
+                  <i class="bi bi-info-circle"></i>
+                </button>
+                <!-- Plus Button -->
+                <button id="add-to-orders" class="btn btn-light" title="Add to Orders">
+                  <i class="bi bi-plus-lg"></i>
+                </button>
+                <style>
+                  /* Styling for both buttons */
+                  #info-button, #add-to-orders {
+                    background-color: transparent !important; /* No background by default */
+                    border: none !important; /* Remove border */
+                    padding: 6px !important; /* Tighter padding for square shape */
+                    display: inline-flex !important;
+                    justify-content: center !important;
+                    align-items: center !important;
+                    border-radius: 6px !important; /* Slightly rounded edges */
+                    transition: background-color 0.2s ease !important; /* Smooth hover effect */
+                  }
+                
+                  /* Hover effect for both buttons */
+                  #info-button:hover, #add-to-orders:hover {
+                    background-color: #e9e8e88d !important; /* Light grey background on hover */
+                  }
+                
+                  /* Adjusting the icon inside */
+                  #info-button i, #add-to-orders i {
+                    font-size: 16px !important; /* Adjust icon size if needed */
+                    color: inherit !important; /* Icon color stays consistent */
+                  }
+                </style>                
               </h5>
-              
+
               <div class="d-flex align-items-center">
                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                   <i class="bi-stars"></i>
@@ -202,27 +236,112 @@
               <div id="feedback-alert" class="alert custom-feedback-alert" role="alert" style="display: none;">
                 <span id="feedback-text">You liked the AI suggestion!</span>
               </div>
-
             </div>
           </div>
         </div><!-- End Current Recommendations Card -->
 
-        <script>
+        <!-- Custom Modal -->
+        <div id="custom-modal" class="custom-modal">
+          <div class="custom-modal-content">
+            <!-- Modal Header -->
+            <div class="custom-modal-header">
+              <h5>Why Does BB-AI Recommend this item?</h5>
+              <button id="close-modal" class="close-modal-btn">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="custom-modal-body">
+              <p>Your personalised recommendation is based on the following details:</p>
+              <!-- This will be replaced dynamically by JavaScript -->
+              <p id="recommendation-explanation">Loading recommendation...</p>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <!-- Modal Styling -->
+        <style>
+          .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+          }
+        
+          .custom-modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          }
+        
+          .custom-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+          }
+        
+          .custom-modal-header h5 {
+            margin: 0;
+          }
+        
+          .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease, background-color 0.3s ease; /* Transitioning both color and background */
+          }
+        
+          /* Change background to white and the X to red on hover */
+          .close-modal-btn:hover {
+            background-color: white; /* Background becomes white */
+            color: red; /* X turns red */
+            border-radius: 50%; /* Optional: Makes the button circular */
+          }
+        
+          .custom-modal-body {
+            font-size: 1rem;
+            line-height: 1.5;
+          }
+        </style>
+
+        
+
+        <script defer> 
           async function loadRecommendation() {
               // Fetch the raw user data from localStorage
               const rawUsersData = localStorage.getItem('BBAIcurrentuser');
-              let currentuserName = null;
-      
+              let currentUserName = null;
+
               // Check if rawUsersData exists and handle accordingly
               if (rawUsersData) {
                   try {
-                      // Check if the data is a string or JSON
+                      // Check if the data is JSON or plain string
                       if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
                           const parsedData = JSON.parse(rawUsersData);
-                          currentuserName = parsedData.name || null;  // Safe access to name
+                          if (typeof parsedData === 'object' && 'name' in parsedData) {
+                              currentUserName = parsedData.name.trim();
+                          } else {
+                              console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
+                              currentUserName = rawUsersData.trim();
+                          }
                       } else {
                           // It's a plain string
-                          currentuserName = rawUsersData;
+                          currentUserName = rawUsersData.trim();
                       }
                   } catch (error) {
                       console.error('Error parsing localStorage value:', error);
@@ -232,96 +351,539 @@
                   console.error('No user data found in localStorage');
                   return;
               }
-      
-              // Fetch the users' data from users.json using the current user name
+
               fetch('/static/json/users.json')
-                  .then(response => response.json())
-                  .then(userData => {
-                      // Find the user in the users.json file based on their name
-                      const user = userData.find(u => u.Name.toLowerCase() === currentuserName.toLowerCase());
-      
-                      // If no matching user is found
-                      if (!user) {
-                          console.error("User not found in users.json.");
-                          return;
-                      }
-      
-                      // Retrieve the user's favourite food
-                      const userFavoriteFood = user.Favourite_food;  // Assuming 'Favourite_food' exists in users.json
-      
-                      // Fetch the CSV file
-                      fetch('/static/menu.csv')
-                          .then(response => response.text())
-                          .then(csvData => {
-                              // Parse the CSV data
-                              const parsedData = Papa.parse(csvData, {
-                                  header: true,
-                                  skipEmptyLines: true
-                              }).data;
-      
-                              // Get the current time
-                              const currentTime = new Date();
-                              const currentHour = currentTime.getHours();
-      
-                              // Initialize variables for dish details
-                              let recommendedDish = '';
-                              let dishLocation = '';
-                              let dishKJ = '';
-      
-                              // Define conditions based on the time of day
-                              if (currentHour < 8) {
-                                  // Before 8 AM: Look for Bread type dishes
-                                  for (const row of parsedData) {
-                                      if (row.Type && row.Type.toLowerCase() === "bread") {
-                                          recommendedDish = row.Name;  // Get the dish name
-                                          dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
-                                          break; // Stop looping after the first match
-                                      }
-                                  }
-                              } else if (currentHour >= 8 && currentHour < 20) {
-                                  // Between 8 AM and 8 PM: Look for dishes that match the user's favorite food (Type column)
-                                  for (const row of parsedData) {
-                                      if (row.Type && row.Type.toLowerCase() === userFavoriteFood.toLowerCase()) {
-                                          recommendedDish = row.Name;  // Get the dish name
-                                          dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
-                                          break; // Stop looping after the first match
-                                      }
-                                  }
-                              } else {
-                                  // After 8 PM: Look for Snack type dishes
-                                  for (const row of parsedData) {
-                                      if (row.Type && row.Type.toLowerCase() === "snack") {
-                                          recommendedDish = row.Name;  // Get the dish name
-                                          dishLocation = row.Restaurant; // Get the restaurant location
-                                          dishKJ = row["Calories (KJ)"];  // Get the KJ value of the dish
-                                          break; // Stop looping after the first match
-                                      }
-                                  }
-                              }
-      
-                              // If a dish is found, update the UI
-                              if (recommendedDish) {
-                                  document.getElementById('recommendation-dish').textContent = `${recommendedDish}`;
-                                  document.getElementById('location').textContent = `Location: ${dishLocation} |`;
-                                  document.getElementById('kj').textContent = `${dishKJ} KJ`;
-                              } else {
-                                  console.error("No matching dish found based on time and food preference.");
-                              }
-                          })
-                          .catch(error => {
-                              console.error("Error fetching or parsing CSV file:", error);
-                          });
-                  })
-                  .catch(error => {
-                      console.error("Error fetching or parsing users.json file:", error);
-                  });
+              .then(response => response.json())
+              .then(userData => {
+                  // Find user based on Full Name
+                  const user = userData.find(u => 
+                      u["Full Name"].toLowerCase().trim() === currentUserName.toLowerCase()
+                  );
+
+                  if (!user) {
+                      console.error("User not found in users.json.");
+                      return;
+                  }
+
+                  // Retrieve user's favourite food, weight, height, and disliked food
+                  const userFavoriteFood = user["Favourite Food"];
+                  let userWeight = parseFloat(user.Weight); // Weight in kilograms
+                  let userHeight = parseFloat(user.Height); // Height in meters
+                  const dislikedFood = user["Disliked Food"] || []; // User's disliked food list
+
+                  // Check if weight and height are missing or invalid
+                  if (isNaN(userWeight) || isNaN(userHeight) || userWeight === "" || userHeight === "") {
+                      // Set missing or invalid values to 1
+                      console.warn("Missing or invalid weight or height. Setting to 1.");
+                      userWeight = 1;
+                      userHeight = 1;
+                  }
+
+                  // Calculate BMI
+                  const bmi = userWeight / (userHeight ** 2);
+                  console.log(`Calculated BMI for ${currentUserName}: ${bmi.toFixed(2)}`); // Debug log
+                  fetch('/static/menu.csv')
+                    .then(response => response.text())
+                    .then(csvData => {
+                        // Parse the CSV file
+                        const parsedMenuData = Papa.parse(csvData, {
+                            header: true,
+                            skipEmptyLines: true
+                        }).data;
+
+                        console.log('Parsed Menu Data:', parsedMenuData); // Debug log
+
+                        // Clean and prepare data
+                        parsedMenuData.forEach(row => {
+                            if (row["Calories (KJ)"]) {
+                                row["Calories (KJ)"] = parseFloat(row["Calories (KJ)"].replace(/,/g, ''));
+                            }
+                        });
+
+                        // Get the current time
+                        const currentTime = new Date();
+                        const currentHour = currentTime.getHours();
+
+                        const allowedFoodTypesMorning = ["bread", "dessert", "drink", "smoothies", "snack"];
+                        const allowedFoodTypesEvening = ["dessert", "drink", "smoothies", "snack"];
+
+                        
+                        globalMessage = "";
+                        // Filter dishes by food type based on time (morning/evening restrictions)
+                        let filteredByFoodType = [];
+                        if (currentHour <= 9) {
+                            console.log("It's either morning, recommending only specific food types.");
+                            filteredByFoodType = parsedMenuData.filter(row =>
+                                row.Type && allowedFoodTypesMorning.includes(row.Type.toLowerCase())
+                            );
+                        } else if (currentHour >= 18){
+                          console.log("It's evening, recommending only specific food types.");
+                            filteredByFoodType = parsedMenuData.filter(row =>
+                                row.Type && allowedFoodTypesEvening.includes(row.Type.toLowerCase())
+                            );
+                        } else {
+                            // Get the favourite food and restaurant from the user data
+                            const favouriteFoodType = user["Favourite Food"].toLowerCase();
+                            const favouriteRestaurant = user["Favourite Restaurant"].toLowerCase();
+
+                            // Check the last filter choice stored in localStorage
+                            let lastFilterChoice = localStorage.getItem('lastFilterChoice');
+
+                            // If no choice is stored, we default to choosing food or restaurant randomly
+                            if (!lastFilterChoice) {
+                                lastFilterChoice = Math.random() < 0.5 ? "food" : "restaurant"; // 50% chance for each
+                            }
+
+                            // If the last filter was food, force restaurant this time, and vice versa
+                            if (lastFilterChoice === "food") {
+                                globalMessage = `Your favourite restaurant, which is <strong>${favouriteRestaurant.charAt(0).toUpperCase()}${favouriteRestaurant.slice(1)}</strong>, to change your favourite restaurant, go to My Profile -> AI Settings`;
+                                filteredByFoodType = parsedMenuData.filter(row =>
+                                    row.Restaurant && row.Restaurant.toLowerCase() === favouriteRestaurant &&
+                                    !(row.Type && ["snack", "dessert"].includes(row.Type.toLowerCase()))
+                                );
+                                // Update the filter choice in localStorage for the next time
+                                localStorage.setItem('lastFilterChoice', "restaurant");
+                            } else {
+                                globalMessage = `Your favourite food, which is <strong>${favouriteFoodType}</strong>, to change your favourite food, go to My Profile -> AI Settings`;
+                                filteredByFoodType = parsedMenuData.filter(row =>
+                                    row.Type && row.Type.toLowerCase() === favouriteFoodType
+                                );
+                                // Update the filter choice in localStorage for the next time
+                                localStorage.setItem('lastFilterChoice', "food");
+                            }
+                        }
+
+
+                        
+
+
+                        // Remove disliked dishes
+                        filteredByFoodType = filteredByFoodType.filter(row =>
+                            !dislikedFood.includes(row.Name)
+                        );
+
+                        // Apply vegetarian filter first
+                        if (user["Vegetarian"]) {
+                            console.log('User is vegetarian, filtering out non-vegetarian dishes.');
+                            globalMessage = 'Your <strong>vegetarian diet</strong>. To change this, go to My Profile -> AI Settings.';
+                            
+                            // Filter out non-vegetarian dishes
+                            filteredByFoodType = parsedMenuData.filter(row =>
+                                row["Is Vegetarian?"] && row["Is Vegetarian?"].toLowerCase() === 'yes'
+                            );
+                        }
+
+                        // Apply nut allergy filter if needed
+                        if (user["Nut Allergy"]) {
+                            console.log('User has a nut allergy, filtering out dishes with nuts.');
+                            
+                            // If the user is also vegetarian, apply the nut allergy filter to the already filtered vegetarian dishes
+                            filteredByFoodType = filteredByFoodType.filter(row =>
+                                !(row["Has Nuts?"] && row["Has Nuts?"].toLowerCase() === 'yes')
+                            );
+                            // Update the global message for nut allergy
+                            globalMessage = '<br/>Your <strong>vegetarian diet</strong>. To change this, go to My Profile -> AI Settings.';
+                            
+                            // If the user isn't vegetarian, apply the nut allergy filter to all dishes
+                            if (!user["Vegetarian"]) {
+                                filteredByFoodType = parsedMenuData.filter(row =>
+                                    !(row["Has Nuts?"] && row["Has Nuts?"].toLowerCase() === 'yes')
+                                );
+                            }
+
+                            
+                        }
+
+                        // Store the global message in localStorage
+                        localStorage.setItem('globalMessage', globalMessage);
+                        console.log(globalMessage);
+
+                        // Apply gluten allergy filter if needed
+                        if (user["Gluten Allergy"]) {
+                            console.log('User has a gluten allergy, filtering out dishes with gluten.');
+                            
+                            // If the user has a gluten allergy, apply the filter to the already filtered dishes
+                            filteredByFoodType = filteredByFoodType.filter(row =>
+                                !(row["Has Gluten?"] && row["Has Gluten?"].toLowerCase() === 'yes')
+                            );
+                        }
+
+                        // If the user does not have any restrictions, only filter by gluten if applicable
+                        if (!user["Vegetarian"] && !user["Nut Allergy"] && user["Gluten Allergy"]) {
+                            console.log('User has a gluten intolerance but no other dietary restrictions.');
+                            
+                            // Apply the gluten filter to the entire menu if no other filters are applied
+                            filteredByFoodType = parsedMenuData.filter(row =>
+                                !(row["Has Gluten?"] && row["Has Gluten?"].toLowerCase() === 'yes')
+                            );
+                        }
+
+                        // Duplicate liked food in the filtered list
+                        const likedFood = user["Liked Food"] || [];
+                        likedFood.forEach(likedDish => {
+                            // Find the liked dish in the filtered list
+                            const likedDishIndex = filteredByFoodType.findIndex(row => row.Name.toLowerCase() === likedDish.toLowerCase());
+
+                            // If the dish is found, duplicate it
+                            if (likedDishIndex !== -1) {
+                                // Duplicate the dish by pushing it to the list again
+                                filteredByFoodType.push(filteredByFoodType[likedDishIndex]);
+                            }
+                        });
+
+                        console.log('Filtered Dishes with Additional Criteria:', filteredByFoodType); // Debug log
+
+                        // Initialise recommendation pool
+                        let recommendationPool = [];
+
+                        // Check if the user's Favourite Food is empty
+                        if (userFavoriteFood === "") {
+                            // If Favourite Food is empty, use the entire menu
+                            console.log('Favourite Food is empty, recommending from the entire menu.');
+                            recommendationPool = parsedMenuData;
+                        } else {
+                            // Determine recommendation based on BMI
+                            if (bmi <= 18.5) {
+                                console.log('BMI < 18.5, filtering for dishes over 3000 KJ');
+                                recommendationPool = filteredByFoodType.filter(row =>
+                                    row["Calories (KJ)"] && row["Calories (KJ)"] > 3000
+                                );
+                            } else if (bmi >= 25) {
+                                console.log('BMI > 25, filtering for dishes under 3000 KJ');
+                                recommendationPool = filteredByFoodType.filter(row =>
+                                    row["Calories (KJ)"] && row["Calories (KJ)"] < 3000
+                                );
+                            } else {
+                              console.log('BMI healthy, no filter needed');
+                              recommendationPool = filteredByFoodType;
+                            }
+
+                            console.log('Filtered Dishes:', recommendationPool); // Debug log
+                        }
+
+
+                        // Pick a random dish from the pool
+                        if (recommendationPool.length > 0) {
+                            const randomIndex = Math.floor(Math.random() * recommendationPool.length);
+                            const selectedDish = recommendationPool[randomIndex];  // Ensure the correct dish is selected
+
+                            // Store the price in a local variable
+                            const selectedDishPrice = selectedDish.Price;  // Store price in a variable
+
+                            // Save the price to localStorage
+                            localStorage.setItem('selectedDishPrice', selectedDishPrice);
+
+                            // Update UI
+                            document.getElementById('recommendation-dish').textContent = `${selectedDish.Name}`;
+                            document.getElementById('location').textContent = `Location: ${selectedDish.Restaurant} |`;
+                            document.getElementById('kj').textContent = `${selectedDish["Calories (KJ)"]} KJ`;
+
+                            console.log(`The selected dish price is: ${selectedDishPrice}`);
+
+                            // When thumbs-up is clicked
+                            document.getElementById('thumbs-up').addEventListener('click', async () => {
+                                const updatedUser = { ...user };
+
+                                // Ensure Liked Food is an array, or reset it if it's not
+                                if (!Array.isArray(updatedUser["Liked Food"])) {
+                                    updatedUser["Liked Food"] = [];
+                                }
+
+                                // Add to Liked Food if the dish isn't already in the array
+                                if (!updatedUser["Liked Food"].includes(selectedDish.Name)) {
+                                    updatedUser["Liked Food"].push(selectedDish.Name);
+                                }
+
+                                // Make the API request to update the user data
+                                try {
+                                    const response = await fetch('/update_user', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Liked Food": updatedUser["Liked Food"] }) // Only send Liked Food
+                                    });
+
+                                    if (response.ok) {
+                                        document.getElementById('feedback-alert').style.display = 'block';
+                                        document.getElementById('feedback-text').textContent = 'You liked the AI suggestion!';
+                                    } else {
+                                        console.error('Error updating Liked Food in users.json');
+                                    }
+                                } catch (error) {
+                                    console.error('Error while sending thumbs-up data:', error);
+                                }
+                            });
+                            // When thumbs-down is clicked
+                            document.getElementById('thumbs-down').addEventListener('click', async () => {
+                                const updatedUser = { ...user };
+
+                                // Ensure Disliked Food is an array, or reset it if it's not
+                                if (!Array.isArray(updatedUser["Disliked Food"])) {
+                                    updatedUser["Disliked Food"] = [];
+                                }
+
+                                // Add to Disliked Food if the dish isn't already in the array
+                                if (!updatedUser["Disliked Food"].includes(selectedDish.Name)) {
+                                    updatedUser["Disliked Food"].push(selectedDish.Name);
+                                }
+
+                                // Make the API request to update the user data
+                                try {
+                                    const response = await fetch('/update_user', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ "Full Name": updatedUser["Full Name"], "Disliked Food": updatedUser["Disliked Food"] }) // Only send Disliked Food
+                                    });
+
+                                    if (response.ok) {
+                                        document.getElementById('feedback-alert').style.display = 'block';
+                                        document.getElementById('feedback-text').textContent = 'You disliked the AI suggestion!';
+
+                                        // Refresh the page after successfully updating the disliked food list
+                                        location.reload(); // This will reload the page
+                                    } else {
+                                        console.error('Error updating Disliked Food in users.json');
+                                    }
+                                } catch (error) {
+                                    console.error('Error while sending thumbs-down data:', error);
+                                }
+                            });
+
+                            // Adding an event listener to the 'Add to Orders' button
+                            document.getElementById('add-to-orders').addEventListener('click', async function() {
+                                try {
+                                    // Retrieve the current user's name from localStorage (same as in loadRecommendation function)
+                                    const rawUsersData = localStorage.getItem('BBAIcurrentuser');
+                                    let currentUserName = null;
+
+                                    if (rawUsersData) {
+                                        try {
+                                            if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
+                                                const parsedData = JSON.parse(rawUsersData);
+                                                if (typeof parsedData === 'object' && 'name' in parsedData) {
+                                                    currentUserName = parsedData.name.trim();
+                                                } else {
+                                                    console.warn('Parsed data is not an object with a "name" property.');
+                                                }
+                                            } else {
+                                                currentUserName = rawUsersData.trim();
+                                            }
+                                        } catch (error) {
+                                            console.error('Error parsing localStorage value:', error);
+                                            return;
+                                        }
+                                    } else {
+                                        console.error('No user data found in localStorage');
+                                        return;
+                                    }
+
+                                    // Retrieve dish details from the UI (using the elements where the recommendation is shown)
+                                    const dishName = document.getElementById('recommendation-dish').textContent.trim();
+                                    const restaurantName = document.getElementById('location').textContent.replace('Location: ', '').split(' |')[0].trim();
+                                    let price = localStorage.getItem('selectedDishPrice');  // Retrieve the stored price
+
+                                    // If the price is stored with a currency symbol, clean it up
+                                    price = parseFloat(price.replace(/[^\d.-]/g, ''));
+                                    console.log("Jimmy price: ", price);
+
+
+                                    // Ensure price is a valid number (you can adjust this if you have actual price data)
+                                    if (isNaN(price) || price === '') {
+                                        console.warn('Invalid price data, defaulting to 0');
+                                        price = 0; // Default to 0 if no valid price is found
+                                    }
+
+                                    // Prepare the order data to be sent to Flask
+                                    const orderData = {
+                                        currentUserName: currentUserName,
+                                        dishName: dishName,
+                                        restaurantName: restaurantName,
+                                        price: price
+                                    };
+
+                                    // Send a POST request to update orders
+                                    const response = await fetch('/update_orders', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(orderData)
+                                    });
+
+                                    // Handle the response from Flask
+                                    if (response.ok) {
+                                        const result = await response.json();
+                                        if (result.status === 'success') {
+                                          location.reload();  // Reload the page to reflect the updated state
+                                        } else {
+                                            console.error('Error adding order:', result.message);
+                                            alert('There was an error adding your order. Please try again.');
+                                        }
+                                    } else {
+                                        console.error('Error with the request:', response.statusText);
+                                        alert('Failed to communicate with the server. Please try again later.');
+                                    }
+                                } catch (error) {
+                                    console.error('Error handling the Add to Orders action:', error);
+                                    alert('An error occurred while adding the order. Please try again.');
+                                }
+                            });
+
+
+                        } else {
+                            console.error('No matching dishes found based on BMI, favourite food, and disliked food.');
+                            document.getElementById('recommendation-dish').textContent = 'No recommendation available';
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error fetching or parsing menu.csv:', error);
+                    });
+
+              })
+              .catch(error => {
+                  console.error("Error fetching or parsing users.json file:", error);
+              });
           }
-      
+
           loadRecommendation();
+        </script>
+
+        <!-- XAI SCRIPT -->
+        <script defer>
+          // Get modal elements
+          const modal = document.getElementById('custom-modal');
+          const openModalButton = document.getElementById('info-button');
+          const closeModalButton = document.getElementById('close-modal');
+
+
+        // Open modal when info button is clicked
+        openModalButton.addEventListener('click', () => {
+          modal.style.display = 'flex';
+          // Function to calculate BMI based on weight and height
+          function calculateBMI(weight, height) {
+            if (weight && height) {
+              const heightInMeters = height; // Convert cm to meters
+              return weight / (heightInMeters * heightInMeters);
+            }
+            return null; // Return null if no weight or height is provided
+          }
+
+          // Function to get a recommendation explanation based on user data
+        function getRecommendationExplanation(user) {
+          const explanations = [];
+          const currentTime = new Date().getHours(); // Get the current hour of the day
+          // Check if Favourite Food exists, is not undefined or empty
+          if (user["Favourite Food"] && user["Favourite Food"].trim() !== "") {
+
+            // If the current time is outside 9 AM–6 PM, only show time-based recommendations
+            if (currentTime < 9 || currentTime > 18) {
+              if (currentTime < 9) {
+                explanations.push("At this time, we recommend having a <strong>Morning Snack</strong>.");
+              } else {
+                explanations.push("At this time, we recommend having a <strong>Evening Snack</strong>.");
+              }
+              return explanations.join(" "); // Return only time-based explanations
+            }
+            
+            const storedGlobalMessage = localStorage.getItem('globalMessage');
+            console.log("OUR GLOBAL MESSAGE: ",storedGlobalMessage);
+            // If within 9 AM–6 PM, proceed with other types of recommendations
+            if (user["Favourite Food"] && user["Favourite Food"].trim() !== "") {
+              explanations.push(storedGlobalMessage); // SEAN MARKER 2
+            }
+            
+            // 3. Based on BMI
+            const bmi = calculateBMI(user["Weight"], user["Height"]);
+            if (bmi) {
+              if (bmi < 18.5) {
+                explanations.push("Your <strong>BMI</strong> indicates that you're slightly under the recommended range. To update your weight, please navigate to My Profile -> AI Settings.");
+              } else if (bmi > 25) {
+                explanations.push("Your <strong>BMI</strong> indicates that you're slightly over the recommended range. To update your weight, please navigate to My Profile -> AI Settings."); // MAKE THESE NICER 
+              } else {
+                explanations.push("Your <strong>BMI</strong> is within the healthy weight range, so we recommended this dish to maintain your balanced weight. To update your weight, please go to My Profile -> AI Settings");
+              }
+            }
+
+            // 4. Based on liked food
+            if (user["Liked Food"] && user["Liked Food"].length > 0) {
+              const likedFoodList = user["Liked Food"].join(", ");
+              explanations.push(`Your previously liked food: <strong>${likedFoodList}</strong>.`);
+            }
+
+            // 5. Based on disliked food
+            if (user["Disliked Food"] && user["Disliked Food"].length > 0) {
+              const dislikedFoodList = user["Disliked Food"].join(", ");
+              explanations.push(`Your previously disliked food: <strong>${dislikedFoodList}</strong>.`);
+            }
+
+            // Randomly select one explanation from the list
+            const randomExplanation = explanations[Math.floor(Math.random() * explanations.length)];
+
+            return randomExplanation;
+          } else {
+            // If Favourite Food is missing or empty, proceed with time-based recommendations
+            
+
+            if (currentTime < 9) {
+              explanations.push("At this time, we recommend having a <strong>Morning Snack</strong>. ");
+            } else if (currentTime > 18) {
+              explanations.push("At this time, we recommend having a <strong>Evening Snack</strong>.");
+            } else {
+              explanations.push("At this time, we recommend having a <strong>Full Meal</strong>.");
+            }
+            // Return the explanation
+            return explanations.join(" ");
+            
+          }
+          
+        }
+
+
+        // Fetch user data and generate explanation
+        fetch('/static/json/users.json')
+          .then(response => response.json())
+          .then(userData => {
+            const userName = localStorage.getItem('BBAIcurrentuser'); // Get the current user from localStorage
+
+            // Find the user in the data based on 'Full Name'
+            const user = userData.find(u => u["Full Name"] === userName);
+
+            if (user) {
+              // Get random recommendation explanation
+              const recommendationExplanation = getRecommendationExplanation(user);
+
+              // Populate modal with the explanation
+              const modalBody = document.querySelector('.custom-modal-body');
+              modalBody.innerHTML = `
+                <p>Personalised Recommendation based on:</p>
+                <p>${recommendationExplanation}</p>
+              `;
+            } else {
+              console.error("User not found in users.json");
+            }
+          })
+          .catch(error => {
+            console.error("Error fetching user data:", error);
+          });
+        });
+
+        // Close modal when close button is clicked
+        closeModalButton.addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside the modal content
+        window.addEventListener('click', (event) => {
+          if (event.target === modal) {
+            modal.style.display = 'none';
+          }
+        });
       </script>
-      
+
 
           <!-- Revenue Card -->
           <div class="col-xxl-4 col-md-6">
@@ -361,13 +923,12 @@
             // Fetch the raw data from localStorage
             const rawUsersData = localStorage.getItem('BBAIcurrentuser');
             let currentuserName = null;
-
+        
             if (rawUsersData) {
               try {
                 // Attempt to parse the data as JSON
                 if (rawUsersData.startsWith('{') && rawUsersData.endsWith('}')) {
                   const parsedData = JSON.parse(rawUsersData);
-                  console.log('Parsed Data:', parsedData);
                   currentuserName = parsedData.name || null; // Safely access 'name'
                 } else {
                   // If not JSON, assume it's a plain string
@@ -379,29 +940,27 @@
             } else {
               console.error('No BBAIcurrentuser found in localStorage');
             }
-
+        
             // Update the DOM with the current user's name or 'Guest' if unavailable
-            profileNameElement = document.getElementById('profileName');
+            const profileNameElement = document.getElementById('profileName');
             if (currentuserName) {
               profileNameElement.textContent = currentuserName;
             } else {
               profileNameElement.textContent = 'Guest';
             }
-
-
-
+        
             // Get only the Revenue Card filter items
             const revenueFilterItems = document.querySelectorAll('.revenue-filter');
-          
+            
             // Get the Revenue Card title span and the amount element
             const revenueCardTitleSpan = document.getElementById('revenueTitleSpan');
             const revenueAmountElement = document.getElementById('revenueAmount'); // Assuming this ID for revenue display
-          
+            
             // Add event listener specifically for Revenue Card filter items
             revenueFilterItems.forEach(item => {
               item.addEventListener('click', function() {
                 const selectedFilter = item.getAttribute('data-filter');
-          
+                
                 // Update the text of the revenue card title based on the selected filter
                 if (selectedFilter === 'revenue-today') {
                   revenueCardTitleSpan.textContent = ' | Today';
@@ -412,83 +971,95 @@
                 } else if (selectedFilter === 'revenue-AT') {
                   revenueCardTitleSpan.textContent = ' | All Time';
                 }
-          
+                
                 // Call the function to update revenue display based on filter
                 updateRevenue(selectedFilter);
               });
             });
-          
+            
             // Function to fetch orders data from the orders.json file
             async function fetchOrdersData() {
               try {
                 const response = await fetch('/static/json/orders.json'); // Correct the path to your orders.json
                 const orders = await response.json();
-                console.log('Orders fetched:', orders);
                 return orders;
               } catch (error) {
                 console.error('Error fetching orders data:', error);
                 return [];
               }
             }
-          
-            // Helper function to calculate the total revenue based on the selected filter
+            
             function calculateRevenue(orders, filter) {
-              const today = new Date();
-              let startDate, endDate;
-              const formattedToday = today.toISOString().split('T')[0];
-          
-              switch (filter) {
-                case 'revenue-today':
-                  startDate = formattedToday;
-                  endDate = formattedToday;
-                  break;
-                case 'revenue-week':
-                  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
-                  startDate = firstDayOfWeek.toISOString().split('T')[0];
-                  endDate = formattedToday;
-                  break;
-                case 'revenue-month':
-                  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                  startDate = firstDayOfMonth.toISOString().split('T')[0];
-                  endDate = formattedToday;
-                  break;
-                case 'revenue-AT': // All Time: No date filter, just sum all orders for the user
-                  startDate = '0000-01-01'; // Arbitrary start date (since there's no date filter)
-                  endDate = formattedToday;
-                  break;
-                default:
-                  startDate = formattedToday;
-                  endDate = formattedToday;
-              }
-          
-              // Filter orders based on the selected date range and userName
-              const filteredOrders = orders.filter(order => {
-                // Convert order.Date from DD/MM/YYYY to YYYY-MM-DD for comparison
-                const orderDate = order.Date.split('/').reverse().join('-');
-                return (
-                  orderDate >= startDate &&
-                  orderDate <= endDate &&
-                  order.userName === currentuserName // Ensure userName matches the logged-in user
-                );
-              });
-          
-              // Calculate total revenue for the filtered orders
-              const totalRevenue = filteredOrders.reduce((acc, order) => acc + parseFloat(order.Price || 0), 0);
-              return totalRevenue;
+                const today = new Date();
+                let startDate, endDate;
+                const formattedToday = today.toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        
+                console.log('Today:', formattedToday); // Log today's date for verification
+        
+                switch (filter) {
+                    case 'revenue-today':
+                        startDate = formattedToday;
+                        endDate = formattedToday;
+                        break;
+                    case 'revenue-week':
+                        // Calculate the start of the current week (Monday)
+                        const firstDayOfWeek = new Date(today);
+                        const dayOfWeek = today.getDay();
+                        const diffToMonday = (dayOfWeek === 0 ? 6 : dayOfWeek - 1); // If it's Sunday, subtract 6
+                        firstDayOfWeek.setDate(today.getDate() - diffToMonday); // Set to Monday
+                        startDate = firstDayOfWeek.toISOString().split('T')[0];
+                        endDate = formattedToday;
+                        break;
+                    case 'revenue-month':
+                        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                        startDate = firstDayOfMonth.toISOString().split('T')[0];
+                        endDate = formattedToday;
+                        break;
+                    case 'revenue-AT': // All Time: No date filter, just sum all orders for the user
+                        startDate = '0000-01-01'; // Arbitrary start date (since there's no date filter)
+                        endDate = formattedToday;
+                        break;
+                    default:
+                        startDate = formattedToday;
+                        endDate = formattedToday;
+                }
+        
+                console.log('Start Date:', startDate); // Log the calculated start date
+                console.log('End Date:', endDate); // Log the calculated end date
+        
+                // Filter orders based on the selected date range and userName
+                const filteredOrders = orders.filter(order => {
+                    // Convert order.Date from DD/MM/YYYY to YYYY-MM-DD for comparison
+                    const orderDate = order.Date.split('/').reverse().join('-');
+                    console.log('Order Date:', orderDate); // Log each order's date for verification
+                    return (
+                        orderDate >= startDate &&
+                        orderDate <= endDate &&
+                        order.userName === currentuserName // Ensure userName matches the logged-in user
+                    );
+                });
+        
+                console.log('Filtered Orders:', filteredOrders); // Log the filtered orders to see if they match the date range
+        
+                // Calculate total revenue for the filtered orders
+                const totalRevenue = filteredOrders.reduce((acc, order) => acc + parseFloat(order.Price || 0), 0);
+                console.log('Total Revenue:', totalRevenue); // Log the total revenue calculation
+                return totalRevenue;
             }
-          
+            
             // Function to update the revenue card content
             async function updateRevenue(filter) {
               const orders = await fetchOrdersData();
               const revenue = calculateRevenue(orders, filter);
-          
+              
               // Update the revenue amount in the card
               revenueAmountElement.textContent = `€${revenue.toFixed(2)}`; // Display total revenue with 2 decimal places
             }
-          
+            
             // Initialize with the default filter ('Today') when the page loads
             updateRevenue('revenue-today');
-          </script>
+        </script>
+        
             <!-- Current Weight Card -->
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card">
@@ -499,7 +1070,7 @@
                       <img src="assets/img/icons/weight-scale.png" alt="Scale Icon" style="width: 60%; height: auto;">
                     </div>
                     <div class="ps-3">
-                      <h6 id="weight">XX kg</h6> <!-- Display the current weight -->
+                      <h6 id="Weight">XX kg</h6> <!-- Display the current weight -->
                       <span class="text-muted small pt-2 ps-1" id="last-update">As of: XX-XX-XX XX:XX</span>
                     </div>
                   </div>
@@ -509,80 +1080,76 @@
 
             <script>
               document.addEventListener('DOMContentLoaded', () => {
-                  // Retrieve the current user's data from localStorage
-                  const rawUsersData = localStorage.getItem('BBAIcurrentuser');
-                  let currentUserName = null;
-          
-                  if (rawUsersData) {
-                      try {
-                          // Try to parse the raw data as JSON
-                          const parsedData = JSON.parse(rawUsersData);
-                          console.log('Parsed Data:', parsedData);
-          
-                          // Check if it's an object with a 'name' property
-                          if (typeof parsedData === 'object' && 'name' in parsedData) {
-                              currentUserName = parsedData.name.split(' ')[0]; // Extract the first word
-                          } else {
-                              console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
-                              currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
-                          }
-                      } catch (error) {
-                          console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
-                          currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
+                // Retrieve the current user's data from localStorage
+                const rawUsersData = localStorage.getItem('BBAIcurrentuser');
+                let currentUserName = null;
+                console.log("THE USER WEIGHT IS: ", rawUsersData);
+            
+                if (rawUsersData) {
+                  try {
+                    // Try to parse the raw data as JSON
+                    const parsedData = JSON.parse(rawUsersData);
+            
+                    // Check if it's an object with a 'name' property
+                    if (typeof parsedData === 'object' && 'name' in parsedData) {
+                      currentUserName = parsedData.name.split(' ')[0]; // Extract the first word
+                      console.log('Local Storage User:', currentUserName);
+                    } else {
+                      console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
+                      currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
+                      console.log('Local Storage User:', currentUserName);
+                    }
+                  } catch (error) {
+                    console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
+                    currentUserName = rawUsersData.split(' ')[0]; // Extract the first word
+                    console.log('Local Storage User:', currentUserName);
+                  }
+                } else {
+                  console.error('No BBAIcurrentuser found in localStorage');
+                }
+            
+                // Update the profile name in the DOM
+                const profileNameElement = document.getElementById('profileName');
+                if (profileNameElement) {
+                  profileNameElement.textContent = currentUserName || 'Guest';
+                } else {
+                  console.error('Element with id "profileName" not found in the DOM');
+                }
+            
+                // Fetch the user data from JSON and match the current user
+                fetch('/static/json/users.json')
+                  .then(response => response.json())
+                  .then(data => {
+                    // Find the user in JSON data who matches the name in currentUserName
+                    const userData = data.find(user =>
+                      user["Full Name"].split(' ')[0].toLowerCase() === currentUserName?.toLowerCase()
+                    );
+
+                    if (userData) {
+                      // Update the weight
+                      console.log("WEIGHT WATCHER: ", userData.Weight);
+                      if (isNaN(userData.Weight)) {
+                        userData.Weight = "XX";
                       }
-                  } else {
-                      console.error('No BBAIcurrentuser found in localStorage');
-                  }
-          
-                  // Update the profile name in the DOM
-                  const profileNameElement = document.getElementById('profileName');
-                  if (profileNameElement) {
-                      profileNameElement.textContent = currentUserName || 'Guest';
-                  } else {
-                      console.error('Element with id "profileName" not found in the DOM');
-                  }
-          
-                  // Fetch the user data from JSON and match the current user
-                  fetch('/static/json/users.json')
-                      .then(response => response.json())
-                      .then(data => {
-                          console.log('User data from JSON file:', data);
-          
-                          // Find the user in JSON data who matches the name in currentUserName
-                          const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName?.toLowerCase());
-          
-                          if (userData) {
-                              console.log('Matching user found in JSON:', userData);
-          
-                              // Update the weight
-                              document.getElementById('weight').textContent = `${userData.Weight} kg`;
-          
-                              // Set the current date and time (hour and minute only, in the desired format) as the last update
-                              const options = {
-                                  day: 'numeric',
-                                  month: 'numeric',
-                                  year: 'numeric',
-                                  hour: 'numeric',
-                                  minute: 'numeric',
-                                  hour12: true,
-                              };
-                              const lastUpdate = new Date().toLocaleString('en-GB', options)
-                                  .replace(' am', ' AM')
-                                  .replace(' pm', ' PM')
-                                  .replace('AM', ' AM')
-                                  .replace('PM', ' PM');
-                              document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
-                          } else {
-                              console.error('No matching user found in JSON data for name:', currentUserName);
-                          }
-                      })
-                      .catch(error => console.error('Error fetching user data from JSON:', error));
+                      console.log("User weight is: ", userData.Weight);
+                      document.getElementById('Weight').textContent = `${userData.Weight} kg`;
+
+                      // Use the Weight_LastUpdate field from users.json for the last update time
+                      const lastUpdate = userData.Weight_LastUpdate;
+
+                      if (lastUpdate) {
+                        document.getElementById('last-update').textContent = `As of: ${lastUpdate}`;
+                      } else {
+                        console.warn("Weight_LastUpdate field is missing or empty for the user.");
+                        document.getElementById('last-update').textContent = "As of: Unknown";
+                      }
+                    } else {
+                      console.error('No matching user found in JSON data for name:', currentUserName);
+                    }
+                  })
+                  .catch(error => console.error('Error fetching user data from JSON:', error));
               });
-          </script>
-          
-          
-          
-          
+            </script>           
 
             <!-- Current BMI Card -->
             <div class="col-xxl-4 col-md-6">
@@ -604,82 +1171,107 @@
 
             <script>
               document.addEventListener('DOMContentLoaded', () => {
-                  // Retrieve the current user's data from localStorage
-                  const rawUserData2 = localStorage.getItem('BBAIcurrentuser');
-                  let currentUserName = null;
-          
-                  if (rawUserData2) {
-                      try {
-                          // Parse the stored user data
-                          const parsedData = JSON.parse(rawUserData2);
-                          console.log('Parsed User Data:', parsedData);
-          
-                          // Extract the first name if the data is valid
-                          if (typeof parsedData === 'object' && 'name' in parsedData) {
-                              currentUserName = parsedData.name.split(' ')[0]; // Use first name
+                // Retrieve the current user's data from localStorage
+                const rawUserData2 = localStorage.getItem('BBAIcurrentuser');
+                let currentUserName = null;
+            
+                if (rawUserData2) {
+                  try {
+                    // Parse the stored user data
+                    const parsedData = JSON.parse(rawUserData2);
+                    // Extract the first name if the data is valid
+                    if (typeof parsedData === 'object' && 'name' in parsedData) {
+                      currentUserName = parsedData.name.split(' ')[0]; // Use first name
+                    } else {
+                      console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
+                      currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
+                    }
+                  } catch (error) {
+                    console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
+                    currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
+                  }
+                } else {
+                  console.error('No BBAIcurrentuser found in localStorage');
+                }
+            
+                // Proceed only if currentUserName is available
+                if (currentUserName) {
+                  fetch('/static/json/users.json')
+                    .then(response => response.json())
+                    .then(data => {
+                      // Find the user in the JSON data by matching the first name
+                      const userData = data.find(user =>
+                        user["Full Name"].split(' ')[0].toLowerCase() === currentUserName.toLowerCase()
+                      );
+            
+                      if (userData) {
+                        // Check if Weight and Height are not empty
+                        const weight = userData.Weight;
+                        const height = userData.Height;
+            
+                        if (weight && height) {
+                          // Calculate BMI using the formula: BMI = weight / (height^2)
+                          const bmi = weight / (height * height);
+            
+                          // Update the BMI value in the DOM
+                          const bmiElement = document.getElementById('bmi');
+                          if (bmiElement) {
+                            bmiElement.textContent = bmi.toFixed(2); // Round to 2 decimal places
                           } else {
-                              console.warn('Parsed data is not an object with a "name" property. Falling back to raw text.');
-                              currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
+                            console.error('Element with id "bmi" not found in the DOM');
                           }
-                      } catch (error) {
-                          console.warn('Error parsing localStorage value as JSON. Assuming plain text.', error);
-                          currentUserName = rawUserData2.split(' ')[0]; // Fallback to raw data
-                      }
-                  } else {
-                      console.error('No BBAIcurrentuser found in localStorage');
-                  }
-          
-                  // Proceed only if currentUserName is available
-                  if (currentUserName) {
-                      fetch('/static/json/users.json')
-                          .then(response => response.json())
-                          .then(data => {
-                              console.log('User data from JSON file:', data);
-          
-                              // Find the user in the JSON data by matching the first name
-                              const userData = data.find(user => user.Name.split(' ')[0].toLowerCase() === currentUserName.toLowerCase());
-          
-                              if (userData) {
-                                  console.log('Matching user found in JSON:', userData);
-          
-                                  // Calculate BMI using the formula: BMI = weight / (height^2)
-                                  const bmi = userData.Weight / (userData.Height * userData.Height);
-          
-                                  // Update the BMI value in the DOM
-                                  const bmiElement = document.getElementById('bmi');
-                                  if (bmiElement) {
-                                      bmiElement.textContent = bmi.toFixed(2); // Round to 2 decimal places
-                                  } else {
-                                      console.error('Element with id "bmi" not found in the DOM');
-                                  }
-          
-                                  // Set the current date and time as the last update
-                                  const lastUpdate = new Date().toLocaleString('en-GB', {
-                                      day: 'numeric',
-                                      month: 'numeric',
-                                      year: 'numeric',
-                                      hour: 'numeric',
-                                      minute: 'numeric',
-                                      hour12: true,
-                                  }).replace('am', ' AM').replace('pm', ' PM').replace('AM', ' AM').replace('PM', ' PM');
-          
-                                  // Update the last update timestamp in the DOM
-                                  const lastUpdateElement = document.getElementById('bmi-last-update');
-                                  if (lastUpdateElement) {
-                                      lastUpdateElement.textContent = `As of: ${lastUpdate}`;
-                                  } else {
-                                      console.error('Element with id "bmi-last-update" not found in the DOM');
-                                  }
-                              } else {
-                                  console.error('No matching user found in JSON data for name:', currentUserName);
-                              }
+            
+                          // Set the current date and time as the last update
+                          const lastUpdate = new Date().toLocaleString('en-GB', {
+                            day: 'numeric',
+                            month: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
                           })
-                          .catch(error => console.error('Error fetching user data:', error));
-                  } else {
-                      console.error('Current user name is not available');
-                  }
+                            .replace('am', ' AM')
+                            .replace('pm', ' PM')
+                            .replace('AM', ' AM')
+                            .replace('PM', ' PM');
+            
+                          // Update the last update timestamp in the DOM
+                          const lastUpdateElement = document.getElementById('bmi-last-update');
+                          if (lastUpdateElement) {
+                            lastUpdateElement.textContent = `As of: ${lastUpdate}`;
+                          } else {
+                            console.error('Element with id "bmi-last-update" not found in the DOM');
+                          }
+                        } else {
+                          // If either Weight or Height is empty, do not calculate BMI and set 'N/A' or leave placeholders
+                          const bmiElement = document.getElementById('bmi');
+                          if (bmiElement) {
+                            bmiElement.textContent = 'N/A'; // Set BMI as 'N/A' or keep the placeholder
+                          } else {
+                            console.error('Element with id "bmi" not found in the DOM');
+                          }
+            
+                          // Set "As of: Not available" for last update if BMI is not available
+                          const lastUpdateElement = document.getElementById('bmi-last-update');
+                          if (lastUpdateElement) {
+                            lastUpdateElement.textContent = 'As of: XX-XX-XX XX:XX'; // Set placeholder text
+                          } else {
+                            console.error('Element with id "bmi-last-update" not found in the DOM');
+                          }
+                        }
+                      } else {
+                        console.error('No matching user found in JSON data for name:', currentUserName);
+                      }
+                    })
+                    .catch(error => console.error('Error fetching user data:', error));
+                } else {
+                  console.error('Current user name is not available');
+                }
               });
-          </script>
+            </script>
+            
+            
+            
           
             
 
@@ -736,7 +1328,6 @@
                   if (rawUsersData2.startsWith('{') && rawUsersData2.endsWith('}')) {
                     // Parse the JSON data if it appears to be an object
                     const parsedData = JSON.parse(rawUsersData2);
-                    console.log('Parsed User Data:', parsedData);
                     currentuserName2 = parsedData?.name || null; // Safely access 'name'
                   } else {
                     // If it's a plain string, use it directly
@@ -899,49 +1490,75 @@
                   <div id="reportsChart" style="height:25.5rem;"></div>
                   <script>
                     document.addEventListener("DOMContentLoaded", () => {
-                      new ApexCharts(document.querySelector("#reportsChart"), {
-                        series: [{
-                          name: 'Goal Weight',
-                          data: [70, 69, 68, 67, 66, 66, 65], // Example goal weights over 7 weeks
-                        }, {
-                          name: 'Actual Weight',
-                          data: [71, 70, 67, 68, 67, 66, 66] // Example actual weights over 7 weeks
-                        }],
-                        chart: {
-                          height: 350,
-                          type: 'line',
-                          toolbar: {
-                            show: false
-                          },
-                        },
-                        markers: {
-                          size: 4
-                        },
-                        colors: ['#4154f1', '#ff771d'], // Blue for goal weight, orange for actual weight
-                        fill: {
-                          type: "solid"
-                        },
-                        dataLabels: {
-                          enabled: false
-                        },
-                        stroke: {
-                          curve: 'smooth',
-                          width: 2
-                        },
-                        xaxis: {
-                          categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7'], // Weeks as x-axis labels
-                        },
-                        tooltip: {
-                          x: {
-                            show: true
-                          },
-                          y: {
-                            formatter: (val) => val + ' kg'
+                      // Get the current user's name from localStorage
+                      const userName = localStorage.getItem('BBAIcurrentuser');
+                    
+                      // Make sure the username is available
+                      if (!userName) {
+                        console.error('No user is logged in!');
+                        return;
+                      }
+                    
+                      // Fetch user data from Flask backend, passing the username as a query parameter
+                      fetch(`/get-weight-data?username=${encodeURIComponent(userName)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                          if (data.success) {
+                            let weightData = data.data.weight_data;
+                            let dateData = data.data.date_data;
+                            
+                            // Only keep the last 13 entries
+                            weightData = weightData.slice(-13);
+                            dateData = dateData.slice(-13);
+
+                            // Create chart data
+                            new ApexCharts(document.querySelector("#reportsChart"), {
+                              series: [{
+                                name: 'Actual Weight',
+                                data: weightData // Actual weight data over time
+                              }],
+                              chart: {
+                                height: 350,
+                                type: 'line',
+                                toolbar: {
+                                  show: false
+                                },
+                              },
+                              markers: {
+                                size: 4
+                              },
+                              colors: ['#ff771d'], // Orange for actual weight
+                              fill: {
+                                type: "solid"
+                              },
+                              dataLabels: {
+                                enabled: false
+                              },
+                              stroke: {
+                                curve: 'smooth',
+                                width: 2
+                              },
+                              xaxis: {
+                                categories: dateData, // Use the dates for x-axis labels
+                              },
+                              tooltip: {
+                                x: {
+                                  show: true
+                                },
+                                y: {
+                                  formatter: (val) => val + ' kg'
+                                }
+                              }
+                            }).render();
+                          } else {
+                            console.error('Error fetching user data:', data.message);
                           }
-                        }
-                      }).render();
+                        })
+                        .catch(error => {
+                          console.error('Error fetching data:', error);
+                        });
                     });
-                  </script>
+                  </script>                  
                   <!-- End Line Chart -->
                 </div>
               </div>
@@ -980,7 +1597,6 @@
                     // Attempt to parse the data as JSON
                     if (rawUsersData6.startsWith('{') && rawUsersData6.endsWith('}')) {
                       const parsedData = JSON.parse(rawUsersData6);
-                      console.log('Parsed Data:', parsedData);
                       currentuserName6 = parsedData.name || null; // Safely access 'name'
                     } else {
                       // If not JSON, assume it's a plain string
@@ -1157,53 +1773,55 @@
                                 // Filter orders by checking if the current user's name is included in the order's userName
                                 const userOrders = data.filter(order => {
                                     const userName = order.userName || "";
-                                    console.log(`Checking if order userName: ${userName} matches current user: ${currentuserName}`);
                                     return userName.includes(currentuserName); // Check if the first name matches part of the full name
                                 });
-            
-                                console.log("Filtered Orders:", userOrders);
-            
                                 // Filter the orders based on the selected timeframe
                                 const filteredData = filterByTimeframe(userOrders, timeframe);
-                                console.log("Sorted Orders:", filteredData);
-            
                                 const restaurantCounts = countRestaurants(filteredData);
-            
                                 const chartData = Object.entries(restaurantCounts)
                                     .filter(([name, count]) => count > 0) // Only include restaurants with more than 0 purchases
                                     .map(([name, count]) => ({
                                         value: count,
                                         name: name
                                     }));
-            
-                                console.log("Most Recent Orders:", chartData);
                                 chart.setOption({ series: [{ data: chartData }] });
                             })
                             .catch(error => console.error("Error fetching or parsing JSON data:", error));
                     }
             
                     function filterByTimeframe(data, timeframe) {
-                        const today = new Date();
-                        if (timeframe === 'all time') {
-                            // For All Time filter, do not apply any date filtering, return all user orders
-                            return data;
-                        } else {
-                            return data.filter(order => {
-                                const orderDate = new Date(order.Date.split('/').reverse().join('-'));
-                                if (timeframe === 'today') {
-                                    return orderDate.toDateString() === today.toDateString();
-                                } else if (timeframe === 'week') {
-                                    const oneWeekAgo = new Date(today);
-                                    oneWeekAgo.setDate(today.getDate() - 7);
-                                    return orderDate >= oneWeekAgo && orderDate <= today;
-                                } else if (timeframe === 'month') {
-                                    const oneMonthAgo = new Date(today);
-                                    oneMonthAgo.setMonth(today.getMonth() - 1);
-                                    return orderDate >= oneMonthAgo && orderDate <= today;
-                                }
-                            });
-                        }
-                    }
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);  // Set time to midnight to ignore time component
+
+                      if (timeframe === 'all time') {
+                          // For All Time filter, do not apply any date filtering, return all user orders
+                          return data;
+                      } else {
+                          return data.filter(order => {
+                              const orderDateParts = order.Date.split('/');
+                              const orderDate = new Date(orderDateParts[2], orderDateParts[1] - 1, orderDateParts[0]); // YYYY, MM (0-based), DD
+                              
+                              if (timeframe === 'today') {
+                                  // Compare only the date part (ignore time)
+                                  return orderDate.toDateString() === today.toDateString();
+                              } else if (timeframe === 'week') {
+                                  // Calculate the start of the week (7 days ago)
+                                  const oneWeekAgo = new Date(today);
+                                  oneWeekAgo.setDate(today.getDate() - 7);
+                                  return orderDate >= oneWeekAgo && orderDate <= today;
+                              }else if (timeframe === 'month') {
+                                  // Get the current year and month
+                                  const oneMonthAgo = new Date(today);
+                                  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Start of the current month
+                                  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of the current month (last day)
+
+                                  return orderDate >= startOfMonth && orderDate <= endOfMonth;
+                              }
+
+                          });
+                      }
+                  }
+
             
                     function countRestaurants(data) {
                         return data.reduce((counts, order) => {
