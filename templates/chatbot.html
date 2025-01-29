@@ -696,48 +696,50 @@ Additionally, if a user specifically requests something to eat, ignore all previ
       return dotInterval;
   }
 
-  // Function to simulate typing effect with blinking pipe symbol
   function simulateTypingEffect(response) {
-      const botMessage = document.createElement("div");
-      botMessage.classList.add("message", "bot-message");
-      botMessage.innerHTML = `
-          <div class="message-content_bot">
-              <div class="message-icon_bot">
-                  <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
-              </div>
-          </div>
-          <div class="message-text">
-              <p id="typingText"></p>
-          </div>
-      `;
-      messageContainer.appendChild(botMessage);
-      messageContainer.scrollTop = messageContainer.scrollHeight;
+    const uniqueId = `typingText-${Date.now()}`;  // Generate a unique ID for each message
+    const botMessage = document.createElement("div");
+    botMessage.classList.add("message", "bot-message");
+    botMessage.innerHTML = `
+        <div class="message-content_bot">
+            <div class="message-icon_bot">
+                <img src="${getCurrentFavicon()}" alt="SB-AI Logo" class="bot-icon">
+            </div>
+        </div>
+        <div class="message-text">
+            <p id="${uniqueId}"></p>  <!-- Use the unique ID -->
+        </div>
+    `;
 
-      const typingTextElement = document.getElementById("typingText");
-      let index = 0;
-      let typedText = '';
-      const typingInterval = setInterval(() => {
-          // Add the character to the text and move the pipe symbol
-          typedText += response.charAt(index);  // Add one character at a time
-          typingTextElement.textContent = typedText + "|";  // Show the current text with pipe
+    messageContainer.appendChild(botMessage);
+    messageContainer.scrollTop = messageContainer.scrollHeight;
 
-          index++;
-          if (index === response.length) {
-              clearInterval(typingInterval);  // Stop once the entire message is typed
+    const typingTextElement = document.getElementById(uniqueId);
+    let index = 0;
+    let typedText = '';
 
-              // Blink the pipe symbol twice
-              let blinkCount = 0;
-              const blinkInterval = setInterval(() => {
-                  typingTextElement.textContent = typedText + (blinkCount % 2 === 0 ? "|" : "");
-                  blinkCount++;
-                  if (blinkCount === 4) {
-                      clearInterval(blinkInterval);  // Stop blinking after 2 cycles
-                      typingTextElement.textContent = typedText; // Remove the pipe after blinking
-                  }
-              }, 500);  // Blink every 500ms (half a second)
-          }
-      }, 50);  // Faster typing (50ms per character)
-  }
+    const typingInterval = setInterval(() => {
+        typedText += response.charAt(index);  // Add one character at a time
+        typingTextElement.textContent = typedText + "|";  // Show the typing effect
+
+        index++;
+        if (index === response.length) {
+            clearInterval(typingInterval);
+
+            // Blink the pipe symbol twice
+            let blinkCount = 0;
+            const blinkInterval = setInterval(() => {
+                typingTextElement.textContent = typedText + (blinkCount % 2 === 0 ? "|" : "");
+                blinkCount++;
+                if (blinkCount === 4) {
+                    clearInterval(blinkInterval);
+                    typingTextElement.textContent = typedText; // Finalize message text
+                }
+            }, 500);
+        }
+    }, 50);  // Adjust speed as needed
+}
+
 
   // Function to simulate sending the user's message and bot's response with typing effect
   function sendMessage() {
@@ -785,14 +787,8 @@ Additionally, if a user specifically requests something to eat, ignore all previ
                   thinkingMessage.remove();  // Remove the thinking message after response
               }
 
-              // Ensure the first bot message isn't overwritten
-              const firstMessage = document.querySelector(".bot-message");
-              if (!firstMessage) {
-                  simulateTypingEffect(botResponse);
-              } else {
-                  // If the first message exists, it means it's already shown, so we skip replacing it
-                  simulateTypingEffect(botResponse);
-              }
+              // Always append the bot response as a new message
+              simulateTypingEffect(botResponse);
           })
           .catch(error => {
               console.error("Error fetching chatbot response:", error);
