@@ -253,7 +253,6 @@ def detect_encoding(file_path):
 # Function to query Ollama with the CSV and prompt
 def query_ollama_with_csv(prompt):
     try:
-        # Automatically determine the absolute path of the CSV file
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Directory of the script
         CSV_FILE_PATH = os.path.join(BASE_DIR, "static", "menu.csv")
 
@@ -269,18 +268,21 @@ def query_ollama_with_csv(prompt):
         combined_prompt = f"Here is the data from the CSV file:\n{csv_data}\n\n{prompt}"
         print(f"Sending prompt to Ollama with CSV: {combined_prompt}")  # Debugging log
 
-        # Interact with the LLM
+        # Use subprocess to properly execute Ollama without shell=True
         result = subprocess.run(
-            ['ollama', 'run', 'orca-mini:latest'],
+            ["ollama", "run", "orca-mini:latest"],
             input=combined_prompt,
-            capture_output=True, text=True, shell=True
+            capture_output=True,
+            text=True
         )
+        
         response = result.stdout.strip()
 
         if result.stderr:
             print(f"Error output: {result.stderr}")
+
         print(f"Ollama response: {response}")
-        
+
         return response
     except Exception as e:
         print(f"Error querying Ollama with CSV: {str(e)}")
