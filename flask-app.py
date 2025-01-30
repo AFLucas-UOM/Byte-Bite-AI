@@ -650,9 +650,6 @@ def create_app() -> Flask:
         # Respond with success and the data
         return jsonify({"success": True, "data": chart_data}), 200
 
-
-
-
     @app.route('/assets/<path:filename>')
     def serve_assets(filename):
         return send_from_directory('assets', filename)
