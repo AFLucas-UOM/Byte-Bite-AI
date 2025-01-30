@@ -1404,4 +1404,4 @@ def create_app() -> Flask:
 if __name__ == '__main__':
     flask_app = create_app()
     # Run the app without debug-level logs from Flask; set debug=False in production.
-    flask_app.run(debug=True, use_reloader=True, host='0.0.0.0', port=1000)
+    flask_app.run(debug=False, use_reloader=False, host='0.0.0.0', port=1000)
