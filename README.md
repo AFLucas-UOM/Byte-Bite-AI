@@ -1,6 +1,6 @@
 # Byte Bite-AI
 
-**Byte Bite-AI** is an AI-driven healthy eating assistant designed to provide personalized dietary recommendations to university students, with a special focus on social dining experiences. Built on **Python Flask**, Byte Bite-AI leverages federated learning to ensure user privacy while offering dietary suggestions for a variety of dining options available at Campus Hub, including popular brands such as Burger King, Pizza Hut, Cafe Cuba, and Starbucks.
+**Byte Bite-AI** is an AI-driven healthy eating assistant designed to provide personalised dietary recommendations to university students, with a special focus on social dining experiences. Built on **Python Flask**, Byte Bite-AI leverages Rule-Based AI to offer dietary suggestions for a variety of dining options available at Campus Hubs.
 
 
 ## Promo Video - Click Below Logo
@@ -12,11 +12,10 @@
 - **Personalized Recommendations**: Byte Bite-AI analyzes individual dietary preferences and makes recommendations tailored to user needs.
 - **AI-Powered Decision-Making**: The system integrates Explainable AI (XAI) to enhance transparency in dietary suggestions.
 - **Multi-Platform Support**: Works seamlessly across desktop and mobile web interfaces.
-- **Chatbot Assistance**: AI-driven chatbot to provide real-time meal suggestions and answer nutrition-related queries.
+- **Chatbot Assistance**: AI-driven chatbot to provide real-time meal suggestions and answer nutrition-related queries, powered by Orca:Mini running locally on Ollama, ensuring enhanced privacy and responsiveness.
 - **Augmented Reality (AR) Integration**: Uses **Google Teachable Machine** to recognize restaurant logos and display nutritional insights.
-- **Data Privacy**: With federated learning, user data remains secure and is processed locally.
 - **Dining Insights**: Real-time suggestions from 8 dining options at Campus Hub, facilitating healthy eating in social settings.
-- **Profil11e & Goal Tracking**: Allows users to track their weight and progress towards dietary goals.
+- **Profile & Goal Tracking**: Allows users to track their weight and progress towards dietary goals.
 - **Scalable Design**: Built with a modular architecture that allows for future expansions.
 
 ## Technical Details
@@ -25,7 +24,7 @@
 - **Backend**: Python Flask for serving dynamic content and handling user data.
 - **Data Storage**: User credentials and preferences are stored securely in JSON files and localStorage for seamless user experience.
 - **AI & Machine Learning**:
-  - Utilizes **rule-based AI** for meal recommendations.
+  - Utilizes **Rule-Based AI** for meal recommendations.
   - Employs **Orca-Mini (via Ollama)** for chatbot responses.
   - Uses **Google Teachable Machine** for AR-powered food recognition.
 - **Security & Privacy**:
