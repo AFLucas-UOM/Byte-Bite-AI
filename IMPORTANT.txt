@@ -1,0 +1,4 @@
+DISCLAIMER - Byte Bite-AI GitHub Repository
+
+The complete source code for the Byte Bite-AI (BB-AI) project is available on GitHub via
+the following link: https://github.com/AFLucas-UOM/Byte-Bite-AI
