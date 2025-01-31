@@ -37,7 +37,7 @@
     },
     {
         "Full Name": "Andrea Filiberto Lucas",
-        "profile_pic": "default.png",
+        "profile_pic": "andreafilibertolucas.jpg",
         "about": "Hey, I\u2019m Andrea Filiberto Lucas, a proud co-creator of this genius app you're using. That\u2019s right\u2014this brilliance didn\u2019t build itself. \ud83d\ude1b",
         "DOB": "26/08/2004",
         "Occupation": "Student @ University of Malta",
@@ -61,10 +61,14 @@
             "Twitter": "https://x.com/AFLucas26",
             "Threads": "https://www.threads.net/@aflucas26"
         },
-        "Disliked Food": [],
+        "Disliked Food": [
+            "Avo Cobbo Wrap"
+        ],
         "Liked Food": [
             "Ravioli Porchini",
-            "King Shake KitKat"
+            "King Shake KitKat",
+            "Spaghetti All' Amatriciana",
+            "Rigatoni Pesto"
         ]
     },
     {
@@ -128,5 +132,39 @@
         ],
         "Liked Food": [],
         "Weight_LastUpdate": "10/01/2025, 09:31 PM"
+    },
+    {
+        "Full Name": "John Doe",
+        "profile_pic": "default.png",
+        "about": "Hello demo!",
+        "DOB": "26/08/2004",
+        "Occupation": "Student @ University of Malta",
+        "Current Course": "B.Sc. ICT (AI)",
+        "Nationality": "\ud83c\uddf2\ud83c\uddf9 Maltese",
+        "Mobile Number": "12345678",
+        "Email": "testing@gmail.com",
+        "Member Since": "31/01/2025",
+        "Height": 1.4,
+        "Weight": 67.0,
+        "Target_weight": 54.0,
+        "Favourite Food": "Pizza",
+        "Favourite Restaurant": "Joli",
+        "Vegetarian": 1,
+        "Nut Allergy": 0,
+        "Gluten Allergy": 0,
+        "Social Links": {
+            "Instagram": "https://instagram.com/",
+            "Facebook": "https://facebook.com/",
+            "Twitter": "https://x.com/",
+            "Threads": "https://www.threads.net/"
+        },
+        "Disliked Food": [
+            "Spaghetti Calamari"
+        ],
+        "Liked Food": [
+            "Rigatoni Beef Ragu",
+            "Stay Home Doc Juice"
+        ],
+        "Weight_LastUpdate": "31/01/2025, 12:27 PM"
     }
 ]

@@ -257,5 +257,33 @@
         "Restaurant": "BurgerKing",
         "Price": 7.5,
         "userName": "Sean David Muscat"
+    },
+    {
+        "Date": "31/01/2025",
+        "Name of dish": "Rigatoni Beef Ragu",
+        "Restaurant": "CafeCuba",
+        "Price": 15.75,
+        "userName": "John Doe"
+    },
+    {
+        "Date": "31/01/2025",
+        "Name of dish": "Stay Home Doc Juice",
+        "Restaurant": "Joli",
+        "Price": 5.95,
+        "userName": "John Doe"
+    },
+    {
+        "Date": "31/01/2025",
+        "Name of dish": "Vegetarian Okonomiyaki",
+        "Restaurant": "Amami",
+        "Price": 8.9,
+        "userName": "John Doe"
+    },
+    {
+        "Date": "31/01/2025",
+        "Name of dish": "Spaghetti All' Amatriciana",
+        "Restaurant": "CafeCuba",
+        "Price": 13.95,
+        "userName": "Andrea Filiberto Lucas"
     }
 ]
